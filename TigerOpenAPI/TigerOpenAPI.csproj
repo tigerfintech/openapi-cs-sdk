@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="NLog" />
+    <None Remove="Common\" />
+    <None Remove="Common\Util\" />
+    <None Remove="BouncyCastle" />
+    <None Remove="Common\Enum\" />
+    <None Remove="Common\Struct\" />
+    <None Remove="Config\" />
+    <None Remove="Quote\" />
+    <None Remove="Trade\" />
+    <None Remove="Model\" />
+    <None Remove="Quote\Model\" />
+    <None Remove="BouncyCastle.Cryptography" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Common\Util\" />
+    <Folder Include="Common\Enum\" />
+    <Folder Include="Common\Struct\" />
+    <Folder Include="Config\" />
+    <Folder Include="Quote\" />
+    <Folder Include="Trade\" />
+    <Folder Include="Model\" />
+    <Folder Include="Quote\Model\" />
+  </ItemGroup>
+</Project>
