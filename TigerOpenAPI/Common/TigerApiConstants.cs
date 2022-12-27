@@ -69,5 +69,7 @@ namespace TigerOpenAPI.Common
     public const string DEFAULT_SANDBOX_SOCKET_PORT = "9889";
     public const string DEFAULT_SANDBOX_SOCKET_SSL_PORT = "9885";
 
+    public const int DefaultRetryCount = 2;
+    public const int MaxRetryCount = 5;
   }
 }

@@ -37,7 +37,7 @@ namespace TigerOpenAPI.Common.Util
     /**
      * get signature content
      */
-    public static string GetSignContent(Dictionary<string, Object> request)
+    public static string GetSignContent(Dictionary<string, object> request)
     {
       StringBuilder content = new StringBuilder();
       List<string> keys = new List<string>(request.Keys);

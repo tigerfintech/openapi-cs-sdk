@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Net;
+using System.Threading;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Polly;
+using Polly.Wrap;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
@@ -21,6 +26,8 @@ namespace TigerOpenAPI.Common
     protected Env Environment { get; set; } = Env.PROD;
     protected TigerConfig Config { get; private set; }
     protected ApiModel EmptyModel { get; private set; }
+    // default retry count : 2, total 3
+    protected int RetryCount { get; set; } = TigerApiConstants.DefaultRetryCount;
 
     private const string ONLINE_PUBLIC_KEY =
       "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNF3G8SoEcCZh2rshUbayDgLLrj6rKgzNMxDL2HSnKcB0+GPOsndqSv+a4IBu9+I3fyBp5hkyMMG2+AXugd9pMpy6VxJxlNjhX1MYbNTZJUT4nudki4uh+LMOkIBHOceGNXjgB+cXqmlUnjlqha/HgboeHSnSgpM3dKSJQlIOsDwIDAQAB";
@@ -35,7 +42,7 @@ namespace TigerOpenAPI.Common
       DateFormatString = DateUtil.FORMAT_DATETIME,// "yyyy-MM-dd HH:mm:ss",
       NullValueHandling = NullValueHandling.Ignore,
       MaxDepth = 10,
-      // 指定如何处理循环引用，None--不序列化，Error-抛出异常，Serialize--仍要序列化
+      // reference loop，None--no serialize，Error-throw error，Serialize--serialize
       ReferenceLoopHandling = ReferenceLoopHandling.Serialize
     };
 
@@ -57,6 +64,10 @@ namespace TigerOpenAPI.Common
       {
         throw new ArgumentNullException("License is empty.");
       }
+      if (config.FailRetryCounts <= TigerApiConstants.MaxRetryCount)
+      {
+        RetryCount = Math.Max(config.FailRetryCounts, 0);
+      }
 
       TigerId = config.TigerId;
       PrivateKey = config.PrivateKey;
@@ -68,7 +79,10 @@ namespace TigerOpenAPI.Common
       EmptyModel = new ApiModel() { Lang = config.Language };
     }
 
+    // should be override by sub class
     public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return default; }
+
+    // should be override by sub class
     public virtual bool Validate<T>(TigerRequest<T> request, out string errorMsg) where T : TigerResponse
     {
       errorMsg = string.Empty;
@@ -121,12 +135,47 @@ namespace TigerOpenAPI.Common
           dic.Add(TigerApiConstants.ACCOUNT_TYPE, AccountType);
         }
         string content = SignatureUtil.GetSignContent (dic);
-        request.Sign = SignatureUtil.Sign(content, PrivateKey, charset);
+        request.Sign = SignatureUtil.Sign(content, PrivateKey, string.IsNullOrWhiteSpace(request.Charset) ? charset : request.Charset);
       }
       return request;
     }
 
-    //public virtual async Task<T?> executeAsync<T>(TigerRequest<T> request) where T : TigerResponse
+    protected string ExecuteWrap(string requestUri, string data)
+    {
+      // doc:https://github.com/App-vNext/Polly#retry
+      var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
+        .Or<Exception>()
+        .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 250),// 500ms, 1000ms, 2000ms, 4000ms, 8000ms
+        onRetry: (exception, timeSpan, retryCount, context) =>// RetryAsync()
+        {
+          // Add logic to be executed before each retry, such as logging
+          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}ms, error:{exception.Message}");
+        });
+      return retryPolicy.Execute(() => HttpUtil.HttpPost(requestUri, data));
+    }
+    protected async Task<string> ExecuteAsyncWrap(string requestUri, string data)
+    {
+      var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
+        .Or<Exception>()
+        .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 250),// 500ms, 1000ms, 2000ms, 4000ms, 8000ms
+        onRetry: (exception, timeSpan, retryCount, context) =>
+        {
+          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}ms, error:{exception.Message}");
+        });
+      return await retryPolicy.ExecuteAsync(async () => await HttpUtil.HttpPostAsync(requestUri, data));
+    }
+
+    protected virtual void BeforeExecute<T>(TigerRequest<T> request, in bool isAsync, out string param) where T : TigerResponse
+    {
+      if (!Validate(request, out string errorMsg))
+      {
+        throw new TigerApiException(TigerApiCode.HTTP_COMMON_PARAM_ERROR, errorMsg);
+      }
+      BuildParams(request);
+      param = JsonConvert.SerializeObject(request, JsonSet);
+      ApiLogger.Debug($"{0}request param:{1}", isAsync ? "async " : string.Empty, param);
+    }
+
     public virtual T? Execute<T>(TigerRequest<T> request) where T : TigerResponse
     {
       T? response;
@@ -134,33 +183,13 @@ namespace TigerOpenAPI.Common
       string data = string.Empty;
       try
       {
-        if (!Validate(request, out string errorMsg))
-        {
-          throw new TigerApiException(TigerApiCode.HTTP_COMMON_PARAM_ERROR, errorMsg);
-        }
-        BuildParams(request);
-        param = JsonConvert.SerializeObject(request, JsonSet);
-        ApiLogger.Debug("request param:{}", param);
+        BeforeExecute(request, false, out param);
+        if (RetryCount <= 0)
+          data = HttpUtil.HttpPost(GetServerUri(request), param);
+        else
+          data = ExecuteWrap(GetServerUri(request), param);
 
-        // data = HttpUtils.post(getServerUrl(request), param);
-        data = HttpUtil.HttpPost(GetServerUri(request), param);
-
-        ApiLogger.Debug("response result:{}", data);
-        if (string.IsNullOrWhiteSpace(data))
-        {
-          throw new TigerApiException(TigerApiCode.EMPTY_DATA_ERROR);
-        }
-        response = JsonConvert.DeserializeObject<T>(data);
-        if (string.IsNullOrEmpty(TigerPublicKey) || string.IsNullOrEmpty(response?.Sign))
-        {
-          return response;
-        }
-        bool signSuccess = SignatureUtil.Verify(request.Timestamp, response.Sign, TigerPublicKey, charset);
-        if (!signSuccess)
-        {
-          throw new TigerApiException(TigerApiCode.SIGN_CHECK_FAILED);
-        }
-        return response;
+        return AfterExecute(request, false, data);
       }
       catch (TigerApiException e)
       {
@@ -174,6 +203,55 @@ namespace TigerOpenAPI.Common
             TigerId, request?.ApiMethodName ?? string.Empty, param, data);
         return ErrorResponse(TigerId, request, e);
       }
+    }
+
+    public virtual async Task<T?> ExecuteAsync<T>(TigerRequest<T> request) where T : TigerResponse
+    {
+      T? response;
+      string param = string.Empty;
+      string data = string.Empty;
+      try
+      {
+        BeforeExecute(request, true, out param);
+        if (RetryCount <= 0)
+          data = await HttpUtil.HttpPostAsync(GetServerUri(request), data);
+        else
+          data = await ExecuteAsyncWrap(GetServerUri(request), param);
+   
+        return AfterExecute(request, true, data);
+      }
+      catch (TigerApiException e)
+      {
+        ApiLogger.Error(e, "async request fail. tigerId:{}, method:{}, param:{}, response:{}",
+            TigerId, request?.ApiMethodName ?? string.Empty, param, data);
+        return ErrorResponse(TigerId, request, e);
+      }
+      catch (Exception e)
+      {
+        ApiLogger.Error(e, "async request fail. tigerId:{}, method:{}, param:{}, response:{}",
+            TigerId, request?.ApiMethodName ?? string.Empty, param, data);
+        return ErrorResponse(TigerId, request, e);
+      }
+    }
+
+    protected virtual T? AfterExecute<T>(TigerRequest<T> request, in bool isAsync, in string data) where T : TigerResponse
+    {
+      ApiLogger.Debug($"{0}response result:{1}", isAsync ? "async " : string.Empty, data);
+      if (string.IsNullOrWhiteSpace(data))
+      {
+        throw new TigerApiException(TigerApiCode.EMPTY_DATA_ERROR);
+      }
+      T? response = JsonConvert.DeserializeObject<T>(data);
+      if (string.IsNullOrEmpty(TigerPublicKey) || string.IsNullOrEmpty(response?.Sign))
+      {
+        return response;
+      }
+      bool signSuccess = SignatureUtil.Verify(request.Timestamp, response.Sign, TigerPublicKey, string.IsNullOrWhiteSpace(request.Charset) ? charset : request.Charset);
+      if (!signSuccess)
+      {
+        throw new TigerApiException(TigerApiCode.SIGN_CHECK_FAILED);
+      }
+      return response;
     }
 
     private T? ErrorResponse<T>(string tigerId, TigerRequest<T>? request, Exception e) where T : TigerResponse

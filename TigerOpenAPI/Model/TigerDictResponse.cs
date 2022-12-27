@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 
 namespace TigerOpenAPI.Model
 {
-  public class TigerDicResponse : TigerResponse
+  public class TigerDictResponse : TigerResponse
   {
 
     [JsonProperty(PropertyName = "data")]
-    public Dictionary<string, Object> Data { get; set; }
+    public Dictionary<string, object> Data { get; set; }
 
-    public TigerDicResponse()
+    public TigerDictResponse()
     {
     }
   }

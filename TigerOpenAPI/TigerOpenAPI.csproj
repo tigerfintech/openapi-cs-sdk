@@ -20,11 +20,13 @@
     <None Remove="Model\" />
     <None Remove="Quote\Model\" />
     <None Remove="BouncyCastle.Cryptography" />
+    <None Remove="Polly" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NLog" Version="5.1.0" />
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.0.0" />
+    <PackageReference Include="Polly" Version="7.2.3" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\" />

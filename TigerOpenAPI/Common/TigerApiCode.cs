@@ -32,7 +32,7 @@ namespace TigerOpenAPI.Common
     public static readonly TigerApiCode SUBSCRIBE_ID_ERROR = new TigerApiCode(3004, "subscribe tigerId error");
     public static readonly TigerApiCode SUBSCRIBE_OTHER_SUBJECT_ERROR = new TigerApiCode(3005, "register subject (except quote) error");
     public static readonly TigerApiCode UNSUBSCRIBE_ERROR = new TigerApiCode(3006, "unsubscribe error");
-    public static readonly TigerApiCode UNKNOWN_STOMP_COMMAND = new TigerApiCode(3007, "unknown stomp command");
+    public static readonly TigerApiCode UNKNOWN_PROTOCOL_COMMAND = new TigerApiCode(3007, "unknown protocol command");
     public static readonly TigerApiCode SUBSCRIBE_CHANNEL_ERROR = new TigerApiCode(3008, "subscribe channel error");
 
     public static readonly TigerApiCode CONNECTION_KICK_OUT_ERROR = new TigerApiCode(4001, "kick out by a new connection");

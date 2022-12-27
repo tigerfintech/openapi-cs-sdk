@@ -7,7 +7,7 @@ namespace TigerOpenAPI.Quote.Model
   public class TigerListResponse : TigerResponse
   {
     [JsonProperty(PropertyName = "data")]
-    public List<Dictionary<string, Object>> Data { get; set; }
+    public List<Dictionary<string, object>> Data { get; set; }
 
     public TigerListResponse()
     {

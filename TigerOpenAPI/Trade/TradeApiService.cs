@@ -27,6 +27,36 @@ namespace TigerOpenAPI.Trade
     public const string FILLED_ORDERS = "filled_orders";
     public const string ORDER_TRANSACTIONS = "order_transactions";
 
+
+    public static readonly HashSet<string> AllTradeApiSet = new HashSet<string>()
+    {
+      /**
+       * trade
+       */
+      ORDER_NO,
+      PREVIEW_ORDER,
+      PLACE_ORDER,
+      CANCEL_ORDER,
+      MODIFY_ORDER,
+
+      /**
+       * account/asset
+       */
+      ACCOUNTS,
+      ASSETS,
+      PRIME_ASSETS,
+      ANALYTICS_ASSET,
+      POSITIONS,
+      ORDERS,
+      ACTIVE_ORDERS,
+      INACTIVE_ORDERS,
+      FILLED_ORDERS,
+      ORDER_TRANSACTIONS
+    };
+
+    public static bool IsTradeApi(in string tradeApi) =>
+      string.IsNullOrWhiteSpace(tradeApi) ? false : AllTradeApiSet.Contains(tradeApi);
+
     private TradeApiService()
     {
     }

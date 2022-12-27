@@ -13,7 +13,7 @@ namespace TigerOpenAPI.Config
     public const Env DEFAULT_ENV = Env.PROD;
 
     /**
-     * log file output directory
+     * (optional)log file output directory
      */
     public static string LogDir { get; set; }
 
@@ -25,7 +25,7 @@ namespace TigerOpenAPI.Config
     public string TigerId { get; set; }
 
     /**
-     * (must)tigerId : TBNZ/TBSG/TBAU/TBHK,  address：https://developer.itigerup.com/profile
+     * (must)license : TBNZ/TBSG/TBAU/TBHK,  address：https://developer.itigerup.com/profile
      */
     public License License { get; set; }
 
@@ -35,22 +35,27 @@ namespace TigerOpenAPI.Config
     public string PrivateKey { get; set; }
 
     /**
-     * default account
+     * (optional)default account
      */
     public string DefaultAccount { get; set; }
 
     /**
-     * whether to automatically grab quote permission when the initialization instance is completed
+     * (optional)whether to automatically grab quote permission when the initialization instance is completed
      */
     public bool AutoGrabPermission { get; set; } = true;
 
     /**
-     * default time zone
+     * (optional)reqest fail retry counts[1, 5], if less than 1 will no retry; if bigger than 5 will set default value
+     */
+    public int FailRetryCounts { get; set; } = TigerApiConstants.DefaultRetryCount;
+
+    /**
+     * (optional)default time zone
      */
     public TimeZoneInfo TimeZone { get; set; } = DateUtil.HK_ZONE;
 
     /**
-     * default language
+     * (optional)default language
      */
     public Language Language { get; set; } = Language.en_US;
 
