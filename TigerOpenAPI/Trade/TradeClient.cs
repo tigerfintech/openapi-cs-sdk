@@ -16,22 +16,26 @@ namespace TigerOpenAPI.Trade
 
     public TradeClient(TigerConfig config) : base(config)
     {
-      // TODO use cgplay by Env and license
-      if (Env.PROD == config.Environment)
-      {
-        ServerUrl = "https://openapi.tigerfintech.com/hkg/gateway";
-        ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/hkg/gateway";
-      }
-      else if (Env.SANDBOX == config.Environment)
-      {
-        ServerUrl = "https://openapi-sandbox.tigerfintech.com/gateway";
-        ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/gateway";
-      }
-      else
-      {
-        ServerUrl = "https://openapi-test.tigerfintech.com/gateway";
-        ServerUrlForPaper = "https://openapi-test.tigerfintech.com/gateway";
-      }
+      // use cgplay by Env and license
+      Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
+      ServerUrl = string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]) ? uriDict[UriType.COMMON] : uriDict[UriType.TRADE];
+      ServerUrlForPaper = string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]) ? uriDict[UriType.COMMON] : uriDict[UriType.PAPER];
+
+      //if (Env.PROD == config.Environment)
+      //{
+      //  ServerUrl = "https://openapi.tigerfintech.com/hkg/gateway";
+      //  ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/hkg/gateway";
+      //}
+      //else if (Env.SANDBOX == config.Environment)
+      //{
+      //  ServerUrl = "https://openapi-sandbox.tigerfintech.com/gateway";
+      //  ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/gateway";
+      //}
+      //else
+      //{
+      //  ServerUrl = "https://openapi-test.tigerfintech.com/gateway";
+      //  ServerUrlForPaper = "https://openapi-test.tigerfintech.com/gateway";
+      //}
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)

@@ -2,12 +2,12 @@
 using Newtonsoft.Json;
 using TigerOpenAPI.Model;
 
-namespace TigerOpenAPI.Quote.Model
+namespace TigerOpenAPI.Quote.Response
 {
   public class QuotePermissionResponse : TigerResponse
   {
     [JsonProperty(PropertyName = "data")]
-    public List<Dictionary<string, object>> Data { get; set; }
+    public List<QuotePermission> Data { get; set; }
 
     public QuotePermissionResponse()
     {

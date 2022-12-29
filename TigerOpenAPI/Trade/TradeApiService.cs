@@ -27,6 +27,11 @@ namespace TigerOpenAPI.Trade
     public const string FILLED_ORDERS = "filled_orders";
     public const string ORDER_TRANSACTIONS = "order_transactions";
 
+    /**
+     * contract
+     */
+    public const string CONTRACT = "contract";
+    public const string CONTRACTS = "contracts";
 
     public static readonly HashSet<string> AllTradeApiSet = new HashSet<string>()
     {
@@ -51,7 +56,13 @@ namespace TigerOpenAPI.Trade
       ACTIVE_ORDERS,
       INACTIVE_ORDERS,
       FILLED_ORDERS,
-      ORDER_TRANSACTIONS
+      ORDER_TRANSACTIONS,
+
+      /**
+       * contract
+       */
+      CONTRACT,
+      CONTRACTS,
     };
 
     public static bool IsTradeApi(in string tradeApi) =>

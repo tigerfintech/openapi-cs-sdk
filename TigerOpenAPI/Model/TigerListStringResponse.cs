@@ -4,12 +4,12 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Model
 {
-  public class TigerListResponse : TigerResponse
+  public class TigerListStringResponse : TigerResponse
   {
     [JsonProperty(PropertyName = "data")]
-    public List<Dictionary<string, object>> Data { get; set; }
+    public List<string> Data { get; set; }
 
-    public TigerListResponse()
+    public TigerListStringResponse()
     {
     }
   }

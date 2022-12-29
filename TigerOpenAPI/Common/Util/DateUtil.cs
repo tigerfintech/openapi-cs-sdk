@@ -1,4 +1,6 @@
 ﻿using System;
+using TigerOpenAPI.Common.Enum;
+
 namespace TigerOpenAPI.Common.Util
 {
   public class DateUtil
@@ -12,11 +14,36 @@ namespace TigerOpenAPI.Common.Util
     public static readonly TimeZoneInfo HK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Hong_Kong");
     public static readonly TimeZoneInfo SH_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Shanghai");
     public static readonly TimeZoneInfo NY_ZONE = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+    public static readonly TimeZoneInfo SG_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Singapore");
+    public static readonly TimeZoneInfo SYD_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Australia/Sydney");
+    public static readonly TimeZoneInfo NZ_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pacific/Auckland");
+    public static readonly TimeZoneInfo LD_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
 
     private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
     private DateUtil()
     {
+    }
+
+    public static TimeZoneInfo getTimeZoneByMarket(Market market)
+    {
+      switch (market)
+      {
+        case Market.US:
+          return NY_ZONE;
+        case Market.AU:
+          return SYD_ZONE;
+        case Market.NZ:
+          return NZ_ZONE;
+        case Market.UK:
+          return LD_ZONE;
+        case Market.SG:
+          return SG_ZONE;
+        case Market.CN:
+        case Market.HK:
+        default:
+          return HK_ZONE;
+      }
     }
 
     public static long CurrentTimeMillis()

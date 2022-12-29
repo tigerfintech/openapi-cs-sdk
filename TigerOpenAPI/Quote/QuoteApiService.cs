@@ -56,12 +56,6 @@ namespace TigerOpenAPI.Quote
     public const string FUTURE_TRADING_DATE = "future_trading_date";
 
     /**
-     * contract
-     */
-    public const string CONTRACT = "contract";
-    public const string CONTRACTS = "contracts";
-
-    /**
      * fundmental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
@@ -127,12 +121,6 @@ namespace TigerOpenAPI.Quote
       FUTURE_REAL_TIME_QUOTE,
       FUTURE_TICK,
       FUTURE_TRADING_DATE,
-
-      /**
-       * contract
-       */
-      CONTRACT,
-      CONTRACTS,
 
       /**
        * fundmental data

@@ -79,6 +79,8 @@ namespace TigerOpenAPI.Common
       EmptyModel = new ApiModel() { Lang = config.Language };
     }
 
+    public TimeZoneInfo GetConfigTimeZone => Config.TimeZone;
+
     // should be override by sub class
     public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return default; }
 
@@ -113,7 +115,11 @@ namespace TigerOpenAPI.Common
           {
             request.ModelValue.Lang = Config.Language;
           }
-          request.BizContent = JsonConvert.SerializeObject(request.ModelValue, JsonSet);
+          Type type = request.ModelValue.GetType();
+          if (type != null && type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(BatchApiModel<>)))
+            request.BizContent = JsonConvert.SerializeObject(((dynamic)(request.ModelValue)).Items, JsonSet);
+          else
+            request.BizContent = JsonConvert.SerializeObject(request.ModelValue, JsonSet);
         }
         dic.Add(TigerApiConstants.BIZ_CONTENT, request.BizContent);
 
@@ -173,7 +179,7 @@ namespace TigerOpenAPI.Common
       }
       BuildParams(request);
       param = JsonConvert.SerializeObject(request, JsonSet);
-      ApiLogger.Debug($"{0}request param:{1}", isAsync ? "async " : string.Empty, param);
+      ApiLogger.Debug($"{(isAsync ? "async " : string.Empty)}request param:{param}");
     }
 
     public virtual T? Execute<T>(TigerRequest<T> request) where T : TigerResponse
@@ -236,7 +242,7 @@ namespace TigerOpenAPI.Common
 
     protected virtual T? AfterExecute<T>(TigerRequest<T> request, in bool isAsync, in string data) where T : TigerResponse
     {
-      ApiLogger.Debug($"{0}response result:{1}", isAsync ? "async " : string.Empty, data);
+      ApiLogger.Debug($"{(isAsync ? "async " : string.Empty)}response result:{data}");
       if (string.IsNullOrWhiteSpace(data))
       {
         throw new TigerApiException(TigerApiCode.EMPTY_DATA_ERROR);
@@ -246,7 +252,8 @@ namespace TigerOpenAPI.Common
       {
         return response;
       }
-      bool signSuccess = SignatureUtil.Verify(request.Timestamp, response.Sign, TigerPublicKey, string.IsNullOrWhiteSpace(request.Charset) ? charset : request.Charset);
+      bool signSuccess = SignatureUtil.Verify(request.Timestamp, response.Sign, TigerPublicKey,
+        string.IsNullOrWhiteSpace(request.Charset) ? charset : request.Charset);
       if (!signSuccess)
       {
         throw new TigerApiException(TigerApiCode.SIGN_CHECK_FAILED);
