@@ -1,9 +1,9 @@
 ﻿using System;
 namespace TigerOpenAPI.Common.Enum
 {
-  public enum RightOption
+  public enum SegmentType
   {
-    none, nr, br
+    NONE, SEC, FUT
   }
 }
 

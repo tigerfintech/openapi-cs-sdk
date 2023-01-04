@@ -9,6 +9,7 @@ using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
+using TigerOpenAPI.Trade;
 
 namespace TigerOpenAPI.Common
 {
@@ -41,6 +42,7 @@ namespace TigerOpenAPI.Common
       DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat,
       DateFormatString = DateUtil.FORMAT_DATETIME,// "yyyy-MM-dd HH:mm:ss",
       NullValueHandling = NullValueHandling.Ignore,
+      DefaultValueHandling = DefaultValueHandling.Ignore,
       MaxDepth = 10,
       // reference loop，None--no serialize，Error-throw error，Serialize--serialize
       ReferenceLoopHandling = ReferenceLoopHandling.Serialize
@@ -190,7 +192,7 @@ namespace TigerOpenAPI.Common
       try
       {
         BeforeExecute(request, false, out param);
-        if (RetryCount <= 0)
+        if (RetryCount <= 0 || string.Equals(TradeApiService.PLACE_ORDER, request.ApiMethodName))
           data = HttpUtil.HttpPost(GetServerUri(request), param);
         else
           data = ExecuteWrap(GetServerUri(request), param);
@@ -220,7 +222,7 @@ namespace TigerOpenAPI.Common
       {
         BeforeExecute(request, true, out param);
         if (RetryCount <= 0)
-          data = await HttpUtil.HttpPostAsync(GetServerUri(request), data);
+          data = await HttpUtil.HttpPostAsync(GetServerUri(request), param);
         else
           data = await ExecuteAsyncWrap(GetServerUri(request), param);
    

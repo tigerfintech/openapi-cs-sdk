@@ -1,9 +1,9 @@
 ﻿using System;
 namespace TigerOpenAPI.Common.Enum
 {
-  public enum RightOption
+  public enum OrderType
   {
-    none, nr, br
+    NONE, MKT, LMT, STP, STP_LMT, TRAIL
   }
 }
 

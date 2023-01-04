@@ -5,6 +5,7 @@ using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
+using TigerOpenAPI.Trade.Model;
 
 namespace TigerOpenAPI.Trade
 {
@@ -13,48 +14,45 @@ namespace TigerOpenAPI.Trade
     private string ServerUrl { get; set; }
     private string ServerUrlForPaper { get; set; }
 
-
     public TradeClient(TigerConfig config) : base(config)
     {
-      // use cgplay by Env and license
+      ApiLogger.Debug($"TradeClient env:{config.Environment}, license:{config.License}");
+      // get serverAddress by Env and license
       Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
       ServerUrl = string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]) ? uriDict[UriType.COMMON] : uriDict[UriType.TRADE];
       ServerUrlForPaper = string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]) ? uriDict[UriType.COMMON] : uriDict[UriType.PAPER];
-
-      //if (Env.PROD == config.Environment)
-      //{
-      //  ServerUrl = "https://openapi.tigerfintech.com/hkg/gateway";
-      //  ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/hkg/gateway";
-      //}
-      //else if (Env.SANDBOX == config.Environment)
-      //{
-      //  ServerUrl = "https://openapi-sandbox.tigerfintech.com/gateway";
-      //  ServerUrlForPaper = "https://openapi-sandbox.tigerfintech.com/gateway";
-      //}
-      //else
-      //{
-      //  ServerUrl = "https://openapi-test.tigerfintech.com/gateway";
-      //  ServerUrlForPaper = "https://openapi-test.tigerfintech.com/gateway";
-      //}
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)
     {
-      //ApiLogger.Debug($"TradeClient env:{Environment}, license:{License}, account:{request.ModelValue.Account}");
-      // 区分账号类型, 环境和牌照
       return AccountUtil.isVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
     }
 
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)
     {
       errorMsg = string.Empty;
-      if (!TradeApiService.IsTradeApi(request?.ApiMethodName))
+      if (!TradeApiService.IsTradeApi(request.ApiMethodName))
       {
         errorMsg = string.Format(TigerApiCode.HTTP_COMMON_PARAM_ERROR.Message, $"'ApiMethodName'({request?.ApiMethodName}) is not trade api");
         return false;
       }
-      if (!string.IsNullOrWhiteSpace(request?.ModelValue?.Account)
-        && !string.Equals(TradeApiService.ACCOUNTS, request?.ApiMethodName))
+      if (request.ModelValue != null && !string.Equals(TradeApiService.ACCOUNTS, request.ApiMethodName)
+        && string.IsNullOrWhiteSpace(request.ModelValue.Account))
+      {
+        request.ModelValue.Account = Config.DefaultAccount;
+      }
+      if (request.ModelValue != null && request.ModelValue is TradeModel)
+      {
+        TradeModel tradeModel = (TradeModel)request.ModelValue;
+        if (string.IsNullOrWhiteSpace(tradeModel.SecretKey)
+          && !string.IsNullOrWhiteSpace(Config.SecretKey))
+        {
+          tradeModel.SecretKey = Config.SecretKey;
+        }
+      }
+
+      if (string.IsNullOrWhiteSpace(request.ModelValue?.Account)
+        && !string.Equals(TradeApiService.ACCOUNTS, request.ApiMethodName))
       {
         errorMsg = string.Format(TigerApiCode.HTTP_BIZ_PARAM_EMPTY_ERROR.Message, "'Account'");
         return false;

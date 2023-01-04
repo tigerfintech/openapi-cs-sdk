@@ -22,6 +22,8 @@
     <None Remove="BouncyCastle.Cryptography" />
     <None Remove="Polly" />
     <None Remove="Quote\Response\" />
+    <None Remove="Trade\Model\" />
+    <None Remove="Trade\Response\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -40,5 +42,7 @@
     <Folder Include="Model\" />
     <Folder Include="Quote\Model\" />
     <Folder Include="Quote\Response\" />
+    <Folder Include="Trade\Model\" />
+    <Folder Include="Trade\Response\" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,9 @@ using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Model;
 using TigerOpenAPI.Quote.Response;
+using TigerOpenAPI.Trade;
+using TigerOpenAPI.Trade.Model;
+using TigerOpenAPI.Trade.Response;
 
 class Program
 {
@@ -23,7 +26,7 @@ class Program
     {
       License = License.TBNZ,// must
       TigerId = "20150899", // must
-      DefaultAccount = "572386",// (optional) paper account: 20200821144442583
+      DefaultAccount = "572386",// (optional) prime accout:572386, paper account: 20200821144442583
       PrivateKey = TigerConfig.ReadPrivateKey("/Users/tiger/dev/liutp_account/rsa_private_key_pkcs8_prod.pem"),// must
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
@@ -72,14 +75,147 @@ class Program
     //TigerResponse? response = await test_FUTURE_TRADING_DATE_Async(quoteClient);
     //TigerResponse? response = await test_FUTURE_KLINE_Async(quoteClient);
     //TigerResponse? response = await test_FUTURE_REAL_TIME_QUOTE_Async(quoteClient);
-    TigerResponse? response = await test_FUTURE_TICK_Async(quoteClient);
+    //TigerResponse? response = await test_FUTURE_TICK_Async(quoteClient);
+    //TigerResponse? response = await test_QUOTE_CONTRACT_Async(quoteClient);
+
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+
+    // =================================================trade
+    TradeClient tradeClient = new TradeClient(config);
+    //TigerResponse? response = await test_CONTRACT_Async(tradeClient);
+    //TigerResponse? response = await test_CONTRACTS_Async(tradeClient);
+    //TigerResponse? response = await test_ACCOUNTS_Async(tradeClient);
+    //TigerResponse? response = await test_POSITIONS_Async(tradeClient);
+    //TigerResponse? response = await test_ASSETS_Async(tradeClient);
+    //TigerResponse? response = await test_PRIME_ASSETS_Async(tradeClient);
+    TigerResponse? response = await test_ANALYTICS_ASSET_Async(tradeClient);
+
+    //TigerResponse? response = await test_PLACE_ORDER_Async(tradeClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     Thread.Sleep(1000);
     ApiLogger.Info("end");
   }
 
-  
+  static async Task<TigerDictResponse?> test_PLACE_ORDER_Async(TradeClient tradeClient)
+  {
+    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = new PlaceOrderModel() {
+        Account = "20200821144442583",
+        SecType = SecType.STK,
+        Action = ActionType.BUY,
+        Symbol = "AAPL",
+        LimitPrice = 124.0,
+        OrderType = OrderType.LMT,
+        TotalQuantity = 1
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PrimeAnalyticsAssetResponse?> test_ANALYTICS_ASSET_Async(TradeClient tradeClient)
+  {
+    TigerRequest<PrimeAnalyticsAssetResponse> request = new TigerRequest<PrimeAnalyticsAssetResponse>()
+    {
+      ApiMethodName = TradeApiService.ANALYTICS_ASSET,
+      ModelValue = new PrimeAnalyticsAssetModel()
+      {
+        Account = "572386",
+        StartDate = "2022-12-26"
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PrimeAssetResponse?> test_PRIME_ASSETS_Async(TradeClient tradeClient)
+  {
+    TigerRequest<PrimeAssetResponse> request = new TigerRequest<PrimeAssetResponse>()
+    {
+      ApiMethodName = TradeApiService.PRIME_ASSETS,
+      ModelValue = new TradeModel()
+      {
+        Account = "572386"
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<TigerDictResponse?> test_ASSETS_Async(TradeClient tradeClient)
+  {
+    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    {
+      ApiMethodName = TradeApiService.ASSETS,
+      ModelValue = new GlobalAssetsModel() {
+        Account = "U10010705",
+        Segment = true, MarketValue = true
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PositionsResponse?> test_POSITIONS_Async(TradeClient tradeClient)
+  {
+    TigerRequest<PositionsResponse> request = new TigerRequest<PositionsResponse>()
+    {
+      ApiMethodName = TradeApiService.POSITIONS,
+      ModelValue = new PositionsModel() { SecType = SecType.STK, Market = Market.US }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<AccountsResponse?> test_ACCOUNTS_Async(TradeClient tradeClient)
+  {
+    TigerRequest<AccountsResponse> request = new TigerRequest<AccountsResponse>()
+    {
+      ApiMethodName = TradeApiService.ACCOUNTS,
+      ModelValue = new ApiModel() {}
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<ContractsResponse?> test_CONTRACTS_Async(TradeClient tradeClient)
+  {
+    TigerRequest<ContractsResponse> request = new TigerRequest<ContractsResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACTS,
+      ModelValue = new ContractsModel()
+      {
+        Symbols = new List<string> { "AAPL", "TSLA" }
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<ContractResponse?> test_CONTRACT_Async(TradeClient tradeClient)
+  {
+    TigerRequest<ContractResponse> request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        Symbol = "AAPL"
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<QuoteContractResponse?> test_QUOTE_CONTRACT_Async(QuoteClient quoteClient)
+  {
+    TigerRequest<QuoteContractResponse> request = new TigerRequest<QuoteContractResponse>()
+    {
+      ApiMethodName = QuoteApiService.QUOTE_CONTRACT,
+      ModelValue = new QuoteContractsModel()
+      {
+        Symbol = "00700",
+        SecType = SecType.WAR,
+        Expiry = "20230320"
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
   static async Task<FutureTickResponse?> test_FUTURE_TICK_Async(QuoteClient quoteClient)
   {
     TigerRequest<FutureTickResponse> request = new TigerRequest<FutureTickResponse>()

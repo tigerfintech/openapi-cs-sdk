@@ -1,9 +1,9 @@
 ﻿using System;
 namespace TigerOpenAPI.Common.Enum
 {
-  public enum RightOption
+  public enum TickSizeType
   {
-    none, nr, br
+    CLOSED, OPEN_CLOSED, OPEN
   }
 }
 
