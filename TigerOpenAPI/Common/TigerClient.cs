@@ -37,7 +37,7 @@ namespace TigerOpenAPI.Common
     private const string signType = TigerApiConstants.SIGN_TYPE_RSA;
     private const string charset = TigerApiConstants.CHARSET_UTF8;
 
-    private static readonly JsonSerializerSettings JsonSet = new JsonSerializerSettings
+    public static readonly JsonSerializerSettings JsonSet = new JsonSerializerSettings
     {
       DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat,
       DateFormatString = DateUtil.FORMAT_DATETIME,// "yyyy-MM-dd HH:mm:ss",
@@ -82,6 +82,8 @@ namespace TigerOpenAPI.Common
     }
 
     public TimeZoneInfo GetConfigTimeZone => Config.TimeZone;
+
+    public string GetDefaultAccount => Config.DefaultAccount;
 
     // should be override by sub class
     public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return default; }

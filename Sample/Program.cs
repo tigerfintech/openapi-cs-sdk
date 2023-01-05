@@ -88,13 +88,278 @@ class Program
     //TigerResponse? response = await test_POSITIONS_Async(tradeClient);
     //TigerResponse? response = await test_ASSETS_Async(tradeClient);
     //TigerResponse? response = await test_PRIME_ASSETS_Async(tradeClient);
-    TigerResponse? response = await test_ANALYTICS_ASSET_Async(tradeClient);
+    //TigerResponse? response = await test_ANALYTICS_ASSET_Async(tradeClient);
 
+    // =================================================palace order
     //TigerResponse? response = await test_PLACE_ORDER_Async(tradeClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //TigerResponse? response = await test_MKT_ORDER_Async(tradeClient);
+    // response:{"code":0,"message":"success","timestamp":1672900459461,"data":{"id":29360293078500352,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360293078500352,"orderId":1456,"account":"20200821144442583","action":"BUY","orderType":"MKT","totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900459000,"updateTime":1672900459000,"latestTime":1672900459000,"name":"XIAOMI-W","latestPrice":11.62,"attrDesc":"","userMark":"","algoStrategy":"MKT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"y3iIACssSMlurcA3TP+PZQOF0p519WqWPpQG6Y8pYKQTKeePXPv1xZwjq0J97JBxnBr92bL20cZr1J/zQCPvvvtkQNZc3QGRx08dCDfp4AUjoBBzRBuQw+xNSMUsnlY/4G1KbXoOXj5qJ3OycZeFQVxbPeJlSYEt4JJz5LhjBNs="} 
+
+    //TigerResponse? response = await test_LMT_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672900550991,"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"totalQuantity":1,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
+    // response:{"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","expiry":null,"strike":null,"right":null,"multiplier":0.0,"identifier":"AAPL","id":29360305075913728,"orderId":1457,"parentId":0,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"auxPrice":0.0,"trailingPercent":0.0,"totalQuantity":1,"filledQuantity":0,"cashQuantity":0.0,"lastFillPrice":0.0,"avgFillPrice":0.0,"timeInForce":"DAY","expireTime":0,"goodTillDate":null,"outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","ocaGroupId":0,"comboLegs":null,"allocAccounts":null,"allocShares":null,"algoStrategy":"LMT","algoParameters":null,"status":"Initial","source":null,"discount":0.0,"canModify":true,"canCancel":true}]},"code":0,"message":"success","timestamp":1672900550991,"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
+
+    //TigerResponse? response = await test_STP_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672900788269,"data":{"id":29360336176021504,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360336176021504,"orderId":1458,"account":"20200821144442583","action":"SELL","orderType":"STP","auxPrice":10.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900788000,"updateTime":1672900788000,"latestTime":1672900788000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"STP","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"uuwso0alUH1JQfMMBMNfXvYqNoWw604OVQMWKmwNY2IqRpuoVweYx95FyWgEF/Ey2EZRdCOjRdk9eSjfn5YlC1i507COKbP5NprHnE6QJrgkNnuR1Ap2gGO7iTbF2ZB8I7SF8BQHBBCPF0PA3myAc2ZApbc2bM4XEGcermQKjCU="} 
+    // response:{"data":{"id":29360336176021504,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360336176021504,"orderId":1458,"account":"20200821144442583","action":"SELL","orderType":"STP","auxPrice":10.0,"totalQuantity":200,"timeInForce":"DAY","remark":"","openTime":1672900788000,"updateTime":1672900788000,"latestTime":1672900788000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"STP","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672900788269,"sign":"uuwso0alUH1JQfMMBMNfXvYqNoWw604OVQMWKmwNY2IqRpuoVweYx95FyWgEF/Ey2EZRdCOjRdk9eSjfn5YlC1i507COKbP5NprHnE6QJrgkNnuR1Ap2gGO7iTbF2ZB8I7SF8BQHBBCPF0PA3myAc2ZApbc2bM4XEGcermQKjCU="}
+
+    //TigerResponse? response = await test_STP_LMT_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672900884128,"data":{"id":29360348738880512,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360348738880512,"orderId":1459,"account":"20200821144442583","action":"SELL","orderType":"STP_LMT","limitPrice":10.0,"auxPrice":10.3,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900884000,"updateTime":1672900884000,"latestTime":1672900884000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"STP_LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"LVBbhwQCxltV2BBAPoDtcW+F3DYC9Z4nb7Kou2UvxoNs8HuYNNlGLainFjp5hUzb0dn5Gu7lSj8XPWFiY3so0ScqBZK86Fdy0WqOSVHXvvNRw/fymgNqZVLDPYg6e8MH45XQKsgylSnCPeevcB59J39TWGsHp8MZ76gzpgAtrsw="} 
+    // response:{"data":{"id":29360348738880512,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360348738880512,"orderId":1459,"account":"20200821144442583","action":"SELL","orderType":"STP_LMT","limitPrice":10.0,"auxPrice":10.3,"totalQuantity":200,"timeInForce":"DAY","outsideRth":true,"remark":"","openTime":1672900884000,"updateTime":1672900884000,"latestTime":1672900884000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"STP_LMT","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672900884128,"sign":"LVBbhwQCxltV2BBAPoDtcW+F3DYC9Z4nb7Kou2UvxoNs8HuYNNlGLainFjp5hUzb0dn5Gu7lSj8XPWFiY3so0ScqBZK86Fdy0WqOSVHXvvNRw/fymgNqZVLDPYg6e8MH45XQKsgylSnCPeevcB59J39TWGsHp8MZ76gzpgAtrsw="} 
+
+    //TigerResponse? response = await test_TRAIL_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672900949385,"data":{"id":29360357293293568,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360357293293568,"orderId":1460,"account":"20200821144442583","action":"SELL","orderType":"TRAIL","trailingPercent":10.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900949000,"updateTime":1672900949000,"latestTime":1672900949000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"TRAIL","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"Vn6XRXeDnmdpm8tPlmENjDy+8tjpU1EDJ0QT7mPkmG0PDkxTAUoEhutA1zMIff7D0benQvo+zrVkNktPmrcRbn7OsuC4HUDfZa7nXNkfKMF4It2RxdNGPDFV8qHWeVLNj1czwe8I3OYYo2wKjEELeFMxRXNrDQr7S9rXRGq5jIc="} 
+    // response:{"data":{"id":29360357293293568,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360357293293568,"orderId":1460,"account":"20200821144442583","action":"SELL","orderType":"TRAIL","trailingPercent":10.0,"totalQuantity":200,"timeInForce":"DAY","remark":"","openTime":1672900949000,"updateTime":1672900949000,"latestTime":1672900949000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"TRAIL","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672900949385,"sign":"Vn6XRXeDnmdpm8tPlmENjDy+8tjpU1EDJ0QT7mPkmG0PDkxTAUoEhutA1zMIff7D0benQvo+zrVkNktPmrcRbn7OsuC4HUDfZa7nXNkfKMF4It2RxdNGPDFV8qHWeVLNj1czwe8I3OYYo2wKjEELeFMxRXNrDQr7S9rXRGq5jIc="} 
+
+    //TigerResponse? response = await test_ProfitTaker_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672901030957,"data":{"id":29360367983789056,"subIds":[29360367983656960],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360367983656960,"orderId":1462,"parentId":29360367983789056,"account":"20200821144442583","action":"SELL","orderType":"LMT","limitPrice":13.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901030000,"updateTime":1672901030000,"latestTime":1672901031000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360367983789056,"orderId":1461,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901030000,"updateTime":1672901030000,"latestTime":1672901031000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"Te+3j0bJjy0FpqlIBRHZuPkqZ0HTeL1kmzVRF5AAtfZgL8Fe/ZeIwPUPCN0VZU16avqAx3SNAKor9xF5tHjZVRSJY28cjULAsSCExRur7gLSXkgCj/TgRqsSU28afHAYsT8Xtt2zj5i6+LJFJfUXTUyjDlbyzIhbgkZ+Wspik4g="} 
+    // response:{"data":{"id":29360367983789056,"subIds":[29360367983656960],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360367983656960,"orderId":1462,"parentId":29360367983789056,"account":"20200821144442583","action":"SELL","orderType":"LMT","limitPrice":13.0,"totalQuantity":200,"timeInForce":"DAY","outsideRth":true,"remark":"","openTime":1672901030000,"updateTime":1672901030000,"latestTime":1672901031000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360367983789056,"orderId":1461,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"timeInForce":"DAY","outsideRth":true,"remark":"","openTime":1672901030000,"updateTime":1672901030000,"latestTime":1672901031000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672901030957,"sign":"Te+3j0bJjy0FpqlIBRHZuPkqZ0HTeL1kmzVRF5AAtfZgL8Fe/ZeIwPUPCN0VZU16avqAx3SNAKor9xF5tHjZVRSJY28cjULAsSCExRur7gLSXkgCj/TgRqsSU28afHAYsT8Xtt2zj5i6+LJFJfUXTUyjDlbyzIhbgkZ+Wspik4g="} 
+
+    //TigerResponse? response = await test_AttachedStopLoss_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672901122176,"data":{"id":29360379940044800,"subIds":[29360379940570112],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360379940044800,"orderId":1463,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901122000,"updateTime":1672901122000,"latestTime":1672901122000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test001","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360379940570112,"orderId":1464,"parentId":29360379940044800,"account":"20200821144442583","action":"SELL","orderType":"STP","auxPrice":10.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901122000,"updateTime":1672901122000,"latestTime":1672901122000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test001","algoStrategy":"STP","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"S14+11KRYRtBjxuiykwf8CReVTyQvpnTNfMim3gfZleWdum9iaXcWB3qTAsf/Gnpov9K1h0o+qt/JscYTjdqs6JZ5He3TxtiI2cCKqQySZeVQt7o8hR6Tgd90qqklfhloRJfU7k26yguzQ/zWKYqj0GixqhXOhLVRXoTOd8BJS0="} 
+    // response:{"data":{"id":29360379940044800,"subIds":[29360379940570112],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360379940044800,"orderId":1463,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"timeInForce":"DAY","outsideRth":true,"remark":"","openTime":1672901122000,"updateTime":1672901122000,"latestTime":1672901122000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test001","algoStrategy":"LMT","status":"Initial","canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360379940570112,"orderId":1464,"parentId":29360379940044800,"account":"20200821144442583","action":"SELL","orderType":"STP","auxPrice":10.0,"totalQuantity":200,"timeInForce":"DAY","remark":"","openTime":1672901122000,"updateTime":1672901122000,"latestTime":1672901122000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test001","algoStrategy":"STP","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672901122176,"sign":"S14+11KRYRtBjxuiykwf8CReVTyQvpnTNfMim3gfZleWdum9iaXcWB3qTAsf/Gnpov9K1h0o+qt/JscYTjdqs6JZ5He3TxtiI2cCKqQySZeVQt7o8hR6Tgd90qqklfhloRJfU7k26yguzQ/zWKYqj0GixqhXOhLVRXoTOd8BJS0="} 
+
+    //TigerResponse? response = await test_AttachedStopLossLimit_ORDER_Async(tradeClient);
+    //
+
+    //TigerResponse? response = await test_AttachedStopLossTrail_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672901251519,"data":{"id":29360396893815808,"subIds":[29360396894077952],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360396893815808,"orderId":1465,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901251000,"updateTime":1672901251000,"latestTime":1672901251000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test-attach-stoplosstrail","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360396894077952,"orderId":1466,"parentId":29360396893815808,"account":"20200821144442583","action":"SELL","orderType":"TRAIL","trailingPercent":10.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672901251000,"updateTime":1672901251000,"latestTime":1672901251000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test-attach-stoplosstrail","algoStrategy":"TRAIL","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"hMhZcQVUopavskz7pwaXDLq+xmOIyBkmUUm9IeKcq3zUtXjjySKbAgEIYJxEnWmhy3ikIuhB+aau0iwaufHudhaOWamUaNF/2IJHY70ml+a2MsgwNW7mF04vjY7fOcYB6PPZc3n8XlwBB+Ax7eWGsKXeEKnKeotzbtwd+BWS4xw="} 
+    // response:{"data":{"id":29360396893815808,"subIds":[29360396894077952],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360396893815808,"orderId":1465,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":11.0,"totalQuantity":200,"timeInForce":"DAY","outsideRth":true,"remark":"","openTime":1672901251000,"updateTime":1672901251000,"latestTime":1672901251000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test-attach-stoplosstrail","algoStrategy":"LMT","status":"Initial","canModify":true,"canCancel":true},{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360396894077952,"orderId":1466,"parentId":29360396893815808,"account":"20200821144442583","action":"SELL","orderType":"TRAIL","trailingPercent":10.0,"totalQuantity":200,"timeInForce":"DAY","remark":"","openTime":1672901251000,"updateTime":1672901251000,"latestTime":1672901251000,"name":"XIAOMI-W","latestPrice":11.58,"attrDesc":"","userMark":"test-attach-stoplosstrail","algoStrategy":"TRAIL","status":"Initial","canModify":true,"canCancel":true}]},"message":"success","timestamp":1672901251519,"sign":"hMhZcQVUopavskz7pwaXDLq+xmOIyBkmUUm9IeKcq3zUtXjjySKbAgEIYJxEnWmhy3ikIuhB+aau0iwaufHudhaOWamUaNF/2IJHY70ml+a2MsgwNW7mF04vjY7fOcYB6PPZc3n8XlwBB+Ax7eWGsKXeEKnKeotzbtwd+BWS4xw="} 
+
+    //TigerResponse? response = await test_AttachedBrackets_ORDER_Async(tradeClient);
+    // result:{"code":0,"message":"success","timestamp":1672906085365,"data":{"id":283514341002915840,"orderId":6083,"subIds":[4536229456082436100,4536229456082436117]},"sign":"ghQp0hr3kB6jHgd4x80AwPfCf/KWoJrTY3BputVciU2bLCtsNANvJAr1iOGUzCsKmSqv7bMg3xb0SUgkPxS2kid13XCHSIZjmeZ98s60H54ka99V2qhdYj7efqozLaHfNNx40+DdmFZnclqZZnkcGgbbKVowujQGUFxqNjdhZkM="} 
+
+    // =================================================modify/cancell order
+    //TigerResponse? response = await test_MODIFY_ORDER_Async(tradeClient);
+    // response:{"data":{"id":29360305075913728},"message":"success","timestamp":1672916823517,"sign":"qVwjFIhphTMTblhMQ2S1Py916Q0YJ/MjlOfUJxyqCKoAYfxfhiKkUGnL6CCO5Sak7IfQkkIgemPorcyTrfOZIXK8hxVayzPB3lYRo/Ip9woJA5Muh8eFYdqcR000GJreBPAEVl6B8t+mzrptjRS798QCxi/uxsbv6WzSCdmd1XY="} 
+
+    TigerResponse? response = await test_CANCEL_ORDER_Async(tradeClient);
+    // response:{"data":{"id":29360305075913728},"message":"success","timestamp":1672917172001,"sign":"QZnYKt55byk4/jwCsniS1y+BExrEUUGHiNGmRMGnBPBnR8nW8Knu15hUjjOfonDhIV+xpGLb3LrBt6hEEp8+dhG/aflx4CCCf5ivMNiOPk1epr4gMGlFmclTmqf9c5Mc3rqGqKxM3b05Qk9bLr4OLCPPk7oA6b86rvnc/ZHymWM="} 
+
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
     Thread.Sleep(1000);
     ApiLogger.Info("end");
+  }
+
+  static async Task<TigerDictResponse?> test_CANCEL_ORDER_Async(TradeClient tradeClient)
+  {
+    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    {
+      ApiMethodName = TradeApiService.CANCEL_ORDER,
+      ModelValue = new CancelOrderModel()
+      {
+        Account = "20200821144442583",// tradeClient.GetDefaultAccount,
+        Id = 29360305075913728
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<TigerDictResponse?> test_MODIFY_ORDER_Async(TradeClient tradeClient)
+  {
+    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    {
+      ApiMethodName = TradeApiService.MODIFY_ORDER,
+      ModelValue = new ModifyOrderModel()
+      {// 29360305075913728 120 1 limit
+        Account = "20200821144442583",// tradeClient.GetDefaultAccount,
+        Id = 29360305075913728,
+        LimitPrice = 121.0,
+        TotalQuantity = 2
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_AttachedBrackets_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
+        "U10010705", // only support Global Account
+        contract,
+        ActionType.BUY,
+        200, 11.0
+      );
+    // addBracketsOrder
+    placeOrder.addBracketsOrder(13.0, TimeInForce.DAY, true, 10.0, TimeInForce.DAY);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_AttachedStopLossTrail_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        200, 11.0
+      );
+    // addStopLossTrailOrder ('stopLossTrailingPercent' = 10%)
+    placeOrder.addStopLossTrailOrder(10.0, 0, TimeInForce.DAY);
+    // set other parameter
+    placeOrder.UserMark = "test-attach-stoplosstrail";
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_AttachedStopLossLimit_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildOptionContract("AAPL", "20230127", 135.0, "CALL");
+    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        1, 1.30
+      );
+    // addStopLossLimitOrder
+    placeOrder.addStopLossLimitOrder(1.0, 0.9, TimeInForce.DAY);
+    // set other parameter
+    placeOrder.UserMark = "test-attach-stoplosslimit";
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_AttachedStopLoss_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        200, 11.0
+      ).addStopLossOrder(10.0, TimeInForce.DAY) // addStopLossOrder(not support options)
+    };
+    // set other parameter
+    ((PlaceOrderModel)request.ModelValue).UserMark = "test001";
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_ProfitTaker_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        200, 11.0
+      ).addProfitTakerOrder(13.0, TimeInForce.DAY, true) // addProfitTakerOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_TRAIL_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildTrailOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.SELL,
+        200, 10.0, 0 // use 'trailing_percent' = 10%
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_STP_LMT_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildStopLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.SELL,
+        200, 10.0, 10.3
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_STP_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildStopOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.SELL,
+        200, 10.0
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_LMT_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("AAPL", Currency.USD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        1, 120.0
+      )
+    };
+    // set other parameter
+    // ((PlaceOrderModel)request.ModelValue).UserMark = "test-lmt";
+    // ((PlaceOrderModel)request.ModelValue).TimeInForce = TimeInForce.GTD;
+    // ((PlaceOrderModel)request.ModelValue).ExpireTime = DateUtil.ConvertTimestamp(
+    //  "2023-01-20 23:59:59", SymbolUtil.getZoneIdBySymbol("AAPL", tradeClient.GetConfigTimeZone));
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> test_MKT_ORDER_Async(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildMarketOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        200
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
   }
 
   static async Task<TigerDictResponse?> test_PLACE_ORDER_Async(TradeClient tradeClient)
@@ -105,10 +370,10 @@ class Program
       ModelValue = new PlaceOrderModel() {
         Account = "20200821144442583",
         SecType = SecType.STK,
-        Action = ActionType.BUY,
         Symbol = "AAPL",
-        LimitPrice = 124.0,
         OrderType = OrderType.LMT,
+        Action = ActionType.BUY,
+        LimitPrice = 124.0,
         TotalQuantity = 1
       }
     };

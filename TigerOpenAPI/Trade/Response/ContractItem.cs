@@ -1,5 +1,10 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Math.EC.Multiplier;
+using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.Common.Util;
+using TigerOpenAPI.Model;
+using TigerOpenAPI.Quote.Response;
 
 namespace TigerOpenAPI.Trade.Response
 {
@@ -84,6 +89,124 @@ namespace TigerOpenAPI.Trade.Response
 
     public ContractItem()
     {
+    }
+
+    public static ContractItem convert(FutureContractItem futureContractItem)
+    {
+      ContractItem contractItem = new ContractItem();
+      contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString();
+      contractItem.Symbol = futureContractItem.ContractCode;
+      contractItem.Type = futureContractItem.Type;
+      contractItem.IbCode = futureContractItem.IbCode;
+      contractItem.Name = futureContractItem.Name;
+      contractItem.ContractMonth = futureContractItem.ContractMonth;
+      contractItem.Exchange = futureContractItem.Exchange;
+      contractItem.Multiplier = decimal.ToDouble(futureContractItem.Multiplier);
+      contractItem.MinTick = decimal.ToDouble(futureContractItem.MinTick);
+
+      contractItem.Expiry = futureContractItem.LastTradingDate;
+      contractItem.FirstNoticeDate = futureContractItem.FirstNoticeDate;
+      contractItem.LastBiddingCloseTime = futureContractItem.LastBiddingCloseTime;
+      contractItem.Currency = futureContractItem.Currency;
+      contractItem.Tradeable = futureContractItem.Trade;
+      contractItem.Continuous = futureContractItem.Continuous;
+      return contractItem;
+    }
+
+    public static ContractItem buildStockContract(string symbol, string currency)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.STK.ToString(),
+        Symbol = symbol,
+        Currency = currency
+      };
+      return contractItem;
+    }
+
+    public static ContractItem buildOptionContract(string identifier)
+    {
+      ContractItem contractItem = new ContractItem();
+      contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.OPT.ToString();
+      // identifier='AAPL  190118P00160000'
+      OptionSymbol optionSymbol = SymbolUtil.convertToOptionSymbol(identifier);
+      contractItem.Symbol = optionSymbol.Symbol;
+      contractItem.Expiry = optionSymbol.Expiry;
+      contractItem.Strike = Double.Parse(optionSymbol.Strike);
+      contractItem.Right = optionSymbol.Right;
+      return contractItem;
+    }
+
+    public static ContractItem buildOptionContract(string symbol, string expiry, double strike, string right)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.OPT.ToString(),
+        Symbol = symbol,
+        Expiry = expiry,
+        Strike = strike,
+        Right = right
+      };
+      return contractItem;
+    }
+
+    public static ContractItem buildWarrantContract(string symbol, string expiry, double strike, string right)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.WAR.ToString(),
+        Symbol = symbol,
+        Expiry = expiry,
+        Strike = strike,
+        Right = right,
+        LocalSymbol = symbol,
+        Currency = TigerOpenAPI.Common.Enum.Currency.HKD.ToString(),
+        Market = TigerOpenAPI.Common.Enum.Market.HK.ToString()
+      };
+      return contractItem;
+
+    }
+
+    public static ContractItem buildCbbcContract(string symbol, string expiry, double strike, string right)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.IOPT.ToString(),
+        Symbol = symbol,
+        Expiry = expiry,
+        Strike = strike,
+        Right = right,
+        LocalSymbol = symbol,
+        Currency = TigerOpenAPI.Common.Enum.Currency.HKD.ToString(),
+        Market = TigerOpenAPI.Common.Enum.Market.HK.ToString()
+      };
+      return contractItem;
+    }
+
+    public static ContractItem buildFutureContract(string symbol, string currency, string exchange,
+        string expiry, double multiplier)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString(),
+        Symbol = symbol,
+        Expiry = expiry,
+        Currency = currency,
+        Exchange = exchange,
+        Multiplier = multiplier
+      };
+      return contractItem;
+    }
+
+    public static ContractItem buildFutureContract(string symbol, string currency)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString(),
+        Symbol = symbol,
+        Currency = currency
+      };
+      return contractItem;
     }
   }
 }
