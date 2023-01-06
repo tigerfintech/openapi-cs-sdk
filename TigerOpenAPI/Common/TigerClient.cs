@@ -155,7 +155,7 @@ namespace TigerOpenAPI.Common
       // doc:https://github.com/App-vNext/Polly#retry
       var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
         .Or<Exception>()
-        .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 250),// 500ms, 1000ms, 2000ms, 4000ms, 8000ms
+        .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>// RetryAsync()
         {
           // Add logic to be executed before each retry, such as logging
@@ -167,7 +167,7 @@ namespace TigerOpenAPI.Common
     {
       var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
         .Or<Exception>()
-        .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 250),// 500ms, 1000ms, 2000ms, 4000ms, 8000ms
+        .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>
         {
           ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}ms, error:{exception.Message}");

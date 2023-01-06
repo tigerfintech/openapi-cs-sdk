@@ -38,7 +38,6 @@ namespace TigerOpenAPI.Common.Util
     /// <param name="url"></param>
     /// <param name="postData"></param>
     /// <param name="contentType">application/xml、application/json、application/text、application/x-www-form-urlencoded</param>
-    /// <param name="headers">headers</param>
     /// <returns></returns>
     public static string HttpPost(string url, string? postData = null,
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
@@ -61,7 +60,6 @@ namespace TigerOpenAPI.Common.Util
     /// <param name="url"></param>
     /// <param name="postData"></param>
     /// <param name="contentType">application/xml、application/json、application/text、application/x-www-form-urlencoded</param>
-    /// <param name="headers">headers</param>
     /// <returns></returns>
     public static async Task<string> HttpPostAsync(string url, string? postData = null,
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
@@ -94,8 +92,6 @@ namespace TigerOpenAPI.Common.Util
     /// send http get request
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="headers"></param>
-    /// <param name="contentType"></param>
     /// <returns></returns>
     public static async Task<string> HttpGetAsync(string url)
     {

@@ -45,7 +45,7 @@ namespace TigerOpenAPI.Config
     public bool AutoGrabPermission { get; set; } = true;
 
     /**
-     * (optional)reqest fail retry counts[1, 5], if less than 1 will no retry; if bigger than 5 will set default value
+     * (optional)request fail retry counts, range:[0, 5], if less than 1 will no retry; if bigger than 5 will set default value
      */
     public int FailRetryCounts { get; set; } = TigerApiConstants.DefaultRetryCount;
 
