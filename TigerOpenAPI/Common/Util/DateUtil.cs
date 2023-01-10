@@ -1,4 +1,5 @@
 ﻿using System;
+using static TigerOpenAPI.Common.CustomTimeZone;
 using TigerOpenAPI.Common.Enum;
 
 namespace TigerOpenAPI.Common.Util
@@ -10,14 +11,6 @@ namespace TigerOpenAPI.Common.Util
     public const string FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public const string FORMAT_DATE = "yyyy-MM-dd";
     public const string DEFAULT_TIME_SUFFIX = " 00:00:00";
-
-    public static readonly TimeZoneInfo HK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Hong_Kong");
-    public static readonly TimeZoneInfo SH_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Shanghai");
-    public static readonly TimeZoneInfo NY_ZONE = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-    public static readonly TimeZoneInfo SG_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Asia/Singapore");
-    public static readonly TimeZoneInfo SYD_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Australia/Sydney");
-    public static readonly TimeZoneInfo NZ_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pacific/Auckland");
-    public static readonly TimeZoneInfo LD_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
 
     private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
@@ -32,7 +25,7 @@ namespace TigerOpenAPI.Common.Util
         case Market.US:
           return NY_ZONE;
         case Market.AU:
-          return SYD_ZONE;
+          return AU_ZONE;
         case Market.NZ:
           return NZ_ZONE;
         case Market.UK:

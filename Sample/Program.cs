@@ -31,7 +31,7 @@ class Program
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
       Language = Language.en_US,   // (optional) default is en_US
-      TimeZone = DateUtil.HK_ZONE  // (optional) default is HK_ZONE
+      TimeZone = CustomTimeZone.HK_ZONE  // (optional) default is HK_ZONE
     };
     QuoteClient quoteClient = new QuoteClient(config);
 
@@ -690,8 +690,8 @@ class Program
       {
         ContractCodes = new List<string> { "ES2303" },
         Period = FutureKType.min15.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-28 09:00:00", DateUtil.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2022-12-28 20:00:00", DateUtil.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2022-12-28 09:00:00", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2022-12-28 20:00:00", CustomTimeZone.NY_ZONE),
         Limit = 20
       }
     };
@@ -784,7 +784,7 @@ class Program
         Items = new List<OptionCommonModel>()
         {
           new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", DateUtil.NY_ZONE)}
+            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE)}
         }
       }
     };
@@ -801,9 +801,9 @@ class Program
         Items = new List<OptionKlineModel>()
         {
           new OptionKlineModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", DateUtil.NY_ZONE),
-            BeginTime = DateUtil.ConvertTimestamp("2022-12-15", DateUtil.NY_ZONE),
-            EndTime = DateUtil.ConvertTimestamp("2022-12-30", DateUtil.NY_ZONE),
+            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2022-12-15", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2022-12-30", CustomTimeZone.NY_ZONE),
           }
         }
       }
@@ -821,7 +821,7 @@ class Program
         Items = new List<OptionCommonModel>()
         {
           new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", DateUtil.NY_ZONE)}
+            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE)}
         }
       }
     };
@@ -837,7 +837,7 @@ class Program
       {
         OptionBasic = new List<OptionChainModel>()
         {
-          new OptionChainModel() { Symbol = "AAPL", Expiry = DateUtil.ConvertTimestamp("2023-01-27", DateUtil.NY_ZONE)}
+          new OptionChainModel() { Symbol = "AAPL", Expiry = DateUtil.ConvertTimestamp("2023-01-27", CustomTimeZone.NY_ZONE)}
         },
         OptionFilter = new OptionChainFilterModel()
         {
@@ -909,8 +909,8 @@ class Program
         Symbol = "AAPL",
         Market = Market.US,
         Period = CapitalPeriod.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-01", DateUtil.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2022-12-28", DateUtil.NY_ZONE)
+        BeginTime = DateUtil.ConvertTimestamp("2022-12-01", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2022-12-28", CustomTimeZone.NY_ZONE)
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -967,7 +967,7 @@ class Program
       {
         Symbols = new List<string> { "AAPL" },
         Period = KLineType.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-10", DateUtil.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2022-12-10", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
         Rigth = RightOption.br
       }
@@ -1013,7 +1013,7 @@ class Program
       {
         Symbols = new List<string> { "AAPL" },
         Period = TimeLineType.day,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-07 03:00:00", DateUtil.NY_ZONE)
+        BeginTime = DateUtil.ConvertTimestamp("2022-12-07 03:00:00", CustomTimeZone.NY_ZONE)
       }
     };
     return await quoteClient.ExecuteAsync(request);

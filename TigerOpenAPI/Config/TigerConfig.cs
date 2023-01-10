@@ -52,7 +52,7 @@ namespace TigerOpenAPI.Config
     /**
      * (optional)default time zone
      */
-    public TimeZoneInfo TimeZone { get; set; } = DateUtil.HK_ZONE;
+    public TimeZoneInfo TimeZone { get; set; } = CustomTimeZone.HK_ZONE;
 
     /**
      * (optional)default language

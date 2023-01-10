@@ -55,7 +55,7 @@ namespace TigerOpenAPI.Common.Util
       {
         return defaultTimeZoneInfo;
       }
-      return isUsStockSymbol(symbol) ? DateUtil.NY_ZONE : DateUtil.HK_ZONE;
+      return isUsStockSymbol(symbol) ? CustomTimeZone.NY_ZONE : CustomTimeZone.HK_ZONE;
     }
 
     public static bool isFutureSymbol(string symbol)
