@@ -17,7 +17,8 @@ namespace TigerOpenAPI.Quote
     {
       ApiLogger.Debug($"QuoteClient env:{config.Environment}, license:{config.License}");
       Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
-      ServerUrl = string.IsNullOrWhiteSpace(uriDict[UriType.QUOTE]) ? uriDict[UriType.COMMON] : uriDict[UriType.QUOTE];
+      ServerUrl = (uriDict.ContainsKey(UriType.QUOTE) && !string.IsNullOrWhiteSpace(uriDict[UriType.QUOTE]))
+        ? uriDict[UriType.QUOTE] : uriDict[UriType.COMMON];
 
       if (config.AutoGrabPermission)
       {

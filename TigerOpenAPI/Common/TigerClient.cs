@@ -159,7 +159,7 @@ namespace TigerOpenAPI.Common
         onRetry: (exception, timeSpan, retryCount, context) =>// RetryAsync()
         {
           // Add logic to be executed before each retry, such as logging
-          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}ms, error:{exception.Message}");
+          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}, error:{exception.Message}");
         });
       return retryPolicy.Execute(() => HttpUtil.HttpPost(requestUri, data));
     }
@@ -170,7 +170,7 @@ namespace TigerOpenAPI.Common
         .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>
         {
-          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}ms, error:{exception.Message}");
+          ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}, error:{exception.Message}");
         });
       return await retryPolicy.ExecuteAsync(async () => await HttpUtil.HttpPostAsync(requestUri, data));
     }

@@ -19,8 +19,10 @@ namespace TigerOpenAPI.Trade
       ApiLogger.Debug($"TradeClient env:{config.Environment}, license:{config.License}");
       // get serverAddress by Env and license
       Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
-      ServerUrl = string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]) ? uriDict[UriType.COMMON] : uriDict[UriType.TRADE];
-      ServerUrlForPaper = string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]) ? uriDict[UriType.COMMON] : uriDict[UriType.PAPER];
+      ServerUrl = (uriDict.ContainsKey(UriType.TRADE) && !string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]))
+        ? uriDict[UriType.TRADE] : uriDict[UriType.COMMON];
+      ServerUrlForPaper = (uriDict.ContainsKey(UriType.PAPER) && !string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]))
+        ? uriDict[UriType.PAPER] : uriDict[UriType.COMMON];
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)
