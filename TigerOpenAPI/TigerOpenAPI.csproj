@@ -24,12 +24,19 @@
     <None Remove="Quote\Response\" />
     <None Remove="Trade\Model\" />
     <None Remove="Trade\Response\" />
+    <None Remove="Push\" />
+    <None Remove="Google.Protobuf" />
+    <None Remove="Google.Protobuf.Tools" />
+    <None Remove="Push\pb\" />
+    <None Remove="Push\proto\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NLog" Version="5.1.0" />
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.0.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.12" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\" />
@@ -44,5 +51,8 @@
     <Folder Include="Quote\Response\" />
     <Folder Include="Trade\Model\" />
     <Folder Include="Trade\Response\" />
+    <Folder Include="Push\" />
+    <Folder Include="Push\pb\" />
+    <Folder Include="Push\proto\" />
   </ItemGroup>
 </Project>
