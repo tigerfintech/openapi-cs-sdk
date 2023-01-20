@@ -64,19 +64,8 @@ namespace TigerOpenAPI.Config
      */
     public string SecretKey { get; set; }
 
-    private Protocol subscribeProtocol = Protocol.SECURE_SOCKET;
-    public Protocol SubscribeProtocol
-    {
-      get => subscribeProtocol;
-      set
-      {
-        if (value == null || value == Protocol.HTTP)
-        {
-          return;
-        }
-        subscribeProtocol = value;
-      }
-    }
+    // socket protocal is SSL
+    public bool IsSslSocket { get; set; } = true;
 
     /**
      * read private key from file(Remove first and last lines and line breaks)

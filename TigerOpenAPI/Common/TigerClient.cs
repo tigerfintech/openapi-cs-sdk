@@ -86,7 +86,7 @@ namespace TigerOpenAPI.Common
     public string GetDefaultAccount => Config.DefaultAccount;
 
     // should be override by sub class
-    public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return default; }
+    public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return string.Empty; }
 
     // should be override by sub class
     public virtual bool Validate<T>(TigerRequest<T> request, out string errorMsg) where T : TigerResponse
@@ -188,7 +188,6 @@ namespace TigerOpenAPI.Common
 
     public virtual T? Execute<T>(TigerRequest<T> request) where T : TigerResponse
     {
-      T? response;
       string param = string.Empty;
       string data = string.Empty;
       try
@@ -217,7 +216,6 @@ namespace TigerOpenAPI.Common
 
     public virtual async Task<T?> ExecuteAsync<T>(TigerRequest<T> request) where T : TigerResponse
     {
-      T? response;
       string param = string.Empty;
       string data = string.Empty;
       try

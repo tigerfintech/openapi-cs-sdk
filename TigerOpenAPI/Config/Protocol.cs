@@ -25,16 +25,5 @@ namespace TigerOpenAPI.Config
       urlFormat = UrlFormat;
       portFieldName = PortFieldName;
     }
-
-    public static bool IsWebSocketUrl(string url)
-    {
-      if (string.IsNullOrWhiteSpace(url))
-      {
-        return false;
-      }
-      string webSocketUrlFormat = WEB_SOCKET.UrlFormat;
-      string suffix = webSocketUrlFormat.Substring(webSocketUrlFormat.LastIndexOf('/'));
-      return url.EndsWith(suffix);
-    }
   }
 }

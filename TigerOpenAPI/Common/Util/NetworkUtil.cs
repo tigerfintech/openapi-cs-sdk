@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TigerOpenAPI.Common;
@@ -52,6 +54,29 @@ namespace TigerOpenAPI.Common.Util
       return macs.FirstOrDefault() ?? "unknown";
     }
 
+    public static bool TryConnectUri(Uri uri)
+    {
+      try
+      {
+        return ConnectUri(uri);
+      }
+      catch (Exception e)
+      {
+        ApiLogger.Warn($"TryConnectUri {uri} fail:{e.Message}");
+      }
+      return false;
+    }
+
+    public static bool ConnectUri(Uri uri)
+    {
+      IPAddress ip = Dns.GetHostEntry(uri.Host).AddressList.First();
+      IPEndPoint point = new IPEndPoint(ip, uri.Port);
+      using (Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+      {
+        sock.Connect(point);
+        return true;
+      }
+    }
 
     public static Dictionary<UriType, string> GetServerAddress(
       Protocol protocol, License license, Env environment)
@@ -69,35 +94,37 @@ namespace TigerOpenAPI.Common.Util
       }
       catch (Exception ex)
       {
-        ApiLogger.Error(ex, "domain config response error, response:{}", response);
-      }
-      // if get domain config data failed and original address is not emtpy, return original address
-      if (domainConfigList == null || domainConfigList.Count == 0)
-      {
-        return new Dictionary<UriType, string>(){
-          { Protocol.HTTP == protocol ? UriType.COMMON : UriType.SOCKET,
-            Env.PROD == environment ? TigerApiConstants.DEFAULT_PROD_DOMAIN_URL : Env.SANDBOX == environment ?
-              TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL : TigerApiConstants.DEFAULT_TEST_DOMAIN_URL }
-        };
+        ApiLogger.Warn($"domain garden return:{response}, error:{ex.Message}");
       }
 
       string? port = getDefaultPort(environment, protocol);
-      Dictionary<UriType, string> domainUrlDict = new Dictionary<UriType, string>();
       string? commonUrl = string.Empty;
+      // if get domain config data failed and original address is not emtpy, return original address
+      if (domainConfigList == null || domainConfigList.Count == 0)
+      {
+        commonUrl = Env.PROD == environment ? TigerApiConstants.DEFAULT_PROD_DOMAIN_URL : Env.SANDBOX == environment ?
+              TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL : TigerApiConstants.DEFAULT_TEST_DOMAIN_URL;
+        return new Dictionary<UriType, string>(){
+          { Protocol.HTTP == protocol ? UriType.COMMON : UriType.SOCKET,
+            string.Format(protocol.UrlFormat, commonUrl.Replace("https://", ""), port) }
+        };
+      }
+
+      Dictionary<UriType, string> domainUrlDict = new Dictionary<UriType, string>();
       foreach (Dictionary<string, object> configMap in domainConfigList)
       {
-        object openapiConfig = configMap[Env.PROD == environment ? "openapi" : "openapi-sandbox"];
-        if (openapiConfig != null) {
+        string keyField = Env.PROD == environment ? "openapi"
+          : Env.SANDBOX == environment ? "openapi-sandbox" : "openapi-test";
+        if (configMap.TryGetValue(keyField, out object? openapiConfig) && null != openapiConfig) {
           Dictionary<string, object>? dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(openapiConfig.ToString() ?? string.Empty);
           if (dataDict == null)
             continue;
-          //Dictionary<string, object> dataDict = (Dictionary<string, object>)openapiConfig;
           foreach (KeyValuePair<string, object> item in dataDict)
           {
             if (Protocol.WEB_SOCKET.PortFieldName.Equals(item.Key)
                 || Protocol.SECURE_SOCKET.PortFieldName.Equals(item.Key))
             {
-              if (protocol.PortFieldName.Equals(item.Value.ToString()))
+              if (protocol.PortFieldName.Equals(item.Value?.ToString()))
               {
                 port = item.Value.ToString();
               }

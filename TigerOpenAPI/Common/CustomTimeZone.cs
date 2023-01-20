@@ -49,11 +49,11 @@ namespace TigerOpenAPI.Common
 
     private static TimeZoneInfo InitializeTimeZone(string id)
     {
-      TimeZoneInfo timeZoneInfo;
+      TimeZoneInfo? timeZoneInfo;
       try
       {
         timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(id);
-      } catch (Exception e)
+      } catch
       {
         if (TimeZoneJsonDict.ContainsKey(id))
         {
