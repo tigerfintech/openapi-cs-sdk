@@ -81,7 +81,10 @@ class Program
     //TigerResponse? response = await GetFutureTickAsync(quoteClient);
     //TigerResponse? response = await GetQuoteContractAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    // 选股器
+    TigerResponse? response = await FilterSymbolsAsync(quoteClient);
+
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -164,7 +167,7 @@ class Program
     Thread.Sleep(1000);
 
     // =================================================Push
-    SubscribePush();
+    //SubscribePush();
 
     ApiLogger.Info("end");
   }
@@ -718,6 +721,30 @@ class Program
       }
     };
     return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<MarketScannerResponse?> FilterSymbolsAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<MarketScannerResponse> request = new TigerRequest<MarketScannerResponse>()
+    {
+      ApiMethodName = QuoteApiService.MARKET_SCANNER,
+      ModelValue = new MarketScannerModel()
+      {
+        Market = Market.HK,
+        BaseFilterList = new List<BaseFilter>()
+        {
+          new BaseFilter()
+          {
+            FieldName = StockField.StockField_MarketValue,
+            FilterMin = 1000000000D,
+            FilterMax = 2000000000D
+          }
+        },
+        Page = 1,
+        PageSize = 20
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<QuoteContractResponse?> GetQuoteContractAsync(QuoteClient quoteClient)
