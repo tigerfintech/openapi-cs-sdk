@@ -97,24 +97,22 @@ namespace TigerOpenAPI.Common.Util
         ApiLogger.Warn($"domain garden return:{response}, error:{ex.Message}");
       }
 
-      string? port = getDefaultPort(environment, protocol);
-      string? commonUrl = string.Empty;
+      var defaultUrlInfoTuple = getDefaultUrlInfo(environment, protocol);
       // if get domain config data failed and original address is not emtpy, return original address
       if (domainConfigList == null || domainConfigList.Count == 0)
       {
-        commonUrl = Env.PROD == environment ? TigerApiConstants.DEFAULT_PROD_DOMAIN_URL : Env.SANDBOX == environment ?
-              TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL : TigerApiConstants.DEFAULT_TEST_DOMAIN_URL;
         return new Dictionary<UriType, string>(){
           { Protocol.HTTP == protocol ? UriType.COMMON : UriType.SOCKET,
-            string.Format(protocol.UrlFormat, commonUrl.Replace("https://", ""), port) }
+            string.Format(protocol.UrlFormat, defaultUrlInfoTuple.domain, defaultUrlInfoTuple.socketPort) }
         };
       }
 
+      string? port = defaultUrlInfoTuple.socketPort;
+      string? commonUrl = string.Empty;
       Dictionary<UriType, string> domainUrlDict = new Dictionary<UriType, string>();
       foreach (Dictionary<string, object> configMap in domainConfigList)
       {
-        string keyField = Env.PROD == environment ? "openapi"
-          : Env.SANDBOX == environment ? "openapi-sandbox" : "openapi-test";
+        string keyField = defaultUrlInfoTuple.keyField;
         if (configMap.TryGetValue(keyField, out object? openapiConfig) && null != openapiConfig) {
           Dictionary<string, object>? dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(openapiConfig.ToString() ?? string.Empty);
           if (dataDict == null)
@@ -148,7 +146,7 @@ namespace TigerOpenAPI.Common.Util
       }
       if (string.IsNullOrWhiteSpace(commonUrl))
       {
-        commonUrl = getDefaultUrl(environment);
+        commonUrl = defaultUrlInfoTuple.domain;
         domainUrlDict.TryAdd(UriType.COMMON, string.Format(protocol.UrlFormat, commonUrl, port));
       }
       if (protocol != Protocol.HTTP)
@@ -158,35 +156,19 @@ namespace TigerOpenAPI.Common.Util
       return domainUrlDict;
     }
 
-    private static string getDefaultPort(Env environment, Protocol protocol)
-    {
-      string port = string.Empty;
-      if (protocol != Protocol.HTTP)
-      {
-        if (Env.PROD == environment)
-        {
-          port = protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_PROD_SOCKET_PORT
-              : TigerApiConstants.DEFAULT_PROD_SOCKET_SSL_PORT;
-        }
-        else
-        {
-          port = protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_SANDBOX_SOCKET_PORT
-              : TigerApiConstants.DEFAULT_SANDBOX_SOCKET_SSL_PORT;
-        }
-      }
-      return port;
-    }
-
-    private static string getDefaultUrl(Env environment)
+    private static (string domain, string keyField, string socketPort) getDefaultUrlInfo(Env environment, Protocol protocol)
     {
       switch (environment)
       {
         case Env.SANDBOX:
-          return TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL;
+          return (TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL, "openapi-sandbox",
+            protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_SANDBOX_SOCKET_PORT : TigerApiConstants.DEFAULT_SANDBOX_SOCKET_SSL_PORT);
         case Env.TEST:
-          return TigerApiConstants.DEFAULT_TEST_DOMAIN_URL;
+          return (TigerApiConstants.DEFAULT_TEST_DOMAIN_URL, "openapi-test",
+            protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_SANDBOX_SOCKET_PORT : TigerApiConstants.DEFAULT_SANDBOX_SOCKET_SSL_PORT);
         default:
-          return TigerApiConstants.DEFAULT_PROD_DOMAIN_URL;
+          return (TigerApiConstants.DEFAULT_PROD_DOMAIN_URL, "openapi",
+            protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_PROD_SOCKET_PORT : TigerApiConstants.DEFAULT_PROD_SOCKET_SSL_PORT);
       }
     }
 
