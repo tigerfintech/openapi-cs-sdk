@@ -112,6 +112,9 @@ namespace TigerOpenAPI.Quote.Model
     /** 排序属性 */
     [JsonProperty(PropertyName = "field_name")]
     public Int32 FieldName { get; set; }
+    /** */
+    [JsonProperty(PropertyName = "period")]
+    private Int32 Period { get; set; }
     /** 排序属性所属类别 参考 FieldBelongType */
     [JsonProperty(PropertyName = "field_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public FieldBelongType FieldType { get; set; }

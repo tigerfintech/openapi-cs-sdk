@@ -42,6 +42,12 @@ namespace TigerOpenAPI.Quote
     public const string OPTION_TRADE_TICK = "option_trade_tick";
 
     /**
+     * warrant/cbbc quote
+     */
+    public const string WARRANT_FILTER = "warrant_filter";
+    public const string WARRANT_REAL_TIME_QUOTE = "warrant_real_time_quote";
+
+    /**
      * future quote
      */
     public const string FUTURE_EXCHANGE = "future_exchange";
@@ -107,6 +113,12 @@ namespace TigerOpenAPI.Quote
       OPTION_BRIEF,
       OPTION_KLINE,
       OPTION_TRADE_TICK,
+
+      /**
+       * warrant/cbbc quote
+       */
+      WARRANT_FILTER,
+      WARRANT_REAL_TIME_QUOTE,
 
       /**
        * future quote

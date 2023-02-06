@@ -82,7 +82,11 @@ class Program
     //TigerResponse? response = await GetQuoteContractAsync(quoteClient);
 
     // 选股器
-    TigerResponse? response = await FilterSymbolsAsync(quoteClient);
+    //TigerResponse? response = await FilterSymbolsAsync(quoteClient);
+
+    // warrant/cbbc
+    //TigerResponse? response = await FilterWarrantAsync(quoteClient);
+    TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
@@ -721,6 +725,45 @@ class Program
       }
     };
     return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<WarrantQuoteResponse?> GetWarrantQuoteAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<WarrantQuoteResponse> request = new TigerRequest<WarrantQuoteResponse>()
+    {
+      ApiMethodName = QuoteApiService.WARRANT_REAL_TIME_QUOTE,
+      ModelValue = new WarrantQuoteModel()
+      {
+        Symbols = new List<string>()
+        {
+          "68723",
+          "68722"
+        },
+        Lang = Language.zh_CN
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<WarrantFilterResponse?> FilterWarrantAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<WarrantFilterResponse> request = new TigerRequest<WarrantFilterResponse>()
+    {
+      ApiMethodName = QuoteApiService.WARRANT_FILTER,
+      ModelValue = new WarrantFilterModel()
+      {
+        Symbol = "00700",
+        Lang = Language.zh_CN,
+        SortFieldName = "expireDate",
+        SortDir = SortDir.SortDir_Descend,
+        WarrantType = new HashSet<Int32>() { (int)WarrantType.Bull },
+        IssuerName = "高盛",
+        Strike = new Range<double>(300, 320.0),
+        Page = 0,
+        PageSize = 10
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<MarketScannerResponse?> FilterSymbolsAsync(QuoteClient quoteClient)
