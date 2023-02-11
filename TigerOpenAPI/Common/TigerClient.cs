@@ -249,7 +249,7 @@ namespace TigerOpenAPI.Common
       {
         throw new TigerApiException(TigerApiCode.EMPTY_DATA_ERROR);
       }
-      T? response = JsonConvert.DeserializeObject<T>(data);
+      T? response = JsonConvert.DeserializeObject<T>(data, JsonSet);
       if (string.IsNullOrEmpty(TigerPublicKey) || string.IsNullOrEmpty(response?.Sign))
       {
         return response;

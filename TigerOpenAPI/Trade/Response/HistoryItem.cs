@@ -10,7 +10,7 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "asset")]
     public Double Asset { get; set; }
     [JsonProperty(PropertyName = "pnl")]
-    public Double Pnl { get; set; }
+    public Double Pnl { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "pnlPercentage")]
     public Double PnlPercentage { get; set; }
     [JsonProperty(PropertyName = "cashBalance")]

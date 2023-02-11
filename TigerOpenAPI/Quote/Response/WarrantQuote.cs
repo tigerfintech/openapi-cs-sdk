@@ -96,17 +96,17 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "outstandingRatio")]
     public Double OutstandingRatio { get; set; }
     /**
-     * implied volatility
+     * implied volatility  (Bull/Bear not support)
      */
     [JsonProperty(PropertyName = "impliedVolatility")]
-    public Double ImpliedVolatility { get; set; }
+    public Double ImpliedVolatility { get; set; } = Double.NaN;
     /** in/out price (in the money, 20.744% -> 0.20744) */
     [JsonProperty(PropertyName = "inOutPrice")]
     public Double InOutPrice { get; set; }
 
-    /** delta */
+    /** delta (Bull/Bear not support) */
     [JsonProperty(PropertyName = "delta")]
-    public Double Delta { get; set; }
+    public Double Delta { get; set; } = Double.NaN;
     /** leverage ratio */
     [JsonProperty(PropertyName = "leverageRatio")]
     public Double LeverageRatio { get; set; }
