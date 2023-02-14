@@ -12,7 +12,6 @@ namespace TigerOpenAPI.Common
 {
   public class TokenManager
   {
-
     private static readonly TokenManager instance = new TokenManager();
 
     private long REFRESH_INTERVAL_MS = Convert.ToInt64(TimeSpan.FromDays(1).TotalMilliseconds);
@@ -71,6 +70,7 @@ namespace TigerOpenAPI.Common
           long initialDelay = tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis();
           initialDelay = initialDelay < 0 ? 0 : initialDelay;
           timer = new System.Threading.Timer(RefreshToken, null, initialDelay, REFRESH_INTERVAL_MS);
+          ApiLogger.Info($"init refresh token task success");
         }
       }
       finally { Monitor.Exit(this); }
@@ -141,6 +141,7 @@ namespace TigerOpenAPI.Common
             }
             break;
           }
+          Thread.Sleep(TimeSpan.FromSeconds(5));
         }
         catch (Exception ex)
         {

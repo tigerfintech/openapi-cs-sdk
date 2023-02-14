@@ -23,6 +23,8 @@ namespace TigerOpenAPI.Trade
         ? uriDict[UriType.TRADE] : uriDict[UriType.COMMON];
       ServerUrlForPaper = (uriDict.ContainsKey(UriType.PAPER) && !string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]))
         ? uriDict[UriType.PAPER] : uriDict[UriType.COMMON];
+
+      TokenManager.GetInstance().Init(config, this);
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)

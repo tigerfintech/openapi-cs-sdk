@@ -150,7 +150,8 @@ namespace TigerOpenAPI.Quote
        */
       GRAB_QUOTE_PERMISSION,
       GET_QUOTE_PERMISSION,
-      USER_LICENSE
+      USER_LICENSE,
+      USER_TOKEN_REFRESH
 
     };
 

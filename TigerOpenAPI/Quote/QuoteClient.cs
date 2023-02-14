@@ -20,6 +20,7 @@ namespace TigerOpenAPI.Quote
       ServerUrl = (uriDict.ContainsKey(UriType.QUOTE) && !string.IsNullOrWhiteSpace(uriDict[UriType.QUOTE]))
         ? uriDict[UriType.QUOTE] : uriDict[UriType.COMMON];
 
+      TokenManager.GetInstance().Init(config, this);
       if (config.AutoGrabPermission)
       {
         TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()

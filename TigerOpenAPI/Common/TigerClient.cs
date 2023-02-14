@@ -9,6 +9,7 @@ using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
+using TigerOpenAPI.Quote;
 using TigerOpenAPI.Trade;
 
 namespace TigerOpenAPI.Common
@@ -56,7 +57,6 @@ namespace TigerOpenAPI.Common
       }
 
       ConfigUtil.LoadConfigFile(config);
-      TokenManager.GetInstance().Init(config);
       if (string.IsNullOrWhiteSpace(config.TigerId))
       {
         throw new ArgumentNullException("TigerId is empty.");
@@ -196,7 +196,8 @@ namespace TigerOpenAPI.Common
       try
       {
         BeforeExecute(request, false, out param);
-        if (RetryCount <= 0 || string.Equals(TradeApiService.PLACE_ORDER, request.ApiMethodName))
+        if (RetryCount <= 0 || string.Equals(TradeApiService.PLACE_ORDER, request.ApiMethodName)
+          || string.Equals(QuoteApiService.USER_TOKEN_REFRESH, request.ApiMethodName))
           data = HttpUtil.HttpPost(GetServerUri(request), Config.Token, param);
         else
           data = ExecuteWrap(GetServerUri(request), param);
