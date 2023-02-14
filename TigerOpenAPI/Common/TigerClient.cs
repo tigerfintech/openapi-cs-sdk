@@ -54,6 +54,9 @@ namespace TigerOpenAPI.Common
       {
         throw new ArgumentNullException("TigerConfig is empty.");
       }
+
+      ConfigUtil.LoadConfigFile(config);
+      TokenManager.GetInstance().Init(config);
       if (string.IsNullOrWhiteSpace(config.TigerId))
       {
         throw new ArgumentNullException("TigerId is empty.");
@@ -161,7 +164,7 @@ namespace TigerOpenAPI.Common
           // Add logic to be executed before each retry, such as logging
           ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}, error:{exception.Message}");
         });
-      return retryPolicy.Execute(() => HttpUtil.HttpPost(requestUri, data));
+      return retryPolicy.Execute(() => HttpUtil.HttpPost(requestUri, Config.Token, data));
     }
     protected async Task<string> ExecuteAsyncWrap(string requestUri, string data)
     {
@@ -172,7 +175,7 @@ namespace TigerOpenAPI.Common
         {
           ApiLogger.Info($"start retry count:{retryCount}, timeSpan:{timeSpan}, error:{exception.Message}");
         });
-      return await retryPolicy.ExecuteAsync(async () => await HttpUtil.HttpPostAsync(requestUri, data));
+      return await retryPolicy.ExecuteAsync(async () => await HttpUtil.HttpPostAsync(requestUri, Config.Token, data));
     }
 
     protected virtual void BeforeExecute<T>(TigerRequest<T> request, in bool isAsync, out string param) where T : TigerResponse
@@ -194,7 +197,7 @@ namespace TigerOpenAPI.Common
       {
         BeforeExecute(request, false, out param);
         if (RetryCount <= 0 || string.Equals(TradeApiService.PLACE_ORDER, request.ApiMethodName))
-          data = HttpUtil.HttpPost(GetServerUri(request), param);
+          data = HttpUtil.HttpPost(GetServerUri(request), Config.Token, param);
         else
           data = ExecuteWrap(GetServerUri(request), param);
 
@@ -222,7 +225,7 @@ namespace TigerOpenAPI.Common
       {
         BeforeExecute(request, true, out param);
         if (RetryCount <= 0)
-          data = await HttpUtil.HttpPostAsync(GetServerUri(request), param);
+          data = await HttpUtil.HttpPostAsync(GetServerUri(request), Config.Token, param);
         else
           data = await ExecuteAsyncWrap(GetServerUri(request), param);
    

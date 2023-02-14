@@ -78,6 +78,7 @@ namespace TigerOpenAPI.Quote
     public const string GET_QUOTE_PERMISSION = "get_quote_permission";
 
     public const string USER_LICENSE = "user_license";
+    public const string USER_TOKEN_REFRESH = "user_token_refresh";
 
 
     public static readonly HashSet<string> AllQuoteApiSet = new HashSet<string>() {

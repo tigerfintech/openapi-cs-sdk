@@ -8,14 +8,17 @@ namespace TigerOpenAPI.Config
 {
   public class TigerConfig
   {
-    public const string PPRVATE_KEY_PREFIX = "KEY-----";
-    public const string PRIVATE_KEY_SUFFIX = "-----END";
     public const Env DEFAULT_ENV = Env.PROD;
 
     /**
      * (optional)log file output directory
      */
     public static string LogDir { get; set; }
+
+    /**
+     * tiger_openapi_config.properties/tiger_openapi_token.properties config file paht
+     */
+    public string ConfigFilePath { get; set; } = TigerApiConstants.DEFAULT_CONFIG_FILE_PATH;
 
     public Env Environment { get; set; } = DEFAULT_ENV;
 
@@ -38,6 +41,16 @@ namespace TigerOpenAPI.Config
      * (optional)default account
      */
     public string DefaultAccount { get; set; }
+
+    /**
+     * api token(for TBHK license)
+     */
+    public string Token { get; set; }
+
+    /**
+     * (optional)automatically refresh token
+     */
+    public bool AutoRefreshToken { get; set; } = true;
 
     /**
      * (optional)whether to automatically grab quote permission when the initialization instance is completed
@@ -64,46 +77,10 @@ namespace TigerOpenAPI.Config
      */
     public string SecretKey { get; set; }
 
-    // socket protocal is SSL
+    /**
+     * socket protocal use SSL
+     */
     public bool IsSslSocket { get; set; } = true;
 
-    /**
-     * read private key from file(Remove first and last lines and line breaks)
-     *
-     * @param privateKeyFile absolute path
-     * @return privateKey String
-     */
-    public static string ReadPrivateKey(string privateKeyFile)
-    {
-      try {
-        string content = System.IO.File.ReadAllText(privateKeyFile);
-        int start = 0;
-        int startIdx = content.IndexOf(PPRVATE_KEY_PREFIX);
-        if (startIdx >= 0)
-        {
-          start = startIdx + PPRVATE_KEY_PREFIX.Length;
-        }
-        int end = content.Length;
-        int endIndex = content.IndexOf(PRIVATE_KEY_SUFFIX);
-        if (endIndex > 0)
-        {
-          end = endIndex;
-        }
-        StringBuilder builder = new StringBuilder();
-        foreach (char ch in content.Substring(start, end - start))
-        {
-          if (ch == 10 || ch == 13)
-          {
-            continue;
-          }
-          builder.Append(ch);
-        }
-        return builder.ToString();
-      } catch (IOException e)
-      {
-        ApiLogger.Error($"read file fail:{privateKeyFile}", e);
-      }
-      return string.Empty;
-    }
   }
 }

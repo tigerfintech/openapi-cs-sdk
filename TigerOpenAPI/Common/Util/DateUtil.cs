@@ -18,7 +18,7 @@ namespace TigerOpenAPI.Common.Util
     {
     }
 
-    public static TimeZoneInfo getTimeZoneByMarket(Market market)
+    public static TimeZoneInfo GetTimeZoneByMarket(Market market)
     {
       switch (market)
       {

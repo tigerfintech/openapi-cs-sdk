@@ -270,7 +270,7 @@ namespace TigerOpenAPI.Common.Util
       }
     }
 
-    public override String ToString()
+    public override string ToString()
     {
       return Convert.ToString(Get());
     }

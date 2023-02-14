@@ -27,10 +27,7 @@ class Program
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      License = License.TBNZ,// must
-      TigerId = "20150899", // must
-      DefaultAccount = "572386",// (optional) prime accout:572386, paper account: 20200821144442583
-      PrivateKey = TigerConfig.ReadPrivateKey("/Users/tiger/dev/liutp_account/rsa_private_key_pkcs8_prod.pem"),// must
+      ConfigFilePath = "/data0/tiger_config/prod",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
       Language = Language.en_US,   // (optional) default is en_US
@@ -181,16 +178,12 @@ class Program
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      License = License.TBNZ,// must
-      TigerId = "20151141", // must
-      DefaultAccount = "13810712",// (optional) prime accout:572386, paper account: 20200821144442583
-      PrivateKey = TigerConfig.ReadPrivateKey("/Users/tiger/dev/liutp_account/rsa_private_key_pkcs8_sandbox.pem"),// must
+      ConfigFilePath = "/data0/tiger_config/test",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
-      IsSslSocket = true,
-      Environment = Env.TEST
+      IsSslSocket = true
     };
     ApiLogger.DebugEnabled = false;
 
