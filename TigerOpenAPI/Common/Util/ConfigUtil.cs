@@ -129,7 +129,8 @@ namespace TigerOpenAPI.Common.Util
       string tokenFilePath = Path.Combine(tigerConfig.ConfigFilePath.Trim(), TigerApiConstants.TOKEN_FILENAME);
       try {
         System.IO.File.WriteAllText(tokenFilePath,
-          (new StringBuilder(TOKEN_FILE_TOKEN)).Append(EQUAL_CHAR).Append(token).ToString(), Encoding.UTF8);
+          (new StringBuilder(TOKEN_FILE_TOKEN)).Append(EQUAL_CHAR).Append(token).ToString(),
+          new UTF8Encoding(false));
         return true;
       } catch (IOException e)
       {
