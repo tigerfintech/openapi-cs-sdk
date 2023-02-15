@@ -118,7 +118,7 @@ namespace TigerOpenAPI.Common
       if (tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis() > 0)
       {
         ApiLogger.Info("refreshToken last update time:{}, ignore",
-            DateUtil.PrintDate(tokenCreateTime, config.TimeZone));
+            DateUtil.PrintDateTime(tokenCreateTime, config.TimeZone));
         return;
       }
 
