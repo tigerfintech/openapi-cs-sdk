@@ -13,8 +13,8 @@ namespace TigerOpenAPI.Quote.Response
     public string Token { get; set; }
     [JsonProperty(PropertyName = "createTime")]
     public long CreateTime { get; set; }
-    [JsonProperty(PropertyName = "expriedTime")]
-    public long ExpriedTime { get; set; }
+    [JsonProperty(PropertyName = "expiredTime")]
+    public long ExpiredTime { get; set; }
 
     public UserToken()
     {
