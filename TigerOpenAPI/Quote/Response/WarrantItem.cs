@@ -44,10 +44,10 @@ namespace TigerOpenAPI.Quote.Response
      */
     [JsonProperty(PropertyName = "beforeCallLevel")]
     public Double BeforeCallLevel { get; set; }
-    /** expiry date，formate：yyyy/MM/dd */
+    /** expiry date，formate：yyyy-MM-dd */
     [JsonProperty(PropertyName = "expireDate")]
     public string ExpireDate { get; set; }
-    /** last trading date, formate: yyyy/MM/dd */
+    /** last trading date, formate: yyyy-MM-dd */
     [JsonProperty(PropertyName = "lastTradingDate")]
     public string LastTradingDate { get; set; }
     /** state */
