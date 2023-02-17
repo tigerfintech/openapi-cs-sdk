@@ -56,8 +56,6 @@ namespace TigerOpenAPI.Common
     public const string SSL_HANDLER_NAME = "sslHandler";
 
     public const string AUTHORIZATION = "Authorization";
-
-    public const string DEFAULT_CONFIG_FILE_PATH = "/data0/tiger_config";
     public const string CONFIG_FILENAME = "tiger_openapi_config.properties";
     public const string TOKEN_FILENAME = "tiger_openapi_token.properties";
 

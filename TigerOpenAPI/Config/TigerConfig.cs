@@ -16,9 +16,9 @@ namespace TigerOpenAPI.Config
     public static string LogDir { get; set; }
 
     /**
-     * tiger_openapi_config.properties/tiger_openapi_token.properties config file paht
+     * tiger_openapi_config.properties/tiger_openapi_token.properties config file directory
      */
-    public string ConfigFilePath { get; set; } = TigerApiConstants.DEFAULT_CONFIG_FILE_PATH;
+    public string ConfigFilePath { get; set; } = string.Empty;
 
     public Env Environment { get; set; } = DEFAULT_ENV;
 
