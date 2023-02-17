@@ -28,9 +28,9 @@ namespace TigerOpenAPI.Push
 
     void DepthQuoteChange(QuoteDepthData data);
 
-    void SubscribeEnd(int id, String subject, String result);
+    void SubscribeEnd(int id, string subject, string result);
 
-    void CancelSubscribeEnd(int id, String subject, String result);
+    void CancelSubscribeEnd(int id, string subject, string result);
 
     void GetSubscribedSymbolEnd(SubscribedSymbol subscribedSymbol);
   }

@@ -51,6 +51,7 @@ namespace TigerOpenAPI.Push
 
     public PushClient Config(TigerConfig config)
     {
+      ConfigUtil.LoadConfigFile(config);
       this.tigerConfig = config;
       this.authentication = ApiAuthentication.build(config.TigerId, config.PrivateKey);
       GetSocketUrL();

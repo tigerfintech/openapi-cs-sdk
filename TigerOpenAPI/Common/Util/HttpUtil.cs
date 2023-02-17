@@ -36,17 +36,21 @@ namespace TigerOpenAPI.Common.Util
     /// send http post request
     /// </summary>
     /// <param name="url"></param>
+    /// <param name="token"></param>
     /// <param name="postData"></param>
     /// <param name="contentType">application/xml、application/json、application/text、application/x-www-form-urlencoded</param>
     /// <returns></returns>
-    public static string HttpPost(string url, string? postData = null,
+    public static string HttpPost(string url, string token, string? postData = null,
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
     {
       postData = postData ?? "{}";
       using (HttpContent httpContent = new StringContent(postData, Encoding.UTF8))
       {
-        if (contentType != null)
+        if (!string.IsNullOrWhiteSpace(contentType))
           httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+        if (!string.IsNullOrWhiteSpace(token))
+          client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
+          //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(TigerApiConstants.AUTHORIZATION, token);
 
         HttpResponseMessage response = client.PostAsync(url, httpContent).Result;
         response.EnsureSuccessStatusCode();
@@ -58,17 +62,20 @@ namespace TigerOpenAPI.Common.Util
     /// send http post request
     /// </summary>
     /// <param name="url"></param>
+    /// <param name="token"></param>
     /// <param name="postData"></param>
     /// <param name="contentType">application/xml、application/json、application/text、application/x-www-form-urlencoded</param>
     /// <returns></returns>
-    public static async Task<string> HttpPostAsync(string url, string? postData = null,
+    public static async Task<string> HttpPostAsync(string url, string token, string? postData = null,
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
     {
       postData = postData ?? "{}";
       using (HttpContent httpContent = new StringContent(postData, Encoding.UTF8))
       {
-        if (contentType != null)
+        if (!string.IsNullOrWhiteSpace(contentType))
           httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+        if (!string.IsNullOrWhiteSpace(token))
+          client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
 
         HttpResponseMessage response = await client.PostAsync(url, httpContent);
         response.EnsureSuccessStatusCode();

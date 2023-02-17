@@ -55,6 +55,10 @@ namespace TigerOpenAPI.Common
 
     public const string SSL_HANDLER_NAME = "sslHandler";
 
+    public const string AUTHORIZATION = "Authorization";
+    public const string CONFIG_FILENAME = "tiger_openapi_config.properties";
+    public const string TOKEN_FILENAME = "tiger_openapi_token.properties";
+
     public const string API_ONLINE_DOMAIN_URL = "openapi.tigerfintech.com";
     public const string API_SANDBOX_DOMAIN_URL = "openapi-sandbox.tigerfintech.com";
     public const string API_TEST_DOMAIN_URL = "openapi-test.tigerfintech.com";

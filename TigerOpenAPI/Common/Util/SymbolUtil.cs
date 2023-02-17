@@ -40,7 +40,7 @@ namespace TigerOpenAPI.Common.Util
       return optionSymbol;
     }
 
-    public static bool isUsStockSymbol(String symbol)
+    public static bool isUsStockSymbol(string symbol)
     {
       if (string.IsNullOrWhiteSpace(symbol))
       {

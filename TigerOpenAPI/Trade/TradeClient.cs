@@ -23,6 +23,8 @@ namespace TigerOpenAPI.Trade
         ? uriDict[UriType.TRADE] : uriDict[UriType.COMMON];
       ServerUrlForPaper = (uriDict.ContainsKey(UriType.PAPER) && !string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]))
         ? uriDict[UriType.PAPER] : uriDict[UriType.COMMON];
+
+      TokenManager.GetInstance().Init(config, this);
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)
@@ -33,6 +35,10 @@ namespace TigerOpenAPI.Trade
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)
     {
       errorMsg = string.Empty;
+      if (QuoteApiService.USER_TOKEN_REFRESH.Equals(request.ApiMethodName))
+      {
+        return true;
+      }
       if (!TradeApiService.IsTradeApi(request.ApiMethodName))
       {
         errorMsg = string.Format(TigerApiCode.HTTP_COMMON_PARAM_ERROR.Message, $"'ApiMethodName'({request?.ApiMethodName}) is not trade api");
