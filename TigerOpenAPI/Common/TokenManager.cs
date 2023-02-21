@@ -53,11 +53,11 @@ namespace TigerOpenAPI.Common
         }
         this.client = client;
         this.config = config;
-        bool result = ConfigUtil.LoadTokenFile(config);
+        bool result = ConfigFileUtil.LoadTokenFile(config);
         long tokenCreateTime = 0;
         try
         {
-          tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
+          tokenCreateTime = ConfigFileUtil.GetCreateTime(config.Token);
         }
         catch
         {
@@ -109,7 +109,7 @@ namespace TigerOpenAPI.Common
       long tokenCreateTime = 0;
       try
       {
-        tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
+        tokenCreateTime = ConfigFileUtil.GetCreateTime(config.Token);
       }
       catch
       {
