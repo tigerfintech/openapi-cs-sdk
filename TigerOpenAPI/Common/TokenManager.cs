@@ -43,17 +43,17 @@ namespace TigerOpenAPI.Common
       Monitor.Enter(this);
       try
       {
-        if (config == null || !config.AutoRefreshToken)
-        {
-          return;
-        }
-        if (this.client != null)
+        if (config == null || this.client != null)
         {
           return;
         }
         this.client = client;
         this.config = config;
         bool result = ConfigFileUtil.LoadTokenFile(config);
+        if (!config.AutoRefreshToken)
+        {
+          return;
+        }
         long tokenCreateTime = 0;
         try
         {
