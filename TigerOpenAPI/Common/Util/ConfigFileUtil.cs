@@ -42,14 +42,14 @@ namespace TigerOpenAPI.Common.Util
       dir = dir.Trim();
       if (!Directory.Exists(dir))
       {
-        ApiLogger.Info($"config file directory[{dir}] is missing, ingore");
+        ApiLogger.Debug($"config file directory[{dir}] is missing, ingore");
         return false;
       }
 
       string configFilePath = Path.Combine(dir, fileName);
       if (!File.Exists(configFilePath))
       {
-        ApiLogger.Info($"config file[{configFilePath}] is missing, ingore");
+        ApiLogger.Debug($"config file[{configFilePath}] is missing, ingore");
         return false;
       }
 

@@ -49,6 +49,7 @@ namespace TigerOpenAPI.Common
         }
         this.client = client;
         this.config = config;
+        Register(defaultCallback);
         bool result = ConfigFileUtil.LoadTokenFile(config);
         if (!config.AutoRefreshToken)
         {
@@ -64,7 +65,6 @@ namespace TigerOpenAPI.Common
           // ignore
         }
 
-        Register(defaultCallback);
         if (result && tokenCreateTime > 0)
         {
           long initialDelay = tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis();

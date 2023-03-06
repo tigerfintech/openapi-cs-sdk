@@ -4,10 +4,14 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Quote.Response
 {
-  public class OptionTradeTickResponse : TigerResponse
+  public class TradeCalendarResponse : TigerResponse
   {
     [JsonProperty(PropertyName = "data")]
-    public List<OptionTradeTickItem> Data { get; set; }
+    public List<TradeCalendar> Data { get; set; }
+
+    public TradeCalendarResponse()
+    {
+    }
   }
 }
 
