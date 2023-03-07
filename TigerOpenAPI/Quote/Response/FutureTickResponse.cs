@@ -8,10 +8,6 @@ namespace TigerOpenAPI.Quote.Response
   {
     [JsonProperty(PropertyName = "data")]
     public FutureTickBatchItem Data { get; set; }
-
-    public FutureTickResponse()
-    {
-    }
   }
 }
 

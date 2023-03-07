@@ -61,7 +61,7 @@ class Program
     //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
-    TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
+    //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
     //TigerResponse? response = await GetFutureContractByExchangeCodeAsync(quoteClient);
@@ -84,7 +84,7 @@ class Program
 
     // warrant/cbbc
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
-    //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
+    TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
@@ -733,7 +733,7 @@ class Program
           "68723",
           "68722"
         },
-        Lang = Language.zh_CN
+        Lang = Language.en_US
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -747,11 +747,11 @@ class Program
       ModelValue = new WarrantFilterModel()
       {
         Symbol = "00700",
-        Lang = Language.zh_CN,
+        Lang = Language.en_US,
         SortFieldName = "expireDate",
         SortDir = SortDir.SortDir_Descend,
         WarrantType = new HashSet<Int32>() { (int)WarrantType.Bull },
-        IssuerName = "高盛",
+        IssuerName = "GS", //"高盛",
         Strike = new Range<double>(300, 320.0),
         Page = 0,
         PageSize = 10
@@ -806,7 +806,7 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_TICK,
       ModelValue = new FutureTickModel()
       {
-        ContractCode = "ES2303",
+        ContractCode = "ES2306",
         BeginIndex = 10,
         EndIndex = 100,
         Limit = 20
@@ -822,7 +822,7 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_REAL_TIME_QUOTE,
       ModelValue = new FutureContractCodesModel()
       {
-        ContractCodes = new List<string> { "CL2303" }
+        ContractCodes = new List<string> { "CL2306" }
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -835,10 +835,10 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_KLINE,
       ModelValue = new FutureKlineModel()
       {
-        ContractCodes = new List<string> { "ES2303" },
+        ContractCodes = new List<string> { "ES2306" },
         Period = FutureKType.min15.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-28 09:00:00", CustomTimeZone.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2022-12-28 20:00:00", CustomTimeZone.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2023-03-06 09:00:00", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-03-06 20:00:00", CustomTimeZone.NY_ZONE),
         Limit = 20
       }
     };
@@ -851,7 +851,7 @@ class Program
     {
       ApiMethodName = QuoteApiService.FUTURE_TRADING_DATE,
       ModelValue = new FutureTradingDateModel() {
-        ContractCode = "ES2303",
+        ContractCode = "ES2306",
         TradingDate = DateUtil.CurrentTimeMillis()
       }
     };
@@ -863,7 +863,7 @@ class Program
     TigerRequest<FutureContractResponse> request = new TigerRequest<FutureContractResponse>()
     {
       ApiMethodName = QuoteApiService.FUTURE_CURRENT_CONTRACT,
-      ModelValue = new FutureContractByTypeModel() { FutureType = "ES" }
+      ModelValue = new FutureContractByTypeModel() { FutureType = "CL" }
     };
     return await quoteClient.ExecuteAsync(request);
   }
@@ -893,7 +893,7 @@ class Program
     TigerRequest<FutureContractResponse> request = new TigerRequest<FutureContractResponse>()
     {
       ApiMethodName = QuoteApiService.FUTURE_CONTRACT_BY_CONTRACT_CODE,
-      ModelValue = new FutureContractByConCodeModel() { ContractCode = "ES2303" }
+      ModelValue = new FutureContractByConCodeModel() { ContractCode = "ES2306" }
     };
     return await quoteClient.ExecuteAsync(request);
   }
