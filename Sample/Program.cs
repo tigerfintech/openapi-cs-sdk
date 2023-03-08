@@ -10,6 +10,7 @@ using TigerOpenAPI.Model;
 using TigerOpenAPI.Push;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Pb;
 using TigerOpenAPI.Quote.Response;
 using TigerOpenAPI.Trade;
 using TigerOpenAPI.Trade.Model;
@@ -84,9 +85,9 @@ class Program
 
     // warrant/cbbc
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
-    TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -255,6 +256,7 @@ class Program
       {
         Account = tradeClient.GetDefaultAccount,// "20200821144442583",
         //OrderId = 29358459894498304,
+        Symbol = "01810",
         StartDate = DateUtil.ConvertTimestamp("2022-11-01 00:00:00", tradeClient.GetConfigTimeZone),
         EndDate = DateUtil.CurrentTimeMillis(),
         Limit = 20
@@ -643,7 +645,7 @@ class Program
       ModelValue = new PrimeAnalyticsAssetModel()
       {
         Account = "572386",
-        StartDate = "2022-12-26"
+        StartDate = "2023-02-26"
       }
     };
     return await tradeClient.ExecuteAsync(request);
@@ -710,6 +712,7 @@ class Program
 
   static async Task<ContractResponse?> GetContractAsync(TradeClient tradeClient)
   {
+    // get stock contract
     TigerRequest<ContractResponse> request = new TigerRequest<ContractResponse>()
     {
       ApiMethodName = TradeApiService.CONTRACT,
@@ -718,7 +721,43 @@ class Program
         Symbol = "AAPL"
       }
     };
-    return await tradeClient.ExecuteAsync(request);
+    ContractResponse? response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    // get options contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.OPT.ToString(),
+        Symbol = "AAPL",
+        Strike = 150.0,
+        Expiry = "20230616",
+        Right = Right.CALL.ToString(),
+        Currency = Currency.USD.ToString()
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("options response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    // get warrant contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.WAR.ToString(),
+        Symbol = "29263",
+        Strike = 351.567,
+        Expiry = "20230330",
+        Right = Right.CALL.ToString()
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("warrants response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    return response;
   }
 
   static async Task<WarrantQuoteResponse?> GetWarrantQuoteAsync(QuoteClient quoteClient)
@@ -793,7 +832,7 @@ class Program
       {
         Symbol = "00700",
         SecType = SecType.WAR,
-        Expiry = "20230320"
+        Expiry = "20230417"
       }
     };
     return await quoteClient.ExecuteAsync(request);
