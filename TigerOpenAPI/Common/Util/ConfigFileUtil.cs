@@ -8,7 +8,7 @@ using TigerOpenAPI.Config;
 
 namespace TigerOpenAPI.Common.Util
 {
-  public class ConfigUtil
+  public class ConfigFileUtil
   {
     private const string PPRVATE_KEY_PREFIX = "KEY-----";
     private const string PRIVATE_KEY_SUFFIX = "-----END";
@@ -31,7 +31,7 @@ namespace TigerOpenAPI.Common.Util
       CONFIG_FILE_ENV,
     };
 
-    private ConfigUtil() { }
+    private ConfigFileUtil() { }
 
     private static bool CheckFile(string dir, string fileName)
     {
@@ -42,14 +42,14 @@ namespace TigerOpenAPI.Common.Util
       dir = dir.Trim();
       if (!Directory.Exists(dir))
       {
-        ApiLogger.Info($"config file directory[{dir}] is missing, ingore");
+        ApiLogger.Debug($"config file directory[{dir}] is missing, ingore");
         return false;
       }
 
       string configFilePath = Path.Combine(dir, fileName);
       if (!File.Exists(configFilePath))
       {
-        ApiLogger.Info($"config file[{configFilePath}] is missing, ingore");
+        ApiLogger.Debug($"config file[{configFilePath}] is missing, ingore");
         return false;
       }
 

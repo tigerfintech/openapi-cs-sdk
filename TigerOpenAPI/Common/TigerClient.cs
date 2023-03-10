@@ -56,7 +56,7 @@ namespace TigerOpenAPI.Common
         throw new ArgumentNullException("TigerConfig is empty.");
       }
 
-      ConfigUtil.LoadConfigFile(config);
+      ConfigFileUtil.LoadConfigFile(config);
       if (string.IsNullOrWhiteSpace(config.TigerId))
       {
         throw new ArgumentNullException("TigerId is empty.");

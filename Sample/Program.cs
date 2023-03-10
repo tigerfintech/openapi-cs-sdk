@@ -10,6 +10,7 @@ using TigerOpenAPI.Model;
 using TigerOpenAPI.Push;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Pb;
 using TigerOpenAPI.Quote.Response;
 using TigerOpenAPI.Trade;
 using TigerOpenAPI.Trade.Model;
@@ -30,6 +31,7 @@ class Program
       ConfigFilePath = "/data0/tiger_config/prod",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
+      AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE  // (optional) default is HK_ZONE
     };
@@ -48,7 +50,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
-    //TigerResponse? response = await GetKLineAsync(quoteClient);
+    TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
     //TigerResponse? response = await GetTradeTickAsync(quoteClient);
@@ -83,7 +85,7 @@ class Program
 
     // warrant/cbbc
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
-    TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
@@ -254,6 +256,7 @@ class Program
       {
         Account = tradeClient.GetDefaultAccount,// "20200821144442583",
         //OrderId = 29358459894498304,
+        Symbol = "01810",
         StartDate = DateUtil.ConvertTimestamp("2022-11-01 00:00:00", tradeClient.GetConfigTimeZone),
         EndDate = DateUtil.CurrentTimeMillis(),
         Limit = 20
@@ -642,7 +645,7 @@ class Program
       ModelValue = new PrimeAnalyticsAssetModel()
       {
         Account = "572386",
-        StartDate = "2022-12-26"
+        StartDate = "2023-02-26"
       }
     };
     return await tradeClient.ExecuteAsync(request);
@@ -709,6 +712,7 @@ class Program
 
   static async Task<ContractResponse?> GetContractAsync(TradeClient tradeClient)
   {
+    // get stock contract
     TigerRequest<ContractResponse> request = new TigerRequest<ContractResponse>()
     {
       ApiMethodName = TradeApiService.CONTRACT,
@@ -717,7 +721,43 @@ class Program
         Symbol = "AAPL"
       }
     };
-    return await tradeClient.ExecuteAsync(request);
+    ContractResponse? response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    // get options contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.OPT.ToString(),
+        Symbol = "AAPL",
+        Strike = 150.0,
+        Expiry = "20230616",
+        Right = Right.CALL.ToString(),
+        Currency = Currency.USD.ToString()
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("options response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    // get warrant contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.WAR.ToString(),
+        Symbol = "29263",
+        Strike = 351.567,
+        Expiry = "20230330",
+        Right = Right.CALL.ToString()
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("warrants response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
+    return response;
   }
 
   static async Task<WarrantQuoteResponse?> GetWarrantQuoteAsync(QuoteClient quoteClient)
@@ -732,7 +772,7 @@ class Program
           "68723",
           "68722"
         },
-        Lang = Language.zh_CN
+        Lang = Language.en_US
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -746,11 +786,11 @@ class Program
       ModelValue = new WarrantFilterModel()
       {
         Symbol = "00700",
-        Lang = Language.zh_CN,
+        Lang = Language.en_US,
         SortFieldName = "expireDate",
         SortDir = SortDir.SortDir_Descend,
         WarrantType = new HashSet<Int32>() { (int)WarrantType.Bull },
-        IssuerName = "高盛",
+        IssuerName = "GS", //"高盛",
         Strike = new Range<double>(300, 320.0),
         Page = 0,
         PageSize = 10
@@ -792,7 +832,7 @@ class Program
       {
         Symbol = "00700",
         SecType = SecType.WAR,
-        Expiry = "20230320"
+        Expiry = "20230417"
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -805,7 +845,7 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_TICK,
       ModelValue = new FutureTickModel()
       {
-        ContractCode = "ES2303",
+        ContractCode = "ES2306",
         BeginIndex = 10,
         EndIndex = 100,
         Limit = 20
@@ -821,7 +861,7 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_REAL_TIME_QUOTE,
       ModelValue = new FutureContractCodesModel()
       {
-        ContractCodes = new List<string> { "CL2303" }
+        ContractCodes = new List<string> { "CL2306" }
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -834,10 +874,10 @@ class Program
       ApiMethodName = QuoteApiService.FUTURE_KLINE,
       ModelValue = new FutureKlineModel()
       {
-        ContractCodes = new List<string> { "ES2303" },
+        ContractCodes = new List<string> { "ES2306" },
         Period = FutureKType.min15.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-28 09:00:00", CustomTimeZone.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2022-12-28 20:00:00", CustomTimeZone.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2023-03-06 09:00:00", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-03-06 20:00:00", CustomTimeZone.NY_ZONE),
         Limit = 20
       }
     };
@@ -850,7 +890,7 @@ class Program
     {
       ApiMethodName = QuoteApiService.FUTURE_TRADING_DATE,
       ModelValue = new FutureTradingDateModel() {
-        ContractCode = "ES2303",
+        ContractCode = "ES2306",
         TradingDate = DateUtil.CurrentTimeMillis()
       }
     };
@@ -862,7 +902,7 @@ class Program
     TigerRequest<FutureContractResponse> request = new TigerRequest<FutureContractResponse>()
     {
       ApiMethodName = QuoteApiService.FUTURE_CURRENT_CONTRACT,
-      ModelValue = new FutureContractByTypeModel() { FutureType = "ES" }
+      ModelValue = new FutureContractByTypeModel() { FutureType = "CL" }
     };
     return await quoteClient.ExecuteAsync(request);
   }
@@ -892,7 +932,7 @@ class Program
     TigerRequest<FutureContractResponse> request = new TigerRequest<FutureContractResponse>()
     {
       ApiMethodName = QuoteApiService.FUTURE_CONTRACT_BY_CONTRACT_CODE,
-      ModelValue = new FutureContractByConCodeModel() { ContractCode = "ES2303" }
+      ModelValue = new FutureContractByConCodeModel() { ContractCode = "ES2306" }
     };
     return await quoteClient.ExecuteAsync(request);
   }
@@ -929,27 +969,27 @@ class Program
       {
         Items = new List<OptionCommonModel>()
         {
-          new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE)}
+          new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "100.0",
+            Expiry = DateUtil.ConvertTimestamp("2023-03-17", CustomTimeZone.NY_ZONE)}
         }
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetOptionKLineAsync(QuoteClient quoteClient)
+  static async Task<OptionKlineResponse?> GetOptionKLineAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<OptionKlineResponse> request = new TigerRequest<OptionKlineResponse>()
     {
       ApiMethodName = QuoteApiService.OPTION_KLINE,
       ModelValue = new BatchApiModel<OptionKlineModel>()
       {
         Items = new List<OptionKlineModel>()
         {
-          new OptionKlineModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE),
-            BeginTime = DateUtil.ConvertTimestamp("2022-12-15", CustomTimeZone.NY_ZONE),
-            EndTime = DateUtil.ConvertTimestamp("2022-12-30", CustomTimeZone.NY_ZONE),
+          new OptionKlineModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
+            Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2023-02-22", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2023-03-04", CustomTimeZone.NY_ZONE),
           }
         }
       }
@@ -957,46 +997,46 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetOptionBriefAsync(QuoteClient quoteClient)
+  static async Task<OptionBriefResponse?> GetOptionBriefAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<OptionBriefResponse> request = new TigerRequest<OptionBriefResponse>()
     {
       ApiMethodName = QuoteApiService.OPTION_BRIEF,
       ModelValue = new BatchApiModel<OptionCommonModel>()
       {
         Items = new List<OptionCommonModel>()
         {
-          new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "130.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-01-06", CustomTimeZone.NY_ZONE)}
+          new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
+            Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE)}
         }
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetOptionChainAsync(QuoteClient quoteClient)
+  static async Task<OptionChainResponse?> GetOptionChainAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<OptionChainResponse> request = new TigerRequest<OptionChainResponse>()
     {
       ApiMethodName = QuoteApiService.OPTION_CHAIN,
       ModelValue = new OptionChainV3Model()
       {
         OptionBasic = new List<OptionChainModel>()
         {
-          new OptionChainModel() { Symbol = "AAPL", Expiry = DateUtil.ConvertTimestamp("2023-01-27", CustomTimeZone.NY_ZONE)}
+          new OptionChainModel() { Symbol = "AAPL", Expiry = DateUtil.ConvertTimestamp("2023-03-17", CustomTimeZone.NY_ZONE)}
         },
         OptionFilter = new OptionChainFilterModel()
         {
           InTheMoney = true,
-          ImpliedVolatility = new Range<Double>(0.3037, 0.6282),
+          ImpliedVolatility = new Range<Double>(0.2537, 0.6282),
           OpenInterest = new Range<int>(100, 5000),
           Greeks = new Greeks()
           {
-            Delta = new Range<Double>(-0.8, 0.6),
-            Gamma = new Range<double>(0.024, 0.071),
+            Delta = new Range<Double>(-0.8, 0.9),
+            Gamma = new Range<double>(0.018, 0.071),
             Vega = new Range<double>(0.019, 0.143),
-            Theta = new Range<double>(-0.064, -0.036),
-            Rho = new Range<double>(-0.096, 0.001)
+            Theta = new Range<double>(-0.164, -0.036),
+            Rho = new Range<double>(-0.096, 0.061)
           }
         }
       }
@@ -1004,9 +1044,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetOptionExpirationAsync(QuoteClient quoteClient)
+  static async Task<OptionExpirationResponse?> GetOptionExpirationAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<OptionExpirationResponse> request = new TigerRequest<OptionExpirationResponse>()
     {
       ApiMethodName = QuoteApiService.OPTION_EXPIRATION,
       ModelValue = new OptionExpirationModel()
@@ -1017,9 +1057,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerDictResponse?> GetStockBrokerAsync(QuoteClient quoteClient)
+  static async Task<QuoteStockBrokerResponse?> GetStockBrokerAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    TigerRequest<QuoteStockBrokerResponse> request = new TigerRequest<QuoteStockBrokerResponse>()
     {
       ApiMethodName = QuoteApiService.STOCK_BROKER,
       ModelValue = new QuoteStockBrokerModel()
@@ -1031,9 +1071,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerDictResponse?> GetStockCaptialDistributionAsync(QuoteClient quoteClient)
+  static async Task<QuoteCapitalDistributionResponse?> GetStockCaptialDistributionAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    TigerRequest<QuoteCapitalDistributionResponse> request = new TigerRequest<QuoteCapitalDistributionResponse>()
     {
       ApiMethodName = QuoteApiService.CAPITAL_DISTRIBUTION,
       ModelValue = new QuoteCapitalModel()
@@ -1045,9 +1085,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerDictResponse?> GetStockCaptialFlowAsync(QuoteClient quoteClient)
+  static async Task<QuoteCapitalFlowResponse?> GetStockCaptialFlowAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    TigerRequest<QuoteCapitalFlowResponse> request = new TigerRequest<QuoteCapitalFlowResponse>()
     {
       ApiMethodName = QuoteApiService.CAPITAL_FLOW,
       ModelValue = new QuoteCapitalFlowModel()
@@ -1055,16 +1095,16 @@ class Program
         Symbol = "AAPL",
         Market = Market.US,
         Period = CapitalPeriod.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-01", CustomTimeZone.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2022-12-28", CustomTimeZone.NY_ZONE)
+        BeginTime = DateUtil.ConvertTimestamp("2023-02-25", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-03-06", CustomTimeZone.NY_ZONE)
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetStockTradeInfoAsync(QuoteClient quoteClient)
+  static async Task<QuoteStockTradeResponse?> GetStockTradeInfoAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteStockTradeResponse> request = new TigerRequest<QuoteStockTradeResponse>()
     {
       ApiMethodName = QuoteApiService.QUOTE_STOCK_TRADE,
       ModelValue = new QuoteStockTradeModel()
@@ -1075,14 +1115,14 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetTradeTickAsync(QuoteClient quoteClient)
+  static async Task<QuoteTradeTickResponse?> GetTradeTickAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteTradeTickResponse> request = new TigerRequest<QuoteTradeTickResponse>()
     {
       ApiMethodName = QuoteApiService.TRADE_TICK,
       ModelValue = new QuoteTradeTickModel()
       {
-        Symbols = new List<string> { "AAPL" },
+        Symbols = new List<string> { "00700" },
         BeginIndex = 0,
         EndIndex = 10
       }
@@ -1090,9 +1130,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetDepthQuoteAsync(QuoteClient quoteClient)
+  static async Task<QuoteDepthResponse?> GetDepthQuoteAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteDepthResponse> request = new TigerRequest<QuoteDepthResponse>()
     {
       ApiMethodName = QuoteApiService.QUOTE_DEPTH,
       ModelValue = new QuoteDepthModel()
@@ -1104,16 +1144,16 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetKLineAsync(QuoteClient quoteClient)
+  static async Task<QuoteKlineResponse?> GetKLineAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteKlineResponse> request = new TigerRequest<QuoteKlineResponse>()
     {
       ApiMethodName = QuoteApiService.KLINE,
       ModelValue = new QuoteKlineModel()
       {
         Symbols = new List<string> { "AAPL" },
         Period = KLineType.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-10", CustomTimeZone.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2023-03-01", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
         Rigth = RightOption.br
       }
@@ -1121,9 +1161,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetRealTimeQuoteAsync(QuoteClient quoteClient)
+  static async Task<QuoteRealTimeQuoteResponse?> GetRealTimeQuoteAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteRealTimeQuoteResponse> request = new TigerRequest<QuoteRealTimeQuoteResponse>()
     {
       ApiMethodName = QuoteApiService.QUOTE_REAL_TIME,
       ModelValue = new QuoteSymbolModel()
@@ -1135,39 +1175,39 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetHistoryTimelineAsync(QuoteClient quoteClient)
+  static async Task<QuoteHistoryTimelineResponse?> GetHistoryTimelineAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteHistoryTimelineResponse> request = new TigerRequest<QuoteHistoryTimelineResponse>()
     {
       ApiMethodName = QuoteApiService.HISTORY_TIMELINE,
       ModelValue = new QuoteHistoryTimelineModel()
       {
         Symbols = new List<string> { "AAPL" },
-        Date = "2022-12-22",
+        Date = "2023-03-03",
         Rigth = RightOption.br
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetTimelineAsync(QuoteClient quoteClient)
+  static async Task<QuoteTimelineResponse?> GetTimelineAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteTimelineResponse> request = new TigerRequest<QuoteTimelineResponse>()
     {
       ApiMethodName = QuoteApiService.TIMELINE,
       ModelValue = new QuoteTimelineModel()
       {
         Symbols = new List<string> { "AAPL" },
         Period = TimeLineType.day,
-        BeginTime = DateUtil.ConvertTimestamp("2022-12-07 03:00:00", CustomTimeZone.NY_ZONE)
+        BeginTime = DateUtil.ConvertTimestamp("2023-03-03 03:00:00", CustomTimeZone.NY_ZONE)
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetDelayQuoteAsync(QuoteClient quoteClient)
+  static async Task<QuoteDelayResponse?> GetDelayQuoteAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<QuoteDelayResponse> request = new TigerRequest<QuoteDelayResponse>()
     {
       ApiMethodName = QuoteApiService.QUOTE_DELAY,
       ModelValue = new QuoteSymbolModel() { Symbols = new List<string> { "AAPL" } }
@@ -1175,9 +1215,9 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetAllSymbolNamesAsync(QuoteClient quoteClient)
+  static async Task<SymbolNameResponse?> GetAllSymbolNamesAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<SymbolNameResponse> request = new TigerRequest<SymbolNameResponse>()
     {
       ApiMethodName = QuoteApiService.ALL_SYMBOL_NAMES,
       ModelValue = new QuoteMarketModel() { Market = Market.US, Lang = Language.zh_CN }
@@ -1202,16 +1242,16 @@ class Program
       ApiMethodName = QuoteApiService.TRADING_CALENDAR,
       ModelValue = new TradeCalendarModel() {
         Market = Market.HK,
-        BeginDate = "2022-06-01",
-        EndDate = "2022-06-30"
+        BeginDate = "2023-03-01",
+        EndDate = "2023-03-15"
       }
     };
     return await quoteClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerListResponse?> GetMarketStateAsync(QuoteClient quoteClient)
+  static async Task<MarketStateResponse?> GetMarketStateAsync(QuoteClient quoteClient)
   {
-    TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
+    TigerRequest<MarketStateResponse> request = new TigerRequest<MarketStateResponse>()
     {
       ApiMethodName = QuoteApiService.MARKET_STATE,
       ModelValue = new QuoteMarketModel() { Market = Market.HK }

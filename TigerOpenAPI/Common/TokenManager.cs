@@ -43,28 +43,28 @@ namespace TigerOpenAPI.Common
       Monitor.Enter(this);
       try
       {
-        if (config == null || !config.AutoRefreshToken)
-        {
-          return;
-        }
-        if (this.client != null)
+        if (config == null || this.client != null)
         {
           return;
         }
         this.client = client;
         this.config = config;
-        bool result = ConfigUtil.LoadTokenFile(config);
+        Register(defaultCallback);
+        bool result = ConfigFileUtil.LoadTokenFile(config);
+        if (!config.AutoRefreshToken)
+        {
+          return;
+        }
         long tokenCreateTime = 0;
         try
         {
-          tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
+          tokenCreateTime = ConfigFileUtil.GetCreateTime(config.Token);
         }
         catch
         {
           // ignore
         }
 
-        Register(defaultCallback);
         if (result && tokenCreateTime > 0)
         {
           long initialDelay = tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis();
@@ -109,7 +109,7 @@ namespace TigerOpenAPI.Common
       long tokenCreateTime = 0;
       try
       {
-        tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
+        tokenCreateTime = ConfigFileUtil.GetCreateTime(config.Token);
       }
       catch
       {

@@ -5,7 +5,9 @@ namespace TigerOpenAPI.Common.Enum
   {
     Normal = 0,
     Suspension = 3,
-    Delisted = 4
+    Delisted = 4,
+    New = 7,
+    ALTER = 8
   }
 }
 
