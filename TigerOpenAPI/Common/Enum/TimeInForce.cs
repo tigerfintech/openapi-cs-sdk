@@ -3,7 +3,7 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum TimeInForce
   {
-    NONE, DAY, GTC, GTD
+    NONE, DAY, GTC, GTD, OPG
   }
 }
 
