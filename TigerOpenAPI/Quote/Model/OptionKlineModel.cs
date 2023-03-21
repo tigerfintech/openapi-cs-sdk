@@ -9,6 +9,9 @@ namespace TigerOpenAPI.Quote.Model
 {
   public class OptionKlineModel : OptionCommonModel
   {
+    [JsonProperty(PropertyName = "period")]
+    public string Period { get; set; } = OptionKType.day.Value;
+
     [JsonProperty(PropertyName = "begin_time")]
     public Int64 BeginTime { get; set; }
 
