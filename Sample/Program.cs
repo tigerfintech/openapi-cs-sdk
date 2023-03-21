@@ -50,7 +50,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
-    TigerResponse? response = await GetKLineAsync(quoteClient);
+    //TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
     //TigerResponse? response = await GetTradeTickAsync(quoteClient);
@@ -61,7 +61,7 @@ class Program
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
     //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
-    //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
+    TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
@@ -986,10 +986,12 @@ class Program
       {
         Items = new List<OptionKlineModel>()
         {
-          new OptionKlineModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
+          new OptionKlineModel() {
+            Symbol = "AAPL", Right = "PUT", Strike = "150.0",
             Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
             BeginTime = DateUtil.ConvertTimestamp("2023-02-22", CustomTimeZone.NY_ZONE),
             EndTime = DateUtil.ConvertTimestamp("2023-03-04", CustomTimeZone.NY_ZONE),
+            Period = OptionKType.min60.Value,
           }
         }
       }
