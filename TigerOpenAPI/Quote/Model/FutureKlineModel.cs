@@ -20,7 +20,7 @@ namespace TigerOpenAPI.Quote.Model
     public Int64 EndTime { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
-    public Int16 Limit { get; set; } = 300;
+    public Int32 Limit { get; set; } = 300;
 
     [JsonProperty(PropertyName = "page_token")]
     public string PageToken { get; set; }
