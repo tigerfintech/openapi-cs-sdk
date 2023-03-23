@@ -38,7 +38,7 @@ namespace TigerOpenAPI.Trade.Model
     public Int64 EndDate { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
-    public Int16 Limit { get; set; } = 100;
+    public Int32 Limit { get; set; } = 100;
 
     [JsonProperty(PropertyName = "sort_by"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public OrderSortBy SortBy { get; set; }

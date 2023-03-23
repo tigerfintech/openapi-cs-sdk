@@ -50,7 +50,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
-    TigerResponse? response = await GetKLineAsync(quoteClient);
+    //TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
     //TigerResponse? response = await GetTradeTickAsync(quoteClient);
@@ -87,7 +87,7 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -101,6 +101,8 @@ class Program
 
     // =================================================palace order
     //TigerResponse? response = await PlaceOrderAsync(tradeClient);
+
+    //TigerResponse? response = await PlaceForexOrderAsync(tradeClient);
 
     //TigerResponse? response = await PlaceMarketOrderAsync(tradeClient);
     // response:{"code":0,"message":"success","timestamp":1672900459461,"data":{"id":29360293078500352,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360293078500352,"orderId":1456,"account":"20200821144442583","action":"BUY","orderType":"MKT","totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900459000,"updateTime":1672900459000,"latestTime":1672900459000,"name":"XIAOMI-W","latestPrice":11.62,"attrDesc":"","userMark":"","algoStrategy":"MKT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"y3iIACssSMlurcA3TP+PZQOF0p519WqWPpQG6Y8pYKQTKeePXPv1xZwjq0J97JBxnBr92bL20cZr1J/zQCPvvvtkQNZc3QGRx08dCDfp4AUjoBBzRBuQw+xNSMUsnlY/4G1KbXoOXj5qJ3OycZeFQVxbPeJlSYEt4JJz5LhjBNs="} 
@@ -165,7 +167,16 @@ class Program
     //TigerResponse? response = await QueryOrderTransactionsAsync(tradeClient);
     // response:{"data":{"items":[{"id":28805813759117312,"orderId":28805688059365376,"accountId":"572386","secType":"STK","market":"HK","currency":"HKD","symbol":"01810","right":"PUT","action":"SELL","filledQuantity":200,"filledPrice":10.32,"filledAmount":2064.0,"transactedAt":"2022-11-17 15:28:37","transactionTime":1668670117000}]},"message":"success","timestamp":1672977133300,"sign":"mfQ7wBB785UReYysC2TcD+1Wo6+sz8l5NzQKofvxD5uSNdAs+Jl/qaiYSwEobQBE1gvJ3bH1JPynlN2DyEG3E6WfD1Lbsqdy4XDcO2UKWIbUpbioW0SLT0WTT/Wr9hX6/uH1xgg3FitL40IX7sR2e40+fa1AmyTaRZkRrGIENk0="} 
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+    // segment fund transfer
+    //TigerResponse? response = await QueryAvailableSegFundAsync(tradeClient);
+
+    //TigerResponse? response = await TransferSegFundAsync(tradeClient);
+
+    //TigerResponse? response = await CancelSegFundAsync(tradeClient, 1111L);
+
+    TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
+
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -245,6 +256,66 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<SegFundsResponse?> QueryTransferFundsAsync(TradeClient tradeClient)
+  {
+    TigerRequest<SegFundsResponse> request = new TigerRequest<SegFundsResponse>()
+    {
+      ApiMethodName = TradeApiService.SEGMENT_FUND_HISTORY,
+      ModelValue = new SegmentFundModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        Limit = 50,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<SegFundResponse?> CancelSegFundAsync(TradeClient tradeClient, Int64 id)
+  {
+    TigerRequest<SegFundResponse> request = new TigerRequest<SegFundResponse>()
+    {
+      ApiMethodName = TradeApiService.CANCEL_SEGMENT_FUND,
+      ModelValue = new SegmentFundModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        Id = id,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<SegFundResponse?> TransferSegFundAsync(TradeClient tradeClient)
+  {
+    TigerRequest<SegFundResponse> request = new TigerRequest<SegFundResponse>()
+    {
+      ApiMethodName = TradeApiService.TRANSFER_SEGMENT_FUND,
+      ModelValue = new SegmentFundModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        FromSegment = SegmentType.SEC,
+        ToSegment = SegmentType.FUT,
+        Currency = Currency.HKD,
+        Amount = 1000D,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<SegFundAvailableResponse?> QueryAvailableSegFundAsync(TradeClient tradeClient)
+  {
+    TigerRequest<SegFundAvailableResponse> request = new TigerRequest<SegFundAvailableResponse>()
+    {
+      ApiMethodName = TradeApiService.SEGMENT_FUND_AVAILABLE,
+      ModelValue = new SegmentFundModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        FromSegment = SegmentType.SEC,
+        Currency = Currency.HKD,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
   }
 
   static async Task<OrderTransactionsResponse?> QueryOrderTransactionsAsync(TradeClient tradeClient)
@@ -619,9 +690,27 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
-  static async Task<TigerDictResponse?> PlaceOrderAsync(TradeClient tradeClient)
+  static async Task<ForexTradeOrderResponse?> PlaceForexOrderAsync(TradeClient tradeClient)
   {
-    TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
+    TigerRequest<ForexTradeOrderResponse> request = new TigerRequest<ForexTradeOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_FOREX_ORDER,
+      ModelValue = new ForexTradeOrderModel()
+      {
+        Account = "20200821144442583",
+        SegType = SegmentType.SEC,
+        SourceCurrency = Currency.HKD,
+        SourceAmount = 10000.0,
+        TargetCurrency = Currency.USD,
+        TimeInForce = TimeInForce.DAY,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> PlaceOrderAsync(TradeClient tradeClient)
+  {
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
       ModelValue = new PlaceOrderModel() {
@@ -986,10 +1075,12 @@ class Program
       {
         Items = new List<OptionKlineModel>()
         {
-          new OptionKlineModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
+          new OptionKlineModel() {
+            Symbol = "AAPL", Right = "PUT", Strike = "150.0",
             Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
             BeginTime = DateUtil.ConvertTimestamp("2023-02-22", CustomTimeZone.NY_ZONE),
             EndTime = DateUtil.ConvertTimestamp("2023-03-04", CustomTimeZone.NY_ZONE),
+            Period = OptionKType.min60.Value,
           }
         }
       }

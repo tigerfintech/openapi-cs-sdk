@@ -85,7 +85,7 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "isEtf")]
     public Boolean IsEtf { get; set; }
     [JsonProperty(PropertyName = "etfLeverage")]
-    public Int16 EtfLeverage { get; set; }
+    public Int32 EtfLeverage { get; set; }
 
     public ContractItem()
     {
