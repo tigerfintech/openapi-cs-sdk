@@ -7,7 +7,7 @@ using TigerOpenAPI.Quote.Response;
 
 namespace TigerOpenAPI.Trade.Response
 {
-  public class SegFundItem
+  public class SegmentFundItem
   {
     [JsonProperty(PropertyName = "id")]
     public Int64 Id { get; set; }
@@ -21,7 +21,7 @@ namespace TigerOpenAPI.Trade.Response
     public Double Amount { get; set; } = Double.NaN;
 
     [JsonProperty(PropertyName = "status"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
-    public SegFundStatus Status { get; set; }
+    public SegmentFundStatus Status { get; set; }
     [JsonProperty(PropertyName = "statusDesc")]
     public string StatusDesc { get; set; }
     [JsonProperty(PropertyName = "message")]
