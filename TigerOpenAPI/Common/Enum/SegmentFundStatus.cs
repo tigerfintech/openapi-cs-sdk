@@ -1,7 +1,7 @@
 ﻿using System;
 namespace TigerOpenAPI.Common.Enum
 {
-  public enum SegFundStatus
+  public enum SegmentFundStatus
   {
     NONE = 0,
     NEW = 1,   // submitted

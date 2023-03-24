@@ -7,7 +7,7 @@ using TigerOpenAPI.Quote.Response;
 
 namespace TigerOpenAPI.Trade.Response
 {
-  public class SegFundAvailableItem
+  public class SegmentFundAvailableItem
   {
     [JsonProperty(PropertyName = "fromSegment")]
     public string FromSegment { get; set; }

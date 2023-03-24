@@ -168,11 +168,11 @@ class Program
     // response:{"data":{"items":[{"id":28805813759117312,"orderId":28805688059365376,"accountId":"572386","secType":"STK","market":"HK","currency":"HKD","symbol":"01810","right":"PUT","action":"SELL","filledQuantity":200,"filledPrice":10.32,"filledAmount":2064.0,"transactedAt":"2022-11-17 15:28:37","transactionTime":1668670117000}]},"message":"success","timestamp":1672977133300,"sign":"mfQ7wBB785UReYysC2TcD+1Wo6+sz8l5NzQKofvxD5uSNdAs+Jl/qaiYSwEobQBE1gvJ3bH1JPynlN2DyEG3E6WfD1Lbsqdy4XDcO2UKWIbUpbioW0SLT0WTT/Wr9hX6/uH1xgg3FitL40IX7sR2e40+fa1AmyTaRZkRrGIENk0="} 
 
     // segment fund transfer
-    //TigerResponse? response = await QueryAvailableSegFundAsync(tradeClient);
+    //TigerResponse? response = await QueryAvailableSegmentFundAsync(tradeClient);
 
-    //TigerResponse? response = await TransferSegFundAsync(tradeClient);
+    //TigerResponse? response = await TransferSegmentFundAsync(tradeClient);
 
-    //TigerResponse? response = await CancelSegFundAsync(tradeClient, 1111L);
+    //TigerResponse? response = await CancelSegmentFundAsync(tradeClient, 1111L);
 
     TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
 
@@ -258,9 +258,9 @@ class Program
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
   }
 
-  static async Task<SegFundsResponse?> QueryTransferFundsAsync(TradeClient tradeClient)
+  static async Task<SegmentFundsResponse?> QueryTransferFundsAsync(TradeClient tradeClient)
   {
-    TigerRequest<SegFundsResponse> request = new TigerRequest<SegFundsResponse>()
+    TigerRequest<SegmentFundsResponse> request = new TigerRequest<SegmentFundsResponse>()
     {
       ApiMethodName = TradeApiService.SEGMENT_FUND_HISTORY,
       ModelValue = new SegmentFundModel()
@@ -272,9 +272,9 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
-  static async Task<SegFundResponse?> CancelSegFundAsync(TradeClient tradeClient, Int64 id)
+  static async Task<SegmentFundResponse?> CancelSegmentFundAsync(TradeClient tradeClient, Int64 id)
   {
-    TigerRequest<SegFundResponse> request = new TigerRequest<SegFundResponse>()
+    TigerRequest<SegmentFundResponse> request = new TigerRequest<SegmentFundResponse>()
     {
       ApiMethodName = TradeApiService.CANCEL_SEGMENT_FUND,
       ModelValue = new SegmentFundModel()
@@ -286,9 +286,9 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
-  static async Task<SegFundResponse?> TransferSegFundAsync(TradeClient tradeClient)
+  static async Task<SegmentFundResponse?> TransferSegmentFundAsync(TradeClient tradeClient)
   {
-    TigerRequest<SegFundResponse> request = new TigerRequest<SegFundResponse>()
+    TigerRequest<SegmentFundResponse> request = new TigerRequest<SegmentFundResponse>()
     {
       ApiMethodName = TradeApiService.TRANSFER_SEGMENT_FUND,
       ModelValue = new SegmentFundModel()
@@ -303,9 +303,9 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
-  static async Task<SegFundAvailableResponse?> QueryAvailableSegFundAsync(TradeClient tradeClient)
+  static async Task<SegmentFundAvailableResponse?> QueryAvailableSegmentFundAsync(TradeClient tradeClient)
   {
-    TigerRequest<SegFundAvailableResponse> request = new TigerRequest<SegFundAvailableResponse>()
+    TigerRequest<SegmentFundAvailableResponse> request = new TigerRequest<SegmentFundAvailableResponse>()
     {
       ApiMethodName = TradeApiService.SEGMENT_FUND_AVAILABLE,
       ModelValue = new SegmentFundModel()

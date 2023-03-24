@@ -4,10 +4,10 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Trade.Response
 {
-  public class SegFundResponse : TigerResponse
+  public class SegmentFundResponse : TigerResponse
   {
     [JsonProperty(PropertyName = "data")]
-    public SegFundItem Data { get; set; }
+    public SegmentFundItem Data { get; set; }
   }
 }
 
