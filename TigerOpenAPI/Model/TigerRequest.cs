@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using TigerOpenAPI.Common;
+using TigerOpenAPI.Common.Util;
 
 namespace TigerOpenAPI.Model
 {
@@ -25,7 +26,7 @@ namespace TigerOpenAPI.Model
     [JsonProperty(PropertyName = "sign_type")]
     public string SignType { get; set; } = TigerApiConstants.SIGN_TYPE_RSA;
     [JsonProperty(PropertyName = "sdk-version")]
-    public string SdkVersion { get; set; } = "openapi-cs-sdk-1.0.0";
+    public string SdkVersion { get; set; } = SdkVersionUtil.GetSdkVersion();
 
     [JsonProperty(PropertyName = "biz_content")]
     public string BizContent { get; set; }
