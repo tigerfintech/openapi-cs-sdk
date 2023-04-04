@@ -14,13 +14,13 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "averageCost")]
     public double AverageCost { get; set; }
     [JsonProperty(PropertyName = "marketValue")]
-    public double MarketValue { get; set; }
+    public Double MarketValue { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "latestPrice")]
-    public double LatestPrice { get; set; }
+    public Double LatestPrice { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "realizedPnl")]
-    public double RealizedPnl { get; set; }
+    public Double RealizedPnl { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "unrealizedPnl")]
-    public double UnrealizedPnl { get; set; }
+    public Double UnrealizedPnl { get; set; } = Double.NaN;
 
     [JsonProperty(PropertyName = "salable")]
     public Int32 Salable { get; set; }
@@ -39,11 +39,11 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "expiry")]
     public string Expiry { get; set; }
     [JsonProperty(PropertyName = "strike")]
-    public Double Strike { get; set; }
+    public Double Strike { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "right")]
     public string Right { get; set; }
     [JsonProperty(PropertyName = "multiplier")]
-    public Double Multiplier { get; set; }
+    public Double Multiplier { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "updateTimestamp")]
     public long UpdateTimestamp { get; set; }
 

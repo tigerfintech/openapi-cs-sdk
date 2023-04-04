@@ -11,8 +11,6 @@ namespace TigerOpenAPI.Trade.Response
   {
     [JsonProperty(PropertyName = "fromSegment")]
     public string FromSegment { get; set; }
-    [JsonProperty(PropertyName = "toSegment")]
-    public string ToSegment { get; set; }
     [JsonProperty(PropertyName = "currency")]
     public string Currency { get; set; }
     [JsonProperty(PropertyName = "amount")]
