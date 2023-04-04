@@ -61,7 +61,7 @@ class Program
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
     //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
-    //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
+    TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
@@ -87,7 +87,7 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -110,6 +110,8 @@ class Program
     //TigerResponse? response = await PlaceLimitOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672900550991,"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"totalQuantity":1,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
     // response:{"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","expiry":null,"strike":null,"right":null,"multiplier":0.0,"identifier":"AAPL","id":29360305075913728,"orderId":1457,"parentId":0,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"auxPrice":0.0,"trailingPercent":0.0,"totalQuantity":1,"filledQuantity":0,"cashQuantity":0.0,"lastFillPrice":0.0,"avgFillPrice":0.0,"timeInForce":"DAY","expireTime":0,"goodTillDate":null,"outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","ocaGroupId":0,"comboLegs":null,"allocAccounts":null,"allocShares":null,"algoStrategy":"LMT","algoParameters":null,"status":"Initial","source":null,"discount":0.0,"canModify":true,"canCancel":true}]},"code":0,"message":"success","timestamp":1672900550991,"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
+
+    //TigerResponse? response = await PlaceAuctionOrderAsync(tradeClient);
 
     //TigerResponse? response = await PlaceStopOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672900788269,"data":{"id":29360336176021504,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360336176021504,"orderId":1458,"account":"20200821144442583","action":"SELL","orderType":"STP","auxPrice":10.0,"totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900788000,"updateTime":1672900788000,"latestTime":1672900788000,"name":"XIAOMI-W","latestPrice":11.6,"attrDesc":"","userMark":"","algoStrategy":"STP","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"uuwso0alUH1JQfMMBMNfXvYqNoWw604OVQMWKmwNY2IqRpuoVweYx95FyWgEF/Ey2EZRdCOjRdk9eSjfn5YlC1i507COKbP5NprHnE6QJrgkNnuR1Ap2gGO7iTbF2ZB8I7SF8BQHBBCPF0PA3myAc2ZApbc2bM4XEGcermQKjCU="} 
@@ -172,11 +174,11 @@ class Program
 
     //TigerResponse? response = await TransferSegmentFundAsync(tradeClient);
 
-    //TigerResponse? response = await CancelSegmentFundAsync(tradeClient, 1111L);
+    //TigerResponse? response = await CancelSegmentFundAsync(tradeClient, 30359957871001600L);
 
-    TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
+    //TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -651,6 +653,27 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceAuctionOrderAsync(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.buildStockContract("00700", Currency.HKD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.buildAuctionOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        100,
+        350.0,
+        // pre-mardet auciton order: AM or AL + OPG(If there is no transaction, continue to participate in intraday trading); after-hours auction order: AM or AL + DAY
+        OrderType.AL,  // AL(auction limit order) or AM(auction market order)
+        TimeInForce.OPG // participate in the pre-market auction
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceLimitOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.buildStockContract("AAPL", Currency.USD.ToString());
@@ -1077,10 +1100,11 @@ class Program
         {
           new OptionKlineModel() {
             Symbol = "AAPL", Right = "PUT", Strike = "150.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
-            BeginTime = DateUtil.ConvertTimestamp("2023-02-22", CustomTimeZone.NY_ZONE),
-            EndTime = DateUtil.ConvertTimestamp("2023-03-04", CustomTimeZone.NY_ZONE),
+            Expiry = DateUtil.ConvertTimestamp("2023-04-14", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2023-03-22", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
             Period = OptionKType.min60.Value,
+            Limit = 300
           }
         }
       }

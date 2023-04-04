@@ -18,6 +18,9 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "end_time")]
     public Int64 EndTime { get; set; }
 
+    [JsonProperty(PropertyName = "limit")]
+    public Int32 Limit { get; set; } = 300;
+
     public OptionKlineModel() : base()
     {
     }

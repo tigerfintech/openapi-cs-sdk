@@ -188,6 +188,19 @@ namespace TigerOpenAPI.Trade.Model
       return tradeOrderModel;
     }
 
+    public static PlaceOrderModel buildAuctionOrder(string account, ContractItem contract,
+        ActionType action, int quantity, Double limitPrice,
+        OrderType orderType = OrderType.AL,
+        TimeInForce timeInForce = TimeInForce.OPG, Double adjustLimit = 0)
+    {
+      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      tradeOrderModel.OrderType = orderType;
+      tradeOrderModel.TimeInForce = timeInForce;
+      tradeOrderModel.LimitPrice = limitPrice;
+      tradeOrderModel.AdjustLimit = adjustLimit;
+      return tradeOrderModel;
+    }
+
     public static PlaceOrderModel buildStopOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double auxPrice, Double adjustLimit = 0)
     {
