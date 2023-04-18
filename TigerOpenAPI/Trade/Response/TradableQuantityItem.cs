@@ -14,7 +14,7 @@ namespace TigerOpenAPI.Trade.Response
     public Double TradableQuantity { get; set; }
     /** tradable quantity for margin */
     [JsonProperty(PropertyName = "financingQuantity")]
-    public Double FinancingQuantity { get; set; }
+    public Double FinancingQuantity { get; set; } = double.NaN;
     /** position quantity */
     [JsonProperty(PropertyName = "positionQuantity")]
     public Double PositionQuantity { get; set; }
