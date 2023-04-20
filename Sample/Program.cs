@@ -61,7 +61,7 @@ class Program
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
     //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
-    TigerResponse? response = await GetOptionKLineAsync(quoteClient);
+    //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
@@ -87,7 +87,7 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -178,7 +178,10 @@ class Program
 
     //TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+    TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
+    // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
+
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -258,6 +261,24 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<EstimateTradableQuantityResponse?> GetMaxTradableQuantityAsync(TradeClient tradeClient)
+  {
+    TigerRequest<EstimateTradableQuantityResponse> request = new TigerRequest<EstimateTradableQuantityResponse>()
+    {
+      ApiMethodName = TradeApiService.ESTIMATE_TRADABLE_QUANTITY,
+      ModelValue = new EstimateTradableQuantityModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        SecType = SecType.STK,
+        Symbol = "AAPL",
+        Action = ActionType.BUY,
+        OrderType = OrderType.LMT,
+        LimitPrice = 150,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
   }
 
   static async Task<SegmentFundsResponse?> QueryTransferFundsAsync(TradeClient tradeClient)
@@ -794,7 +815,11 @@ class Program
     TigerRequest<PositionsResponse> request = new TigerRequest<PositionsResponse>()
     {
       ApiMethodName = TradeApiService.POSITIONS,
-      ModelValue = new PositionsModel() { SecType = SecType.STK, Market = Market.US }
+      ModelValue = new PositionsModel() {
+        Account = "20200821144442583",
+        SecType = SecType.STK,
+        Market = Market.CN
+      }
     };
     return await tradeClient.ExecuteAsync(request);
   }

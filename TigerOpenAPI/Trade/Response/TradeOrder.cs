@@ -38,6 +38,8 @@ namespace TigerOpenAPI.Trade.Response
     public Int64 Id { get; set; }
     [JsonProperty(PropertyName = "orderId")]
     public int OrderId { get; set; }
+    [JsonProperty(PropertyName = "externalId")]
+    public string ExternalId { get; set; }
     [JsonProperty(PropertyName = "parentId")]
     public Int64 ParentId { get; set; }
     [JsonProperty(PropertyName = "account")]
