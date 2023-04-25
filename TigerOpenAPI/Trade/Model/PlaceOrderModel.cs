@@ -124,7 +124,7 @@ namespace TigerOpenAPI.Trade.Model
     public string UserMark { get; set; }
 
     /**
-     * attached order type：PROFIT/LOSS
+     * attached order type：PROFIT/LOSS/BRACKETS
      */
     [JsonProperty(PropertyName = "attach_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public AttachType AttachType { get; set; }
