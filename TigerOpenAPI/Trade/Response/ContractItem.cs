@@ -82,6 +82,21 @@ namespace TigerOpenAPI.Trade.Response
     public string IbCode { get; set; }
     [JsonProperty(PropertyName = "tickSizes")]
     public List<TickSizeItem> TickSizes { get; set; }
+
+    /** Intraday initial margin discount */
+    [JsonProperty(PropertyName = "discountedDayInitialMargin")]
+    public Double DiscountedDayInitialMargin { get; set; } = double.NaN;
+    /** Intraday maintenance margin discount */
+    [JsonProperty(PropertyName = "discountedDayMaintenanceMargin")]
+    public Double DiscountedDayMaintenanceMargin { get; set; } = double.NaN;
+    /** Intraday margin discount period time zone  */
+    [JsonProperty(PropertyName = "discountedTimeZoneCode")]
+    public string DiscountedTimeZoneCode { get; set; }
+    [JsonProperty(PropertyName = "discountedStartAt")]
+    public string DiscountedStartAt { get; set; }
+    [JsonProperty(PropertyName = "discountedEndAt")]
+    public string DiscountedEndAt { get; set; }
+
     [JsonProperty(PropertyName = "isEtf")]
     public Boolean IsEtf { get; set; }
     [JsonProperty(PropertyName = "etfLeverage")]
