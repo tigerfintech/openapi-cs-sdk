@@ -1,7 +1,10 @@
 ﻿using System;
+using DotNetty.Common.Utilities;
+using System.IO;
 using Newtonsoft.Json;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Util;
+using TigerOpenAPI.Common.Watch;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
@@ -50,7 +53,9 @@ namespace TigerOpenAPI.Common
         this.client = client;
         this.config = config;
         Register(defaultCallback);
-        bool result = ConfigFileUtil.LoadTokenFile(config);
+        bool result = LoadTokenFile(config);
+        AddTokenFileWatch(config);
+
         if (!config.AutoRefreshToken)
         {
           return;
@@ -152,6 +157,50 @@ namespace TigerOpenAPI.Common
           count--;
         }
       } while (count > 0) ;
+    }
+
+    public bool LoadTokenFile(TigerConfig tigerConfig)
+    {
+      if (!ConfigFileUtil.CheckFile(tigerConfig.ConfigFilePath, TigerApiConstants.TOKEN_FILENAME))
+      {
+        return false;
+      }
+
+      string tokenFile = Path.Combine(tigerConfig.ConfigFilePath.Trim(), TigerApiConstants.TOKEN_FILENAME);
+      Dictionary<string, string> dataDict = ConfigFileUtil.ReadPropertiesFile(tokenFile);
+      string token = dataDict[ConfigFileUtil.TOKEN_FILE_TOKEN];
+
+      if (string.IsNullOrWhiteSpace(token))
+      {
+        return false;
+      }
+      tigerConfig.Token = token;
+      return true;
+    }
+
+    public void AddTokenFileWatch(TigerConfig config)
+    {
+      try
+      {
+        if (null == config || string.IsNullOrWhiteSpace(config.ConfigFilePath))
+        {
+          return;
+        }
+        // if token file exists, add listener
+        if (ConfigFileUtil.CheckFile(config.ConfigFilePath, TigerApiConstants.TOKEN_FILENAME))
+        {
+          IFileWatchedListener tokenFileListener = new TokenFileWatched(config);
+          FileWatcher fileWatcher = new FileWatcher(config.ConfigFilePath,
+            tokenFileListener, TigerApiConstants.TOKEN_FILENAME);
+          fileWatcher.Watch();
+
+          ApiLogger.Info("addTokenFileWatch success.");
+        }
+      }
+      catch (Exception e)
+      {
+        ApiLogger.Error("addTokenFileWatch fail.", e);
+      }
     }
   }
 }

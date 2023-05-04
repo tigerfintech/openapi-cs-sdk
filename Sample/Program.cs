@@ -910,6 +910,19 @@ class Program
     response = await tradeClient.ExecuteAsync(request);
     ApiLogger.Info("warrants response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
 
+    // get futures contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.FUT.ToString(),
+        Symbol = "JPY2306"
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("futures response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
     return response;
   }
 
