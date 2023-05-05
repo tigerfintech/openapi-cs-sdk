@@ -207,6 +207,23 @@ namespace TigerOpenAPI.Common.Util
       return builder.ToString();
     }
 
+    public static long TryGetCreateTime(string token)
+    {
+      long tokenCreateTime = 0;
+      if (!string.IsNullOrWhiteSpace(token))
+      {
+        try
+        {
+          tokenCreateTime = GetCreateTime(token);
+        }
+        catch
+        {
+          // ignore
+        }
+      }
+      return tokenCreateTime;
+    }
+
     public static long GetCreateTime(string token)
     {
       string text = Encoding.UTF8.GetString(Convert.FromBase64String(token));
