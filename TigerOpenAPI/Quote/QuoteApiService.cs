@@ -31,6 +31,7 @@ namespace TigerOpenAPI.Quote
     public const string CAPITAL_DISTRIBUTION = "capital_distribution";
     public const string CAPITAL_FLOW = "capital_flow";
     public const string MARKET_SCANNER = "market_scanner";
+    public const string MARKET_SCANNER_TAGS = "market_scanner_tags";
 
     /**
      * option quote
@@ -105,6 +106,7 @@ namespace TigerOpenAPI.Quote
       CAPITAL_DISTRIBUTION,
       CAPITAL_FLOW,
       MARKET_SCANNER,
+      MARKET_SCANNER_TAGS,
 
       /**
        * option quote

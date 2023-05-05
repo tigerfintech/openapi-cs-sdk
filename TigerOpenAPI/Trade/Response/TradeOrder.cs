@@ -141,6 +141,8 @@ namespace TigerOpenAPI.Trade.Response
     public Boolean CanModify { get; set; }
     [JsonProperty(PropertyName = "canCancel")]
     public Boolean CanCancel { get; set; }
+    [JsonProperty(PropertyName = "isOpen")]
+    public Boolean IsOpen { get; set; }
 
     public TradeOrder()
     {

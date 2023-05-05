@@ -48,6 +48,16 @@ namespace TigerOpenAPI.Config
     public string Token { get; set; }
 
     /**
+     * refresh token frequency
+     */
+    public int RefreshTokenIntervalDays { get; set; }
+
+    /**
+     * refresh token time, formate: HH:mm:ss
+     */
+    public string RefreshTokenTime { get; set; }
+
+    /**
      * (optional)automatically refresh token
      */
     public bool AutoRefreshToken { get; set; } = true;

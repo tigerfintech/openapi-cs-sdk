@@ -20,7 +20,7 @@ namespace TigerOpenAPI.Common.Util
     private const string CONFIG_FILE_ACCOUNT = "account";
     private const string CONFIG_FILE_LICENSE = "license";
     private const string CONFIG_FILE_ENV = "env";
-    private const string TOKEN_FILE_TOKEN = "token";
+    public const string TOKEN_FILE_TOKEN = "token";
 
     private static ISet<string> configFileKeys = new HashSet<string>()
     {
@@ -33,7 +33,7 @@ namespace TigerOpenAPI.Common.Util
 
     private ConfigFileUtil() { }
 
-    private static bool CheckFile(string dir, string fileName)
+    public static bool CheckFile(string dir, string fileName)
     {
       if (string.IsNullOrWhiteSpace(dir))
       {
@@ -94,25 +94,6 @@ namespace TigerOpenAPI.Common.Util
             break;
         }
       }
-    }
-
-    public static bool LoadTokenFile(TigerConfig tigerConfig)
-    {
-      if (!CheckFile(tigerConfig.ConfigFilePath, TigerApiConstants.TOKEN_FILENAME))
-      {
-        return false;
-      }
-
-      string tokenFile = Path.Combine(tigerConfig.ConfigFilePath.Trim(), TigerApiConstants.TOKEN_FILENAME);
-      Dictionary<string, string> dataDict = ReadPropertiesFile(tokenFile);
-      string token = dataDict[TOKEN_FILE_TOKEN];
-
-      if (string.IsNullOrWhiteSpace(token))
-      {
-        return false;
-      }
-      tigerConfig.Token = token;
-      return true;
     }
 
     public static bool UpdateTokenFile(TigerConfig tigerConfig, string token)
@@ -224,6 +205,23 @@ namespace TigerOpenAPI.Common.Util
         builder.Append(ch);
       }
       return builder.ToString();
+    }
+
+    public static long TryGetCreateTime(string token)
+    {
+      long tokenCreateTime = 0;
+      if (!string.IsNullOrWhiteSpace(token))
+      {
+        try
+        {
+          tokenCreateTime = GetCreateTime(token);
+        }
+        catch
+        {
+          // ignore
+        }
+      }
+      return tokenCreateTime;
     }
 
     public static long GetCreateTime(string token)

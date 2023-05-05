@@ -35,6 +35,19 @@ class Program
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE  // (optional) default is HK_ZONE
     };
+
+    //TigerConfig config = new TigerConfig()
+    //{
+    //  ConfigFilePath = "/data0/tiger_config/sandbox",
+    //  FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
+    //  AutoGrabPermission = false,   // (optional) default is true
+    //  AutoRefreshToken = false,
+    //  Language = Language.en_US,   // (optional) default is en_US
+    //  TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
+    //  IsSslSocket = true
+    //};
+    //ApiLogger.DebugEnabled = true;
+
     QuoteClient quoteClient = new QuoteClient(config);
 
     // QuoteApiService.USER_LICENSE
@@ -82,12 +95,14 @@ class Program
 
     // 选股器
     //TigerResponse? response = await FilterSymbolsAsync(quoteClient);
+    // 获取选股器多标签过滤的行业和概念数据
+    TigerResponse? response = await GetMultiFieldTags(quoteClient);
 
     // warrant/cbbc
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -178,10 +193,10 @@ class Program
 
     //TigerResponse? response = await QueryTransferFundsAsync(tradeClient);
 
-    TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
+    //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -199,6 +214,7 @@ class Program
       ConfigFilePath = "/data0/tiger_config/test",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
+      AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
       IsSslSocket = true
@@ -894,6 +910,19 @@ class Program
     response = await tradeClient.ExecuteAsync(request);
     ApiLogger.Info("warrants response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
 
+    // get futures contract
+    request = new TigerRequest<ContractResponse>()
+    {
+      ApiMethodName = TradeApiService.CONTRACT,
+      ModelValue = new ContractModel()
+      {
+        SecType = SecType.FUT.ToString(),
+        Symbol = "JPY2306"
+      }
+    };
+    response = await tradeClient.ExecuteAsync(request);
+    ApiLogger.Info("futures response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
+
     return response;
   }
 
@@ -931,6 +960,24 @@ class Program
         Strike = new Range<double>(300, 320.0),
         Page = 0,
         PageSize = 10
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<MarketScannerTagsResponse?> GetMultiFieldTags(QuoteClient quoteClient)
+  {
+    TigerRequest<MarketScannerTagsResponse> request = new TigerRequest<MarketScannerTagsResponse>()
+    {
+      ApiMethodName = QuoteApiService.MARKET_SCANNER_TAGS,
+      ModelValue = new MarketScannerTagsModel()
+      {
+        Market = Market.HK,
+        MultiTagFieldList = new List<string>()
+        {
+          // only support MultiTagField_Industry and MultiTagField_Concept
+          nameof(MultiTagField.MultiTagField_Industry)
+        }
       }
     };
     return await quoteClient.ExecuteAsync(request);
