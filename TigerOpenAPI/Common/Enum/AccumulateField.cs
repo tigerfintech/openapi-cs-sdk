@@ -6,7 +6,7 @@ namespace TigerOpenAPI.Common.Enum
     /** 涨跌幅*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间  */
     public static readonly AccumulateField AccumulateField_ChangeRate = new AccumulateField(1, "changeRate");
     /** 涨跌额*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly AccumulateField AccumulateField_ChangeValue = new AccumulateField(2, "change");
+    public static readonly AccumulateField AccumulateField_ChangeValue = new AccumulateField(2, "changeVal");
     /** 总负债增长率 */
     public static readonly AccumulateField AccumulateField_TotalLiabilities_Ratio_Annual = new AccumulateField(3, "totalLiabilitiesRatio");
     /** 净资产增长率 */
@@ -31,10 +31,6 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly AccumulateField AccumulateField_ROE = new AccumulateField(13, "ROE");
     /** ROA =净资产收益率 */
     public static readonly AccumulateField AccumulateField_ROA = new AccumulateField(14, "ROA");
-    /** 股息   hermes $ */
-    public static readonly AccumulateField AccumulateField_DividePrice = new AccumulateField(15, "dividePrice");
-    /** 股息收益率 选股服务自身计算 */
-    public static readonly AccumulateField AccumulateField_DivideRate = new AccumulateField(16, "divideRate");
     /** 毛利率 */
     public static readonly AccumulateField AccumulateField_GrossProfitRate = new AccumulateField(17, "grossMargin");
     /** 净利率* */
@@ -46,17 +42,19 @@ namespace TigerOpenAPI.Common.Enum
     /** 速动比率 */
     public static readonly AccumulateField AccumulateField_QuickRatio = new AccumulateField(21, "quickRatio");
     /** 经营现金流 */
-    public static readonly AccumulateField AccumulateField_CashFromOps = new AccumulateField(22, "cash4Ops");
+    public static readonly AccumulateField AccumulateField_CashFromOpsRatio = new AccumulateField(22, "cash4OpsRatio");
     /** 投资现金流 */
     public static readonly AccumulateField AccumulateField_CashFromInvesting = new AccumulateField(23, "cash4Invest");
     /** 筹资现金流 */
     public static readonly AccumulateField AccumulateField_CashFromFinancing = new AccumulateField(24, "cash4Finance");
     /** 资产负债率 */
     public static readonly AccumulateField AccumulateField_TotalLiabilitiesToTotalAssets = new AccumulateField(25, "allLiabAndAssets");
-    /** 经营现金流同比增长率; （T期CFO-T-1期CFO）/T-1期CFO *100%  */
-    public static readonly AccumulateField AccumulateField_CashFromOps_yearOnYear_Ratio = new AccumulateField(26, "cash4OpsYearOnYearRatio");
     /** 净资产收益率ROE同比增长率  （T期ROE-T-1期ROE）/T-1期ROE *100%*/
     public static readonly AccumulateField AccumulateField_ROE_yearOnYear_Ratio = new AccumulateField(27, "netIncomeYearOnYearRatio");
+    /** 营业利润占比 */
+    public static readonly AccumulateField AccumulateField_Operating_Profits_Ratio = new AccumulateField(28, "OperatingProfitsRatio");
+    /** 经营现金流  */
+    public static readonly AccumulateField AccumulateField_CashFromOpsVal = new AccumulateField(29, "cash4OpsVal");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -87,19 +85,18 @@ namespace TigerOpenAPI.Common.Enum
         yield return AccumulateField_Total_Revenue;
         yield return AccumulateField_ROE;
         yield return AccumulateField_ROA;
-        yield return AccumulateField_DividePrice;
-        yield return AccumulateField_DivideRate;
         yield return AccumulateField_GrossProfitRate;
         yield return AccumulateField_NetProfitRate;
         yield return AccumulateField_TotalAssets;
         yield return AccumulateField_CurrentRatio;
         yield return AccumulateField_QuickRatio;
-        yield return AccumulateField_CashFromOps;
+        yield return AccumulateField_CashFromOpsRatio;
         yield return AccumulateField_CashFromInvesting;
         yield return AccumulateField_CashFromFinancing;
         yield return AccumulateField_TotalLiabilitiesToTotalAssets;
-        yield return AccumulateField_CashFromOps_yearOnYear_Ratio;
         yield return AccumulateField_ROE_yearOnYear_Ratio;
+        yield return AccumulateField_Operating_Profits_Ratio;
+        yield return AccumulateField_CashFromOpsVal;
       }
     }
 

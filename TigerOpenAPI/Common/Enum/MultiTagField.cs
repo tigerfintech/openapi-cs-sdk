@@ -39,6 +39,14 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly MultiTagField MultiTagField_Week52HighFlag = new MultiTagField(17, "week52HighFlag");
     /** 52周最低 0 否 1是 */
     public static readonly MultiTagField MultiTagField_Week52LowFlag = new MultiTagField(18, "week52LowFlag");
+    /** 交易币种 ,需要具体币种 */
+    public static readonly MultiTagField MultiTagField_TradeCurrency = new MultiTagField(19, "tradeCurrency");
+    /** ETF类型 ，需要具体类型 */
+    public static readonly MultiTagField MultiTagField_ETF_TYPE = new MultiTagField(20, "etfType");
+    /** 股票市场，这里支持多个市场 ，需要具体类型 QotMarket股票市场,传递里面的value值 */
+    public static readonly MultiTagField MultiTagField_Market_Name = new MultiTagField(21, "marketName");
+    /** 一级行业级别  需要传递具体sectorId */
+    public static readonly MultiTagField MultiTagField_One_Sectors_Level = new MultiTagField(22, "oneSectorsLevel");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -74,6 +82,10 @@ namespace TigerOpenAPI.Common.Enum
         yield return MultiTagField_Stock_Package;
         yield return MultiTagField_Week52HighFlag;
         yield return MultiTagField_Week52LowFlag;
+        yield return MultiTagField_TradeCurrency;
+        yield return MultiTagField_ETF_TYPE;
+        yield return MultiTagField_Market_Name;
+        yield return MultiTagField_One_Sectors_Level;
       }
     }
 
