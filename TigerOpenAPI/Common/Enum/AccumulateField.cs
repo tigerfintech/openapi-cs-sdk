@@ -41,7 +41,7 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly AccumulateField AccumulateField_CurrentRatio = new AccumulateField(20, "currentRatio");
     /** 速动比率 */
     public static readonly AccumulateField AccumulateField_QuickRatio = new AccumulateField(21, "quickRatio");
-    /** 经营现金流 */
+    /** 经营现金流同比率 */
     public static readonly AccumulateField AccumulateField_CashFromOpsRatio = new AccumulateField(22, "cash4OpsRatio");
     /** 投资现金流 */
     public static readonly AccumulateField AccumulateField_CashFromInvesting = new AccumulateField(23, "cash4Invest");
