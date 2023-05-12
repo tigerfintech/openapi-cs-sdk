@@ -805,7 +805,7 @@ class Program
     TigerRequest<PrimeAssetResponse> request = new TigerRequest<PrimeAssetResponse>()
     {
       ApiMethodName = TradeApiService.PRIME_ASSETS,
-      ModelValue = new TradeModel()
+      ModelValue = new PrimeAssetsModel()
       {
         Account = "572386"
       }
