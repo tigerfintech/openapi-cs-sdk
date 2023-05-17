@@ -25,7 +25,7 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChVPcmRlclN0YXR1c0RhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3Rv",
-            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi0wUKD09yZGVyU3Rh",
+            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi5QUKD09yZGVyU3Rh",
             "dHVzRGF0YRIKCgJpZBgBIAEoEhIPCgdhY2NvdW50GAIgASgJEg4KBnN5bWJv",
             "bBgDIAEoCRIOCgZleHBpcnkYBCABKAkSDgoGc3RyaWtlGAUgASgJEg0KBXJp",
             "Z2h0GAYgASgJEhIKCmlkZW50aWZpZXIYByABKAkSEgoKbXVsdGlwbGllchgI",
@@ -41,12 +41,12 @@ namespace TigerOpenAPI.Quote.Pb {
             "IAEoCBIRCgljYW5DYW5jZWwYHSABKAgSEwoLbGlxdWlkYXRpb24YHiABKAgS",
             "DAoEbmFtZRgfIAEoCRIOCgZzb3VyY2UYICABKAkSEAoIZXJyb3JNc2cYISAB",
             "KAkSEAoIYXR0ckRlc2MYIiABKAkSGAoQY29tbWlzc2lvbkFuZEZlZRgjIAEo",
-            "AhIQCghvcGVuVGltZRgkIAEoBBIRCgl0aW1lc3RhbXAYJSABKARCGKoCFVRp",
-            "Z2VyT3BlbkFQSS5RdW90ZS5QYmIGcHJvdG8z"));
+            "AhIQCghvcGVuVGltZRgkIAEoBBIRCgl0aW1lc3RhbXAYJSABKAQSEAoIdXNl",
+            "ck1hcmsYJiABKAlCGKoCFVRpZ2VyT3BlbkFQSS5RdW90ZS5QYmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "StopPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Liquidation", "Name", "Source", "ErrorMsg", "AttrDesc", "CommissionAndFee", "OpenTime", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "StopPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Liquidation", "Name", "Source", "ErrorMsg", "AttrDesc", "CommissionAndFee", "OpenTime", "Timestamp", "UserMark" }, null, null, null, null)
           }));
     }
     #endregion
@@ -124,6 +124,7 @@ namespace TigerOpenAPI.Quote.Pb {
       commissionAndFee_ = other.commissionAndFee_;
       openTime_ = other.openTime_;
       timestamp_ = other.timestamp_;
+      userMark_ = other.userMark_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -667,6 +668,18 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "userMark" field.</summary>
+    public const int UserMarkFieldNumber = 38;
+    private string userMark_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string UserMark {
+      get { return userMark_; }
+      set {
+        userMark_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -719,6 +732,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CommissionAndFee, other.CommissionAndFee)) return false;
       if (OpenTime != other.OpenTime) return false;
       if (Timestamp != other.Timestamp) return false;
+      if (UserMark != other.UserMark) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -763,6 +777,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (CommissionAndFee != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CommissionAndFee);
       if (OpenTime != 0UL) hash ^= OpenTime.GetHashCode();
       if (Timestamp != 0UL) hash ^= Timestamp.GetHashCode();
+      if (UserMark.Length != 0) hash ^= UserMark.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -929,6 +944,10 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(168, 2);
         output.WriteUInt64(Timestamp);
       }
+      if (UserMark.Length != 0) {
+        output.WriteRawTag(178, 2);
+        output.WriteString(UserMark);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1087,6 +1106,10 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(168, 2);
         output.WriteUInt64(Timestamp);
       }
+      if (UserMark.Length != 0) {
+        output.WriteRawTag(178, 2);
+        output.WriteString(UserMark);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1207,6 +1230,9 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (Timestamp != 0UL) {
         size += 2 + pb::CodedOutputStream.ComputeUInt64Size(Timestamp);
+      }
+      if (UserMark.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(UserMark);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1330,6 +1356,9 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.Timestamp != 0UL) {
         Timestamp = other.Timestamp;
+      }
+      if (other.UserMark.Length != 0) {
+        UserMark = other.UserMark;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1494,6 +1523,10 @@ namespace TigerOpenAPI.Quote.Pb {
             Timestamp = input.ReadUInt64();
             break;
           }
+          case 306: {
+            UserMark = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1655,6 +1688,10 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           case 296: {
             Timestamp = input.ReadUInt64();
+            break;
+          }
+          case 306: {
+            UserMark = input.ReadString();
             break;
           }
         }
