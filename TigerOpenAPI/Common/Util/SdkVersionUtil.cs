@@ -7,7 +7,6 @@ namespace TigerOpenAPI.Common.Util
   public class SdkVersionUtil
   {
     private static string Prefix = "openapi-cs-sdk-";
-    private static string DefaultVersion = "1.0.0";
     private static string UnknownVersion = "unknown";
     private static string SdkVersion;
 

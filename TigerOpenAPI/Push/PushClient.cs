@@ -309,7 +309,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Quote);
     }
 
-    public uint CancelSubscribeQuote(ISet<string> symbols)
+    public uint CancelSubscribeQuote(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Quote);
     }
@@ -319,7 +319,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.TradeTick);
     }
 
-    public uint CancelSubscribeTradeTick(ISet<string> symbols)
+    public uint CancelSubscribeTradeTick(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.TradeTick);
     }
@@ -329,7 +329,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Option);
     }
 
-    public uint CancelSubscribeOption(ISet<string> symbols)
+    public uint CancelSubscribeOption(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Option);
     }
@@ -339,7 +339,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Future);
     }
 
-    public uint CancelSubscribeFuture(ISet<string> symbols)
+    public uint CancelSubscribeFuture(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Future);
     }
@@ -349,7 +349,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.QuoteDepth);
     }
 
-    public uint CancelSubscribeDepthQuote(ISet<string> symbols)
+    public uint CancelSubscribeDepthQuote(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.QuoteDepth);
     }
@@ -367,7 +367,7 @@ namespace TigerOpenAPI.Push
       return request.Id;
     }
 
-    private uint CancelSubscribeQuote(ISet<string> symbols, QuoteSubject subject)
+    private uint CancelSubscribeQuote(ISet<string>? symbols, QuoteSubject subject)
     {
       if (channel is null || !IsConnected())
       {
@@ -377,7 +377,7 @@ namespace TigerOpenAPI.Push
 
       Request request = ProtoMessageUtil.buildUnSubscribeMessage(symbols, subject);
       channel.WriteAndFlushAsync(request).Wait();
-      ApiLogger.Info("send cancel subscribe [{}] message, symbols:{}.", subject, symbols);
+      ApiLogger.Info($"send cancel subscribe [{subject}] message, symbols:{symbols}.");
       return request.Id;
     }
 

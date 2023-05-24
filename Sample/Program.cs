@@ -80,34 +80,34 @@ class Program
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
     //TigerResponse? response = await GetFutureContractByExchangeCodeAsync(quoteClient);
     //TigerResponse? response = await GetFutureContractByContractCodeAsync(quoteClient);
-    // 查询指定品种的全部合约
+    // Query all contracts of a specified product
     //TigerResponse? response = await GetFutureContractsAsync(quoteClient);
-    // 查询指定品种的连续合约(main合约)
+    // Query the continuous contract of the specified product
     //TigerResponse? response = await GetFutureContinuousContractsAsync(quoteClient);
-    // 查询指定品种的当前合约
+    // Query the current contract of the specified product
     //TigerResponse? response = await GetFutureCurrentContractAsync(quoteClient);
-    // 查询指定期货合约的交易时间
+    // Query the trading time of the specified futures contract
     //TigerResponse? response = await GetFutureTradingDateAsync(quoteClient);
     //TigerResponse? response = await GetFutureKLineAsync(quoteClient);
     //TigerResponse? response = await GetFutureRealTimeQuoteAsync(quoteClient);
     //TigerResponse? response = await GetFutureTickAsync(quoteClient);
     //TigerResponse? response = await GetQuoteContractAsync(quoteClient);
 
-    // 选股器
+    // Stock screener
     //TigerResponse? response = await FilterSymbolsAsync(quoteClient);
-    // 获取选股器多标签过滤的行业和概念数据
-    TigerResponse? response = await GetMultiFieldTags(quoteClient);
+    // Obtain industry and concept data filtered by multi-label stock screener
+    //TigerResponse? response = await GetMultiFieldTags(quoteClient);
 
     // warrant/cbbc
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
-    //TigerResponse? response = await GetContractsAsync(tradeClient);
+    TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
@@ -196,7 +196,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -253,7 +253,9 @@ class Program
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
-    ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote(symbols)}");
+    // Cancel all quote subscriptions(Security, Options, Futures)
+    ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote()}");
+    //ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote(symbols)}");
     Sleep(2);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(2);
@@ -857,7 +859,9 @@ class Program
       ApiMethodName = TradeApiService.CONTRACTS,
       ModelValue = new ContractsModel()
       {
-        Symbols = new List<string> { "AAPL", "TSLA" }
+        SecType = SecType.STK.ToString(),
+        Symbols = new List<string> { "AAPL", "TSLA" },
+        Account = "13810712"
       }
     };
     return await tradeClient.ExecuteAsync(request);
