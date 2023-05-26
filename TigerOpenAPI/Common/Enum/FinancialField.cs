@@ -5,19 +5,15 @@ namespace TigerOpenAPI.Common.Enum
   {
 
     /** 毛利率*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly FinancialField FinancialField_GrossProfitRate = new FinancialField(1, "grossMargin");
+    public static readonly FinancialField FinancialField_GrossProfitRate = new FinancialField(1, "grossMarginVal");
     /** 净利率*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly FinancialField FinancialField_NetProfitRate = new FinancialField(2, "netIncomeMargin");
+    public static readonly FinancialField FinancialField_NetProfitRate = new FinancialField(2, "netIncomeMarginVal");
     /** 扣非净利润率  *（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly FinancialField FinancialField_EarningsFromContOpsMargin = new FinancialField(3, "earningsFromContOpsMargin");
-    /** 总负债/股东权益* (单位：元) */
-    public static readonly FinancialField FinancialField_TotalDebtToEquity = new FinancialField(4, "totalDebtToEquity");
     /** 长期负债/股东权益 **/
     public static readonly FinancialField FinancialField_LongTermDebtToEquity = new FinancialField(5, "ltDebtToEquity");
     /** EBIT/利息支出 **/
     public static readonly FinancialField FinancialField_EbitToInterestExp = new FinancialField(6, "ebitToInterestExp");
-    /** 总负债/总资产 **/
-    public static readonly FinancialField FinancialField_TotalLiabilitiesToTotalAssets = new FinancialField(7, "totalLiabilitiesToTotalAssets");
     /** 总资产周转率（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly FinancialField FinancialField_TotalAssetTurnover = new FinancialField(8, "totalAssetTurnover");
     /** 应收帐款周转率 */
@@ -25,9 +21,9 @@ namespace TigerOpenAPI.Common.Enum
     /** 存货周转率（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly FinancialField FinancialField_InventoryTurnover = new FinancialField(10, "inventoryTurnover");
     /** 流动比率（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly FinancialField FinancialField_CurrentRatio = new FinancialField(11, "currentRatio");
+    public static readonly FinancialField FinancialField_CurrentRatio = new FinancialField(11, "currentRatioVal");
     /** 速动比率（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly FinancialField FinancialField_QuickRatio = new FinancialField(12, "quickRatio");
+    public static readonly FinancialField FinancialField_QuickRatio = new FinancialField(12, "quickRatioVal");
     /** 资产回报率 总资产收益率 *$ TTM（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly FinancialField FinancialField_ROATTM = new FinancialField(13, "roa");
     /** 净资产收益率 $（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
@@ -46,7 +42,7 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly FinancialField FinancialField_TotalAssets1YrGrowth = new FinancialField(20, "totalAssets1YrGrowth");
     /** 有形资产一年增长率 */
     public static readonly FinancialField FinancialField_TangibleBookValue1YrGrowth = new FinancialField(21, "tangibleBookValue1YrGrowth");
-    /** 经营现金流一年增长率 */
+    /** 经营现金流一年增长率 = 经营现金流同比增长率 */
     public static readonly FinancialField FinancialField_CashFromOperations1YrGrowth = new FinancialField(22, "cashFromOperations1YrGrowth");
     /** 资本开支一年增长率 */
     public static readonly FinancialField FinancialField_CapitalExpenditures1YrGrowth = new FinancialField(23, "capitalExpenditures1YrGrowth");
@@ -77,7 +73,7 @@ namespace TigerOpenAPI.Common.Enum
     /** 筹资现金流 */
     public static readonly FinancialField FinancialField_CashFromFinancing = new FinancialField(36, "cashFromFinancing");
     /** 净利润2年复合增长率 */
-    public static readonly FinancialField FinancialField_NormalizedNetIncome2YrCagr = new FinancialField(37, "normalizedNetIncome2YrCagr");
+    public static readonly FinancialField FinancialField_NormalizedNetIncome2YrCagr = new FinancialField(37, "netIncome2YrCagr");
     /** 营收2年复合增长率 */
     public static readonly FinancialField FinancialField_TotalRevenues2YrCagr = new FinancialField(38, "totalRevenues2YrCagr");
     /** 净利润5年复合增长率 */
@@ -85,11 +81,11 @@ namespace TigerOpenAPI.Common.Enum
     /** 营收5年复合增长率 */
     public static readonly FinancialField FinancialField_TotalRevenues5YrCagr = new FinancialField(40, "totalRevenues5YrCagr");
     /** 总资产 */
-    public static readonly FinancialField FinancialField_TotalAssets = new FinancialField(41, "totalAssets");
+    public static readonly FinancialField FinancialField_TotalAssets = new FinancialField(41, "totalAssetsVal");
     /** 固定资产周转率（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly FinancialField FinancialField_FixedAssetTurnover = new FinancialField(42, "fixedAssetTurnover");
     /** 营业利润 */
-    public static readonly FinancialField FinancialField_OperatingIncome = new FinancialField(43, "operatingIncome");
+    public static readonly FinancialField FinancialField_OperatingIncome = new FinancialField(43, "operatingIncomeVal");
     /** 营业总收入 */
     public static readonly FinancialField FinancialField_TotalRevenue = new FinancialField(44, "totalRevenue");
     /** 市盈率LYR PE =price-to-earnings ratio */
@@ -100,10 +96,6 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly FinancialField FinancialField_LYR_PS = new FinancialField(47, "LyrPS");
     /** 市销率TTM PS =Price-to-sales Ratio */
     public static readonly FinancialField FinancialField_TTM_PS = new FinancialField(48, "ttmPS");
-    /** 市净率LYR PB =price/book value ratio */
-    public static readonly FinancialField FinancialField_LYR_PB = new FinancialField(47, "LyrPB");
-    /** 市净率TTM PB =price/book value ratio */
-    public static readonly FinancialField FinancialField_TTM_PB = new FinancialField(48, "ttmPB");
     /** 当日主力净流入额 */
     public static readonly FinancialField FinancialField_LargeInflowAmountToday = new FinancialField(49, "largeInflowAmountToday");
     /** 当日主力增仓占比 */
@@ -144,6 +136,10 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly FinancialField FinancialField_Lst2YearAnnualVolatility = new FinancialField(67, "lst2YearAnnualVolatility");
     /** 近5年年化波动率  ETF */
     public static readonly FinancialField FinancialField_Lst5YearAnnualVolatility = new FinancialField(68, "lst5YearAnnualVolatility");
+    /** 市净率LYR PB =price/book value ratio */
+    public static readonly FinancialField FinancialField_LYR_PB = new FinancialField(69, "LyrPB");
+    /** 市净率TTM PB =price/book value ratio */
+    public static readonly FinancialField FinancialField_TTM_PB = new FinancialField(70, "ttmPB");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -164,10 +160,8 @@ namespace TigerOpenAPI.Common.Enum
         yield return FinancialField_GrossProfitRate;
         yield return FinancialField_NetProfitRate;
         yield return FinancialField_EarningsFromContOpsMargin;
-        yield return FinancialField_TotalDebtToEquity;
         yield return FinancialField_LongTermDebtToEquity;
         yield return FinancialField_EbitToInterestExp;
-        yield return FinancialField_TotalLiabilitiesToTotalAssets;
         yield return FinancialField_TotalAssetTurnover;
         yield return FinancialField_AccountsReceivableTurnover;
         yield return FinancialField_InventoryTurnover;
@@ -209,8 +203,6 @@ namespace TigerOpenAPI.Common.Enum
         yield return FinancialField_TTM_PE;
         yield return FinancialField_LYR_PS;
         yield return FinancialField_TTM_PS;
-        yield return FinancialField_LYR_PB;
-        yield return FinancialField_TTM_PB;
         yield return FinancialField_LargeInflowAmountToday;
         yield return FinancialField_LargeInflowAmountTodayPre;
         yield return FinancialField_ShortInterest;
@@ -231,6 +223,8 @@ namespace TigerOpenAPI.Common.Enum
         yield return FinancialField_LstYearAnnualVolatility;
         yield return FinancialField_Lst2YearAnnualVolatility;
         yield return FinancialField_Lst5YearAnnualVolatility;
+        yield return FinancialField_LYR_PB;
+        yield return FinancialField_TTM_PB;
       }
     }
 

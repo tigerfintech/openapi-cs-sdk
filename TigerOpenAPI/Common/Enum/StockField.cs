@@ -50,38 +50,32 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly StockField StockField_EarningDate = new StockField(23, "earningDate");
     /** 市盈率* TTM（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly StockField StockField_PeTTM = new StockField(24, "peRate");
-    /** 市净率*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly StockField StockField_PbRate = new StockField(25, "pbRate");
     /** 股息   hermes $ */
-    public static readonly StockField StockField_DividePrice = new StockField(26, "dividePrice");
+    public static readonly StockField StockField_DividePrice = new StockField(26, "dividePriceVal");
     /** 股息收益率 选股服务自身计算 */
-    public static readonly StockField StockField_DivideRate = new StockField(27, "divideRate");
+    public static readonly StockField StockField_DivideRate = new StockField(27, "divideRateVal");
     /** 股票交易市场 */
     public static readonly StockField StockField_Exchange = new StockField(29, "exchange");
     /** 换手率*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
     public static readonly StockField StockField_TurnoverRate = new StockField(30, "turnoverRate");
     /** 上市时间 */
     public static readonly StockField StockField_ListingDate = new StockField(31, "listingDate");
-    /** 市盈率LYR* TTM（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly StockField StockField_LyrPeRate = new StockField(32, "LyrPeRate");
     /** 总股本* */
     public static readonly StockField StockField_Share = new StockField(33, "shares");
     /** 上市价格* */
     public static readonly StockField StockField_ListingPrice = new StockField(34, "listingPrice");
-    /** 交易币种* */
-    public static readonly StockField StockField_TradeCurrency = new StockField(35, "tradeCurrency");
     /** 最新价-发行价* */
     public static readonly StockField StockField_DiffBetweenLastPriceAndListPrice = new StockField(36, "DiffBetweenLastPriceAndListPrice");
     /** 每股收益 lyr=Last Year Ratio 静态市盈率 */
     public static readonly StockField StockField_lyr_Eps = new StockField(37, "lyrEps");
     /** 未平仓做空量 */
-    public static readonly StockField StockField_Open_Short_Interest = new StockField(38, "OpenShortInterest");
+    public static readonly StockField StockField_Open_Short_Interest = new StockField(38, "OpenShortInterestVal");
     /** 未平仓做空比例 = 未平仓做空量/总股本 */
     public static readonly StockField StockField_Open_Short_Interest_Ratio = new StockField(39, "OpenShortInterestRatio");
     /** 产权比率 = Liability/Equity 总负债/股东 */
-    public static readonly StockField StockField_Equity_Ratio = new StockField(40, "EquityRatio");
+    public static readonly StockField StockField_Equity_Ratio = new StockField(40, "totalDebtToEquity");
     /** 权益乘数 = Asset/Equity */
-    public static readonly StockField StockField_Equity_Multiplier = new StockField(41, "EquityMultiplier");
+    public static readonly StockField StockField_Equity_Multiplier = new StockField(41, "totalLiabilitiesToTotalAssets");
     /** 最新股东数 */
     public static readonly StockField StockField_Holder_Nums = new StockField(42, "holderNums");
     /** 最新股东户数增长率 */
@@ -106,14 +100,24 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly StockField StockField_Top20_Composition_Rate = new StockField(52, "Top20CompoRate");
     /** 溢价率(折扣率) - ETF */
     public static readonly StockField StockField_DiscountPremium = new StockField(53, "discountPremium");
-    /** 股息率 - ETF */
-    public static readonly StockField StockField_dividend_Rate = new StockField(54, "dividendRate");
     /** 资产规模-净值 - ETF */
     public static readonly StockField StockField_Net_Worth_Aum = new StockField(55, "aum");
     /** 资产规模-现价 - ETF */
     public static readonly StockField StockField_assetSize = new StockField(56, "assetSize");
     /** 振幅 */
     public static readonly StockField StockField_Amplitude = new StockField(57, "Amplitude");
+    /** 盘前涨跌幅 */
+    public static readonly StockField StockField_Pre_ChangeRate = new StockField(58, "preChangeRate");
+    /** 盘中涨跌幅 */
+    public static readonly StockField StockField_current_ChangeRate = new StockField(59, "curChangeRate");
+    /** 盘后涨跌幅 */
+    public static readonly StockField StockField_Post_ChangeRate = new StockField(60, "postChangeRate");
+    /** 成分变动 - etf */
+    public static readonly StockField StockField_ETF_LastHoldingChangeDay = new StockField(61, "LastHoldingChangeDay");
+    /** 持仓数量 - etf */
+    public static readonly StockField StockField_ETF_HoldingCount = new StockField(62, "etfHoldingCount");
+    /** 净利润 不带周期 */
+    public static readonly StockField StockField_Net_Income = new StockField(63, "netIncomeVal");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -153,16 +157,13 @@ namespace TigerOpenAPI.Common.Enum
         yield return StockField_BidAskRatio;
         yield return StockField_EarningDate;
         yield return StockField_PeTTM;
-        yield return StockField_PbRate;
         yield return StockField_DividePrice;
         yield return StockField_DivideRate;
         yield return StockField_Exchange;
         yield return StockField_TurnoverRate;
         yield return StockField_ListingDate;
-        yield return StockField_LyrPeRate;
         yield return StockField_Share;
         yield return StockField_ListingPrice;
-        yield return StockField_TradeCurrency;
         yield return StockField_DiffBetweenLastPriceAndListPrice;
         yield return StockField_lyr_Eps;
         yield return StockField_Open_Short_Interest;
@@ -181,10 +182,15 @@ namespace TigerOpenAPI.Common.Enum
         yield return StockField_Top15_Composition_Rate;
         yield return StockField_Top20_Composition_Rate;
         yield return StockField_DiscountPremium;
-        yield return StockField_dividend_Rate;
         yield return StockField_Net_Worth_Aum;
         yield return StockField_assetSize;
         yield return StockField_Amplitude;
+        yield return StockField_Pre_ChangeRate;
+        yield return StockField_current_ChangeRate;
+        yield return StockField_Post_ChangeRate;
+        yield return StockField_ETF_LastHoldingChangeDay;
+        yield return StockField_ETF_HoldingCount;
+        yield return StockField_Net_Income;
       }
     }
 

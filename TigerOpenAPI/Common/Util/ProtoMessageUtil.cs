@@ -130,7 +130,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildUnSubscribeMessage(ISet<string> symbols, QuoteSubject subject)
+    public static Request buildUnSubscribeMessage(ISet<string>? symbols, QuoteSubject subject)
     {
       Request request = new Request()
       {
@@ -139,7 +139,7 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
         }
       };
       return request;

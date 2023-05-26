@@ -23,7 +23,7 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "contractMonth")]
     public string ContractMonth { get; set; }
     [JsonProperty(PropertyName = "strike")]
-    public Double Strike { get; set; }
+    public Double Strike { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "right")]
     public string Right { get; set; }
     [JsonProperty(PropertyName = "multiplier")]
@@ -48,24 +48,24 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "closeOnly")]
     public Boolean CloseOnly { get; set; }
     [JsonProperty(PropertyName = "minTick")]
-    public Double MinTick { get; set; }
+    public Double MinTick { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "marginable")]
     public Boolean Marginable { get; set; }
 
     [JsonProperty(PropertyName = "shortInitialMargin")]
-    public Double ShortInitialMargin { get; set; }
+    public Double ShortInitialMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortMaintenanceMargin")]
-    public Double ShortMaintenanceMargin { get; set; }
+    public Double ShortMaintenanceMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortFeeRate")]
-    public Double ShortFeeRate { get; set; }
+    public Double ShortFeeRate { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortable")]
     public Boolean Shortable { get; set; }
     [JsonProperty(PropertyName = "shortableCount")]
     public long ShortableCount { get; set; }
     [JsonProperty(PropertyName = "longInitialMargin")]
-    public Double LongInitialMargin { get; set; }
+    public Double LongInitialMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "longMaintenanceMargin")]
-    public Double LongMaintenanceMargin { get; set; }
+    public Double LongMaintenanceMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "lastTradingDate")]
     public string LastTradingDate { get; set; }
     [JsonProperty(PropertyName = "firstNoticeDate")]
