@@ -67,14 +67,14 @@ namespace TigerOpenAPI.Trade.Model
      * when order_type is TRAIL, aux_price is the stop loss trailing amount
      */
     [JsonProperty(PropertyName = "aux_price")]
-    public Double AuxPrice { get; set; }
+    public Double? AuxPrice { get; set; }
 
     /**
      * Trailing Stop Order - trailing percentage. When order_type is TRAIL,
      * trailing_percent is preferred when both aux_price and trailing_percent have values
      */
     [JsonProperty(PropertyName = "trailing_percent")]
-    public Double TrailingPercent { get; set; }
+    public Double? TrailingPercent { get; set; }
 
     /**
      * order validity time range
@@ -168,6 +168,14 @@ namespace TigerOpenAPI.Trade.Model
      */
     [JsonProperty(PropertyName = "stop_loss_trailing_amount")]
     public Double StopLossTrailingAmount { get; set; }
+
+    /**
+     * Multi Order's type: COVERED,PROTECTIVE,VERTICAL,STRADDLE,STRANGLE,CALENDAR,DIAGONAL,SYNTHETIC,CUSTOM
+     */
+    [JsonProperty(PropertyName = "combo_type")]
+    public string ComboType { get; set; }
+    [JsonProperty(PropertyName = "contract_legs")]
+    private List<ContractLeg> ContractLegs { get; set; }
 
     public PlaceOrderModel() : base()
     {
@@ -293,6 +301,34 @@ namespace TigerOpenAPI.Trade.Model
           model.Expiry = null;
         }
       }
+      return model;
+    }
+
+    public static PlaceOrderModel BuildMultiLegOrder(string account,
+        List<ContractLeg> contractLegs, ComboType comboType, ActionType action, Int32 quantity,
+        OrderType orderType, Double? limitPrice, Double? auxPrice, Double? trailingPercent)
+    {
+      if (contractLegs is null)
+      {
+        throw new ArgumentException("parameter 'contractLegs' is null");
+      }
+      if (orderType == OrderType.NONE)
+      {
+        throw new ArgumentException("parameter 'orderType' is NONE");
+      }
+      PlaceOrderModel model = new PlaceOrderModel();
+      model.SecType = SecType.MLEG;
+      model.ComboType = comboType.ToString();
+      model.Account = account;
+      model.Action = action;
+      model.TotalQuantity = quantity;
+      model.ContractLegs = contractLegs;
+
+      model.OrderType = orderType;
+      model.LimitPrice = limitPrice;
+      model.AuxPrice = auxPrice;
+      model.TrailingPercent = trailingPercent;
+      model.TimeInForce = TimeInForce.DAY;
       return model;
     }
 

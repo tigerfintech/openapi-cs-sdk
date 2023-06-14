@@ -82,7 +82,7 @@ namespace TigerOpenAPI.Trade.Response
     public Double RealizedPnl { get; set; }
     [JsonProperty(PropertyName = "remark")]
     public string Remark { get; set; }
-    // Is it a closing order
+    // Is it a forced liquidation order
     [JsonProperty(PropertyName = "liquidation")]
     public Boolean Liquidation { get; set; }
 
@@ -143,6 +143,14 @@ namespace TigerOpenAPI.Trade.Response
     public Boolean CanCancel { get; set; }
     [JsonProperty(PropertyName = "isOpen")]
     public Boolean IsOpen { get; set; }
+
+    [JsonProperty(PropertyName = "comboType")]
+    public string ComboType { get; set; }
+    [JsonProperty(PropertyName = "comboTypeDesc")]
+    public string ComboTypeDesc { get; set; }
+    /** order's multi leg info */
+    [JsonProperty(PropertyName = "legs")]
+    public List<OrderLeg> Legs { get; set; }
 
     public TradeOrder()
     {

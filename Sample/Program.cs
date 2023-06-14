@@ -102,9 +102,9 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
+    //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -160,6 +160,9 @@ class Program
     //TigerResponse? response = await PlaceBracketsOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672906085365,"data":{"id":283514341002915840,"orderId":6083,"subIds":[4536229456082436100,4536229456082436117]},"sign":"ghQp0hr3kB6jHgd4x80AwPfCf/KWoJrTY3BputVciU2bLCtsNANvJAr1iOGUzCsKmSqv7bMg3xb0SUgkPxS2kid13XCHSIZjmeZ98s60H54ka99V2qhdYj7efqozLaHfNNx40+DdmFZnclqZZnkcGgbbKVowujQGUFxqNjdhZkM="} 
 
+    //TigerResponse? response = await PlaceWAPOrderAsync(tradeClient);
+    TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
+
     // =================================================modify/cancel order
     //TigerResponse? response = await ModifyOrderAsync(tradeClient);
     // response:{"data":{"id":29360305075913728},"message":"success","timestamp":1672916823517,"sign":"qVwjFIhphTMTblhMQ2S1Py916Q0YJ/MjlOfUJxyqCKoAYfxfhiKkUGnL6CCO5Sak7IfQkkIgemPorcyTrfOZIXK8hxVayzPB3lYRo/Ip9woJA5Muh8eFYdqcR000GJreBPAEVl6B8t+mzrptjRS798QCxi/uxsbv6WzSCdmd1XY="} 
@@ -198,7 +201,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -553,11 +556,64 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceMultiLegOrderAsync(TradeClient tradeClient)
+  {
+    // place option multi-leg order
+    ContractLeg leg1 = new ContractLeg()
+    {
+      SecType = SecType.OPT.ToString(),
+      Symbol = "AAPL",
+      Strike = "190.0",
+      Expiry = "20230721",
+      Right = Right.CALL.ToString(),
+      Action = ActionType.BUY.ToString(),
+      Ratio = 1
+    };
+    ContractLeg leg2 = new ContractLeg()
+    {
+      SecType = SecType.OPT.ToString(),
+      Symbol = "AAPL",
+      Strike = "195.0",
+      Expiry = "20230721",
+      Right = Right.CALL.ToString(),
+      Action = ActionType.SELL.ToString(),
+      Ratio = 1
+    };
+    List<ContractLeg> legs = new List<ContractLeg>() { leg1, leg2};
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildMultiLegOrder(
+      "13810712", legs, ComboType.VERTICAL, ActionType.BUY, 1,
+      OrderType.LMT, 0.6, null, null);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> PlaceWAPOrderAsync(TradeClient tradeClient)
+  {
+    // place VWAP order
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildVWAPOrder(
+      "13810712", "AAPL", ActionType.BUY, 1000,
+      DateUtil.ConvertTimestamp("2023-06-14 10:30:00", CustomTimeZone.NY_ZONE),
+      DateUtil.ConvertTimestamp("2023-06-14 12:30:00", CustomTimeZone.NY_ZONE),
+      0.5, 160.0);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceBracketsOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
     PlaceOrderModel placeOrder = PlaceOrderModel.BuildLimitOrder(
-        "U10010705", // only support Global Account
+        "U10010705",
         contract,
         ActionType.BUY,
         200, 11.0
