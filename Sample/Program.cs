@@ -38,7 +38,7 @@ class Program
 
     //TigerConfig config = new TigerConfig()
     //{
-    //  ConfigFilePath = "/data0/tiger_config/sandbox",
+    //  ConfigFilePath = "/data0/tiger_config/test",
     //  FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
     //  AutoGrabPermission = false,   // (optional) default is true
     //  AutoRefreshToken = false,
@@ -102,12 +102,14 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
+
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
-    TigerResponse? response = await GetContractsAsync(tradeClient);
+    //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
@@ -196,7 +198,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -279,6 +281,16 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<KlineQuotaResponse?> GetKlineQuotaAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<KlineQuotaResponse> request = new TigerRequest<KlineQuotaResponse>()
+    {
+      ApiMethodName = QuoteApiService.KLINE_QUOTA,
+      ModelValue = new KlineQuotaModel() { WithDetails = true }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<EstimateTradableQuantityResponse?> GetMaxTradableQuantityAsync(TradeClient tradeClient)
