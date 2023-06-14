@@ -18,7 +18,7 @@ namespace TigerOpenAPI.Push
       TigerId = tigerId;
     }
 
-    public static ApiAuthentication? build(string tigerId, string privateKey, string version = DEFAULT_VERSION)
+    public static ApiAuthentication? Build(string tigerId, string privateKey, string version = DEFAULT_VERSION)
     {
       ApiAuthentication authentication = new ApiAuthentication(tigerId);
       try

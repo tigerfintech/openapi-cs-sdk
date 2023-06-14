@@ -12,6 +12,9 @@ namespace TigerOpenAPI.Trade.Model
 {
   public class PlaceOrderModel : TradeModel
   {
+    public const string WAP_START_TIME = "start_time";
+    public const string WAP_END_TIME = "end_time";
+    public const string WAP_PARTICIPATION_RATE = "participation_rate";
     /**
      * order ID(the incremental value of the corresponding account)
      */
@@ -49,7 +52,7 @@ namespace TigerOpenAPI.Trade.Model
     public int TotalQuantity { get; set; }
 
     [JsonProperty(PropertyName = "limit_price")]
-    public Double LimitPrice { get; set; }
+    public Double? LimitPrice { get; set; }
 
     /**
      * 价格微调幅度（默认为0表示不调整，正数为向上调整，负数向下调整），对传入价格自动调整到合法价位上
@@ -170,30 +173,43 @@ namespace TigerOpenAPI.Trade.Model
     {
     }
 
-    public static PlaceOrderModel buildMarketOrder(string account, ContractItem contract,
+    public void AddAlgoParam(TagValue? algoParam)
+    {
+      if (algoParam == null)
+      {
+        return;
+      }
+      if (this.AlgoParams == null)
+      {
+        this.AlgoParams = new List<TagValue>();
+      }
+      this.AlgoParams.Add(algoParam);
+    }
+
+    public static PlaceOrderModel BuildMarketOrder(string account, ContractItem contract,
         ActionType action, int quantity)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.MKT;
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildLimitOrder(string account, ContractItem contract,
+    public static PlaceOrderModel BuildLimitOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double limitPrice, Double adjustLimit = 0)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.LMT;
       tradeOrderModel.LimitPrice = limitPrice;
       tradeOrderModel.AdjustLimit = adjustLimit;
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildAuctionOrder(string account, ContractItem contract,
+    public static PlaceOrderModel BuildAuctionOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double limitPrice,
         OrderType orderType = OrderType.AL,
         TimeInForce timeInForce = TimeInForce.OPG, Double adjustLimit = 0)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = orderType;
       tradeOrderModel.TimeInForce = timeInForce;
       tradeOrderModel.LimitPrice = limitPrice;
@@ -201,20 +217,20 @@ namespace TigerOpenAPI.Trade.Model
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildStopOrder(string account, ContractItem contract,
+    public static PlaceOrderModel BuildStopOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double auxPrice, Double adjustLimit = 0)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.STP;
       tradeOrderModel.AuxPrice = auxPrice;
       tradeOrderModel.AdjustLimit = adjustLimit;
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildStopLimitOrder(string account, ContractItem contract,
+    public static PlaceOrderModel BuildStopLimitOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double limitPrice, Double auxPrice, Double adjustLimit = 0)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.STP_LMT;
       tradeOrderModel.LimitPrice = limitPrice;
       tradeOrderModel.AuxPrice = auxPrice;
@@ -222,17 +238,17 @@ namespace TigerOpenAPI.Trade.Model
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildTrailOrder(string account, ContractItem contract,
+    public static PlaceOrderModel BuildTrailOrder(string account, ContractItem contract,
         ActionType action, int quantity, Double trailingPercent, Double auxPrice)
     {
-      PlaceOrderModel tradeOrderModel = buildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.TRAIL;
       tradeOrderModel.TrailingPercent = trailingPercent;
       tradeOrderModel.AuxPrice = auxPrice;
       return tradeOrderModel;
     }
 
-    public static PlaceOrderModel buildTradeOrderModel(string account, ContractItem contract,
+    public static PlaceOrderModel BuildTradeOrderModel(string account, ContractItem contract,
       ActionType action, int quantity)
     {
       if (contract == null)
@@ -280,7 +296,56 @@ namespace TigerOpenAPI.Trade.Model
       return model;
     }
 
-    public PlaceOrderModel addProfitTakerOrder(
+    public static PlaceOrderModel BuildTWAPOrder(string account,
+        string symbol, ActionType action, Int32 quantity,
+        Int64? startTime, Int64? endTime, Double? limitPrice)
+    {
+      return BuildWAPOrder(account, symbol, action, quantity, OrderType.TWAP,
+          startTime, endTime, null, limitPrice);
+    }
+
+    public static PlaceOrderModel BuildVWAPOrder(string account,
+        string symbol, ActionType action, Int32 quantity,
+        Int64? startTime, Int64? endTime,
+        Double? participationRate, Double? limitPrice)
+    {
+      return BuildWAPOrder(account, symbol, action, quantity, OrderType.VWAP,
+          startTime, endTime, participationRate, limitPrice);
+    }
+
+    public static PlaceOrderModel BuildWAPOrder(string account,
+        string symbol, ActionType action, Int32 quantity,
+        OrderType orderType, Int64? startTime, Int64? endTime,
+        Double? participationRate,
+        Double? limitPrice)
+    {
+      if (OrderType.TWAP != orderType && OrderType.VWAP != orderType)
+      {
+        throw new ArgumentException("parameter 'orderType' must be ['TWAP', 'VWAP']");
+      }
+
+      PlaceOrderModel model = new PlaceOrderModel();
+      model.OutsideRth = false;
+      model.SecType = SecType.STK;
+      model.Account = account;
+      model.Action = action;
+      model.TotalQuantity = quantity;
+      model.Symbol = symbol;
+      model.OrderType = orderType;
+      model.LimitPrice = limitPrice;
+      model.TimeInForce = TimeInForce.DAY;
+
+      model.AlgoStrategy = orderType.ToString();
+      model.AddAlgoParam(TagValue.BuildTagValue(WAP_START_TIME, startTime));
+      model.AddAlgoParam(TagValue.BuildTagValue(WAP_END_TIME, endTime));
+      if (OrderType.VWAP == orderType)
+      {
+        model.AddAlgoParam(TagValue.BuildTagValue(WAP_PARTICIPATION_RATE, participationRate));
+      }
+      return model;
+    }
+
+    public PlaceOrderModel AddProfitTakerOrder(
         Double profitTakerPrice, TimeInForce profitTakerTif, Boolean profitTakerRth)
     {
       AttachType = AttachType.PROFIT;
@@ -290,7 +355,7 @@ namespace TigerOpenAPI.Trade.Model
       return this;
     }
 
-    public PlaceOrderModel addStopLossOrder(
+    public PlaceOrderModel AddStopLossOrder(
         Double stopLossPrice, TimeInForce stopLossTif)
     {
       AttachType = AttachType.LOSS;
@@ -300,7 +365,7 @@ namespace TigerOpenAPI.Trade.Model
       return this;
     }
 
-    public PlaceOrderModel addStopLossLimitOrder(
+    public PlaceOrderModel AddStopLossLimitOrder(
         Double stopLossPrice, Double stopLossLimitPrice, TimeInForce stopLossTif)
     {
       AttachType = AttachType.LOSS;
@@ -311,7 +376,7 @@ namespace TigerOpenAPI.Trade.Model
       return this;
     }
 
-    public PlaceOrderModel addStopLossTrailOrder(
+    public PlaceOrderModel AddStopLossTrailOrder(
         Double stopLossTrailingPercent, Double stopLossTrailingAmount, TimeInForce stopLossTif)
     {
       AttachType = AttachType.LOSS;
@@ -322,7 +387,7 @@ namespace TigerOpenAPI.Trade.Model
       return this;
     }
 
-    public PlaceOrderModel addBracketsOrder(
+    public PlaceOrderModel AddBracketsOrder(
         Double profitTakerPrice, TimeInForce profitTakerTif, Boolean profitTakerRth,
         Double stopLossPrice, TimeInForce stopLossTif, Double stopLossLimitPrice = default)
     {

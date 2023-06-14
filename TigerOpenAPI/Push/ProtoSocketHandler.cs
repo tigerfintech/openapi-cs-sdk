@@ -26,7 +26,7 @@ namespace TigerOpenAPI.Push
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-      Request connect = ProtoMessageUtil.buildConnectMessage(authentication.TigerId, authentication.Sign,
+      Request connect = ProtoMessageUtil.BuildConnectMessage(authentication.TigerId, authentication.Sign,
         authentication.Version, this.heartBeatData.SendInterval + HEART_BEAT_SPAN,
         this.heartBeatData.ReceiveInterval - HEART_BEAT_SPAN);
       ApiLogger.Info($"netty channel active. channel:{context.Channel.Id.AsShortText()}" +
