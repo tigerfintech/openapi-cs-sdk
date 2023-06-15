@@ -106,7 +106,7 @@ namespace TigerOpenAPI.Trade.Response
     {
     }
 
-    public static ContractItem convert(FutureContractItem futureContractItem)
+    public static ContractItem Convert(FutureContractItem futureContractItem)
     {
       ContractItem contractItem = new ContractItem();
       contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString();
@@ -128,7 +128,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildStockContract(string symbol, string currency)
+    public static ContractItem BuildStockContract(string symbol, string currency)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -139,7 +139,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildOptionContract(string identifier)
+    public static ContractItem BuildOptionContract(string identifier)
     {
       ContractItem contractItem = new ContractItem();
       contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.OPT.ToString();
@@ -152,7 +152,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildOptionContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildOptionContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -165,7 +165,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildWarrantContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildWarrantContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -182,7 +182,7 @@ namespace TigerOpenAPI.Trade.Response
 
     }
 
-    public static ContractItem buildCbbcContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildCbbcContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -198,7 +198,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildFutureContract(string symbol, string currency, string exchange,
+    public static ContractItem BuildFutureContract(string symbol, string currency, string exchange,
         string expiry, double multiplier)
     {
       ContractItem contractItem = new ContractItem()
@@ -213,7 +213,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildFutureContract(string symbol, string currency)
+    public static ContractItem BuildFutureContract(string symbol, string currency)
     {
       ContractItem contractItem = new ContractItem()
       {

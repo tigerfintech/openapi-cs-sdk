@@ -38,7 +38,7 @@ class Program
 
     //TigerConfig config = new TigerConfig()
     //{
-    //  ConfigFilePath = "/data0/tiger_config/sandbox",
+    //  ConfigFilePath = "/data0/tiger_config/test",
     //  FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
     //  AutoGrabPermission = false,   // (optional) default is true
     //  AutoRefreshToken = false,
@@ -102,12 +102,14 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
+    //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
+
     //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
-    TigerResponse? response = await GetContractsAsync(tradeClient);
+    //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
@@ -157,6 +159,9 @@ class Program
 
     //TigerResponse? response = await PlaceBracketsOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672906085365,"data":{"id":283514341002915840,"orderId":6083,"subIds":[4536229456082436100,4536229456082436117]},"sign":"ghQp0hr3kB6jHgd4x80AwPfCf/KWoJrTY3BputVciU2bLCtsNANvJAr1iOGUzCsKmSqv7bMg3xb0SUgkPxS2kid13XCHSIZjmeZ98s60H54ka99V2qhdYj7efqozLaHfNNx40+DdmFZnclqZZnkcGgbbKVowujQGUFxqNjdhZkM="} 
+
+    //TigerResponse? response = await PlaceWAPOrderAsync(tradeClient);
+    TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
 
     // =================================================modify/cancel order
     //TigerResponse? response = await ModifyOrderAsync(tradeClient);
@@ -279,6 +284,16 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<KlineQuotaResponse?> GetKlineQuotaAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<KlineQuotaResponse> request = new TigerRequest<KlineQuotaResponse>()
+    {
+      ApiMethodName = QuoteApiService.KLINE_QUOTA,
+      ModelValue = new KlineQuotaModel() { WithDetails = true }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<EstimateTradableQuantityResponse?> GetMaxTradableQuantityAsync(TradeClient tradeClient)
@@ -541,17 +556,70 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceMultiLegOrderAsync(TradeClient tradeClient)
+  {
+    // place option multi-leg order
+    ContractLeg leg1 = new ContractLeg()
+    {
+      SecType = SecType.OPT.ToString(),
+      Symbol = "AAPL",
+      Strike = "190.0",
+      Expiry = "20230721",
+      Right = Right.CALL.ToString(),
+      Action = ActionType.BUY.ToString(),
+      Ratio = 1
+    };
+    ContractLeg leg2 = new ContractLeg()
+    {
+      SecType = SecType.OPT.ToString(),
+      Symbol = "AAPL",
+      Strike = "195.0",
+      Expiry = "20230721",
+      Right = Right.CALL.ToString(),
+      Action = ActionType.SELL.ToString(),
+      Ratio = 1
+    };
+    List<ContractLeg> legs = new List<ContractLeg>() { leg1, leg2};
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildMultiLegOrder(
+      "13810712", legs, ComboType.VERTICAL, ActionType.BUY, 1,
+      OrderType.LMT, 0.6, null, null);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> PlaceWAPOrderAsync(TradeClient tradeClient)
+  {
+    // place VWAP order
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildVWAPOrder(
+      "13810712", "AAPL", ActionType.BUY, 1000,
+      DateUtil.ConvertTimestamp("2023-06-14 10:30:00", CustomTimeZone.NY_ZONE),
+      DateUtil.ConvertTimestamp("2023-06-14 12:30:00", CustomTimeZone.NY_ZONE),
+      0.5, 160.0);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceBracketsOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
-    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
-        "U10010705", // only support Global Account
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildLimitOrder(
+        "U10010705",
         contract,
         ActionType.BUY,
         200, 11.0
       );
     // addBracketsOrder
-    placeOrder.addBracketsOrder(13.0, TimeInForce.DAY, true, 10.0, TimeInForce.DAY);
+    placeOrder.AddBracketsOrder(13.0, TimeInForce.DAY, true, 10.0, TimeInForce.DAY);
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
@@ -563,15 +631,15 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceStopLossTrailOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
-    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
         200, 11.0
       );
     // addStopLossTrailOrder ('stopLossTrailingPercent' = 10%)
-    placeOrder.addStopLossTrailOrder(10.0, 0, TimeInForce.DAY);
+    placeOrder.AddStopLossTrailOrder(10.0, 0, TimeInForce.DAY);
     // set other parameter
     placeOrder.UserMark = "test-attach-stoplosstrail";
 
@@ -585,15 +653,15 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceStopLossLimitOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildOptionContract("AAPL", "20230127", 135.0, "CALL");
-    PlaceOrderModel placeOrder = PlaceOrderModel.buildLimitOrder(
+    ContractItem contract = ContractItem.BuildOptionContract("AAPL", "20230127", 135.0, "CALL");
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
         1, 1.30
       );
     // addStopLossLimitOrder
-    placeOrder.addStopLossLimitOrder(1.0, 0.9, TimeInForce.DAY);
+    placeOrder.AddStopLossLimitOrder(1.0, 0.9, TimeInForce.DAY);
     // set other parameter
     placeOrder.UserMark = "test-attach-stoplosslimit";
 
@@ -607,17 +675,17 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceStopLossOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildLimitOrder(
+      ModelValue = PlaceOrderModel.BuildLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
         200, 11.0
-      ).addStopLossOrder(10.0, TimeInForce.DAY) // addStopLossOrder(not support options)
+      ).AddStopLossOrder(10.0, TimeInForce.DAY) // addStopLossOrder(not support options)
     };
     // set other parameter
     ((PlaceOrderModel)request.ModelValue).UserMark = "test001";
@@ -626,29 +694,29 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceProfitTakerOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
     
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildLimitOrder(
+      ModelValue = PlaceOrderModel.BuildLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
         200, 11.0
-      ).addProfitTakerOrder(13.0, TimeInForce.DAY, true) // addProfitTakerOrder
+      ).AddProfitTakerOrder(13.0, TimeInForce.DAY, true) // addProfitTakerOrder
     };
     return await tradeClient.ExecuteAsync(request);
   }
 
   static async Task<PlaceOrderResponse?> PlaceTrailOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildTrailOrder(
+      ModelValue = PlaceOrderModel.BuildTrailOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.SELL,
@@ -660,12 +728,12 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceStopLimitOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildStopLimitOrder(
+      ModelValue = PlaceOrderModel.BuildStopLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.SELL,
@@ -677,12 +745,12 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceStopOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildStopOrder(
+      ModelValue = PlaceOrderModel.BuildStopOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.SELL,
@@ -694,12 +762,12 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceAuctionOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("00700", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("00700", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildAuctionOrder(
+      ModelValue = PlaceOrderModel.BuildAuctionOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
@@ -715,12 +783,12 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceLimitOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("AAPL", Currency.USD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("AAPL", Currency.USD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildLimitOrder(
+      ModelValue = PlaceOrderModel.BuildLimitOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
@@ -737,12 +805,12 @@ class Program
 
   static async Task<PlaceOrderResponse?> PlaceMarketOrderAsync(TradeClient tradeClient)
   {
-    ContractItem contract = ContractItem.buildStockContract("01810", Currency.HKD.ToString());
+    ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = PlaceOrderModel.buildMarketOrder(
+      ModelValue = PlaceOrderModel.BuildMarketOrder(
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,

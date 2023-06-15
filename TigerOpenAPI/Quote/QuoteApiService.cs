@@ -77,6 +77,7 @@ namespace TigerOpenAPI.Quote
      */
     public const string GRAB_QUOTE_PERMISSION = "grab_quote_permission";
     public const string GET_QUOTE_PERMISSION = "get_quote_permission";
+    public const string KLINE_QUOTA = "kline_quota";
 
     public const string USER_LICENSE = "user_license";
     public const string USER_TOKEN_REFRESH = "user_token_refresh";
@@ -152,6 +153,7 @@ namespace TigerOpenAPI.Quote
        */
       GRAB_QUOTE_PERMISSION,
       GET_QUOTE_PERMISSION,
+      KLINE_QUOTA,
       USER_LICENSE,
       USER_TOKEN_REFRESH
 
