@@ -95,13 +95,13 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
         }
       };
       return request;
     }
 
-    public static Request BuildSubscribeMessage(Market market, QuoteSubject subject)
+    public static Request BuildSubscribeMessage(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       Request request = new Request()
       {
@@ -110,7 +110,8 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Market = market.ToString()
+          Market = market.ToString(),
+          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
         }
       };
       return request;
@@ -145,7 +146,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request BuildUnSubscribeMessage(Market market, QuoteSubject subject)
+    public static Request BuildUnSubscribeMessage(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       Request request = new Request()
       {
@@ -154,7 +155,8 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Market = market.ToString()
+          Market = market.ToString(),
+          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
         }
       };
       return request;

@@ -25,16 +25,17 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJTb2NrZXRDb21tb24ucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3RvY2su",
-            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi9AIKDFNvY2tldENvbW1v",
+            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIikQMKDFNvY2tldENvbW1v",
             "biKTAQoHQ29tbWFuZBILCgdVTktOT1dOEAASCwoHQ09OTkVDVBABEg0KCUNP",
             "Tk5FQ1RFRBACEggKBFNFTkQQAxINCglTVUJTQ1JJQkUQBBIPCgtVTlNVQlND",
             "UklCRRAFEg4KCkRJU0NPTk5FQ1QQBhILCgdNRVNTQUdFEAcSDQoJSEVBUlRC",
-            "RUFUEAgSCQoFRVJST1IQCSKZAQoIRGF0YVR5cGUSCwoHVW5rbm93bhAAEgkK",
+            "RUFUEAgSCQoFRVJST1IQCSK2AQoIRGF0YVR5cGUSCwoHVW5rbm93bhAAEgkK",
             "BVF1b3RlEAESCgoGT3B0aW9uEAISCgoGRnV0dXJlEAMSDgoKUXVvdGVEZXB0",
             "aBAEEg0KCVRyYWRlVGljaxAFEgkKBUFzc2V0EAYSDAoIUG9zaXRpb24QBxIP",
-            "CgtPcmRlclN0YXR1cxAIEhQKEE9yZGVyVHJhbnNhY3Rpb24QCSIyCglRdW90",
-            "ZVR5cGUSCAoETm9uZRAAEgkKBUJBU0lDEAESBwoDQkJPEAISBwoDQUxMEANC",
-            "GKoCFVRpZ2VyT3BlbkFQSS5RdW90ZS5QYmIGcHJvdG8z"));
+            "CgtPcmRlclN0YXR1cxAIEhQKEE9yZGVyVHJhbnNhY3Rpb24QCRIMCghTdG9j",
+            "a1RvcBAKEg0KCU9wdGlvblRvcBALIjIKCVF1b3RlVHlwZRIICgROb25lEAAS",
+            "CQoFQkFTSUMQARIHCgNCQk8QAhIHCgNBTEwQA0IYqgIVVGlnZXJPcGVuQVBJ",
+            "LlF1b3RlLlBiYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -230,6 +231,8 @@ namespace TigerOpenAPI.Quote.Pb {
         [pbr::OriginalName("Position")] Position = 7,
         [pbr::OriginalName("OrderStatus")] OrderStatus = 8,
         [pbr::OriginalName("OrderTransaction")] OrderTransaction = 9,
+        [pbr::OriginalName("StockTop")] StockTop = 10,
+        [pbr::OriginalName("OptionTop")] OptionTop = 11,
       }
 
       public enum QuoteType {

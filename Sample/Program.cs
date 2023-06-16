@@ -53,7 +53,7 @@ class Program
     // QuoteApiService.USER_LICENSE
     //TigerResponse? response = await GetUserLicenseAsync(quoteClient);
     //TigerResponse? response = await GrabQuotePermissionAsync(quoteClient);
-    //TigerResponse? response = await GetQuotePermissionAsync(quoteClient);
+    TigerResponse? response = await GetQuotePermissionAsync(quoteClient);
 
     //TigerResponse? response = await GetMarketStateAsync(quoteClient);
     //TigerResponse? response = await GetTradingCalendarAsync(quoteClient);
@@ -104,7 +104,7 @@ class Program
 
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -161,7 +161,7 @@ class Program
     // result:{"code":0,"message":"success","timestamp":1672906085365,"data":{"id":283514341002915840,"orderId":6083,"subIds":[4536229456082436100,4536229456082436117]},"sign":"ghQp0hr3kB6jHgd4x80AwPfCf/KWoJrTY3BputVciU2bLCtsNANvJAr1iOGUzCsKmSqv7bMg3xb0SUgkPxS2kid13XCHSIZjmeZ98s60H54ka99V2qhdYj7efqozLaHfNNx40+DdmFZnclqZZnkcGgbbKVowujQGUFxqNjdhZkM="} 
 
     //TigerResponse? response = await PlaceWAPOrderAsync(tradeClient);
-    TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
+    //TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
 
     // =================================================modify/cancel order
     //TigerResponse? response = await ModifyOrderAsync(tradeClient);
@@ -201,7 +201,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -234,8 +234,8 @@ class Program
 
     //SubscribeAsset();
     //SubscribeQuote();
-    SubscribeTradeTick();
-
+    //SubscribeTradeTick();
+    SubscribeStockTop();
   }
 
   public static void SubscribeAsset()
@@ -276,6 +276,21 @@ class Program
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     ApiLogger.Info($"CancelSubscribeTradeTick:{client.CancelSubscribeTradeTick(symbols)}");
+    Sleep(2);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(2);
+  }
+
+  public static void SubscribeStockTop()
+  {
+    PushClient client = PushClient.GetInstance();
+
+    Market market = Market.US;
+    ApiLogger.Info($"SubscribeStockTop:{client.SubscribeStockTop(market)}");
+    Sleep(10);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(100);
+    ApiLogger.Info($"CancelSubscribeStockTop:{client.CancelSubscribeStockTop(market)}");
     Sleep(2);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(2);
