@@ -383,20 +383,35 @@ namespace TigerOpenAPI.Push
 
     public uint SubscribeMarketQuote(Market market, QuoteSubject subject)
     {
-      if (channel is null || !IsConnected())
-      {
-        NotConnect();
-        return 0;
-      }
-
-      Request request = ProtoMessageUtil.BuildSubscribeMessage(market, subject);
-      channel.WriteAndFlushAsync(request).Wait();
-
-      ApiLogger.Info("send subscribe [{}] message, market:{}", subject, market);
-      return request.Id;
+      return SubscribeMarketData(market, subject);
     }
 
     public uint CancelSubscribeMarketQuote(Market market, QuoteSubject subject)
+    {
+      return CancelSubscribeMarketData(market, subject);
+    }
+
+    public uint SubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return SubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+    }
+
+    public uint CancelSubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return CancelSubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+    }
+
+    public uint SubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return SubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+    }
+
+    public uint CancelSubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return CancelSubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+    }
+
+    private uint SubscribeMarketData(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       if (channel is null || !IsConnected())
       {
@@ -404,7 +419,22 @@ namespace TigerOpenAPI.Push
         return 0;
       }
 
-      Request request = ProtoMessageUtil.BuildUnSubscribeMessage(market, subject);
+      Request request = ProtoMessageUtil.BuildSubscribeMessage(market, subject, indicatorNames);
+      channel.WriteAndFlushAsync(request).Wait();
+
+      ApiLogger.Info("send subscribe [{}] message, market:{}", subject, market);
+      return request.Id;
+    }
+
+    private uint CancelSubscribeMarketData(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
+    {
+      if (channel is null || !IsConnected())
+      {
+        NotConnect();
+        return 0;
+      }
+
+      Request request = ProtoMessageUtil.BuildUnSubscribeMessage(market, subject, indicatorNames);
       channel.WriteAndFlushAsync(request).Wait();
 
       ApiLogger.Info("send cancel subscribe [{}] message, market:{}", subject, market);

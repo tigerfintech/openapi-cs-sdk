@@ -113,6 +113,12 @@ namespace TigerOpenAPI.Push
         case DataType.OrderTransaction:
           callback.OrderTransactionChange(pushData.OrderTransactionData);
           break;
+        case DataType.StockTop:
+          callback.StockTopPush(pushData.StockTopData);
+          break;
+        case DataType.OptionTop:
+          callback.OptionTopPush(pushData.OptionTopData);
+          break;
         default:
           ApiLogger.Info("push data cannot be processed. {}", msg);
           break;
