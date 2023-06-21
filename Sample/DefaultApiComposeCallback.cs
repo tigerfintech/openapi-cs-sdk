@@ -138,6 +138,7 @@ namespace Sample
 
     void ISubscribeApiCallback.StockTopPush(StockTopData data)
     {
+      ApiLogger.Info("StockTopPush, ==========:" + data);
       ApiLogger.Info("StockTopPush, market:" + data.Market);
       foreach (StockTopData.Types.TopData topData in data.TopData)
       {
@@ -148,6 +149,7 @@ namespace Sample
 
     void ISubscribeApiCallback.OptionTopPush(OptionTopData data)
     {
+      ApiLogger.Info("OptionTopPush, ==========:" + data);
       ApiLogger.Info("OptionTopPush, market:" + data.Market);
       foreach (OptionTopData.Types.TopData topData in data.TopData)
       {

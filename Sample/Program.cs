@@ -53,7 +53,7 @@ class Program
     // QuoteApiService.USER_LICENSE
     //TigerResponse? response = await GetUserLicenseAsync(quoteClient);
     //TigerResponse? response = await GrabQuotePermissionAsync(quoteClient);
-    TigerResponse? response = await GetQuotePermissionAsync(quoteClient);
+    //TigerResponse? response = await GetQuotePermissionAsync(quoteClient);
 
     //TigerResponse? response = await GetMarketStateAsync(quoteClient);
     //TigerResponse? response = await GetTradingCalendarAsync(quoteClient);
@@ -104,14 +104,14 @@ class Program
 
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
     //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
-    //TigerResponse? response = await GetPositionsAsync(tradeClient);
+    TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
     //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
@@ -160,7 +160,8 @@ class Program
     //TigerResponse? response = await PlaceBracketsOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672906085365,"data":{"id":283514341002915840,"orderId":6083,"subIds":[4536229456082436100,4536229456082436117]},"sign":"ghQp0hr3kB6jHgd4x80AwPfCf/KWoJrTY3BputVciU2bLCtsNANvJAr1iOGUzCsKmSqv7bMg3xb0SUgkPxS2kid13XCHSIZjmeZ98s60H54ka99V2qhdYj7efqozLaHfNNx40+DdmFZnclqZZnkcGgbbKVowujQGUFxqNjdhZkM="} 
 
-    //TigerResponse? response = await PlaceWAPOrderAsync(tradeClient);
+    //TigerResponse? response = await PlaceTWAPOrderAsync(tradeClient);
+    //TigerResponse? response = await PlaceVWAPOrderAsync(tradeClient);
     //TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
 
     // =================================================modify/cancel order
@@ -201,7 +202,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -218,11 +219,11 @@ class Program
     {
       ConfigFilePath = "/data0/tiger_config/test",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
-      AutoGrabPermission = false,   // (optional) default is true
+      AutoGrabPermission = true,   // (optional) default is true
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
-      IsSslSocket = true
+      IsSslSocket = false
     };
     ApiLogger.DebugEnabled = false;
 
@@ -235,7 +236,8 @@ class Program
     //SubscribeAsset();
     //SubscribeQuote();
     //SubscribeTradeTick();
-    SubscribeStockTop();
+    //SubscribeStockTop();
+    SubscribeOptionTop();
   }
 
   public static void SubscribeAsset()
@@ -286,11 +288,33 @@ class Program
     PushClient client = PushClient.GetInstance();
 
     Market market = Market.US;
+    ISet<Indicator> indicators = new HashSet<Indicator>();
+    indicators.Add(StockRankingIndicator.Amplitude);
+    indicators.Add(StockRankingIndicator.TurnoverRate);
     ApiLogger.Info($"SubscribeStockTop:{client.SubscribeStockTop(market)}");
     Sleep(10);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(100);
     ApiLogger.Info($"CancelSubscribeStockTop:{client.CancelSubscribeStockTop(market)}");
+    Sleep(2);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(2);
+  }
+
+
+  public static void SubscribeOptionTop()
+  {
+    PushClient client = PushClient.GetInstance();
+
+    Market market = Market.US;
+    ISet<Indicator> indicators = new HashSet<Indicator>();
+    indicators.Add(OptionRankingIndicator.Amount);
+    indicators.Add(OptionRankingIndicator.OpenInt);
+    ApiLogger.Info($"SubscribeStockTop:{client.SubscribeOptionTop(market)}");
+    Sleep(10);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(100);
+    ApiLogger.Info($"CancelSubscribeStockTop:{client.CancelSubscribeOptionTop(market)}");
     Sleep(2);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(2);
@@ -607,14 +631,31 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
-  static async Task<PlaceOrderResponse?> PlaceWAPOrderAsync(TradeClient tradeClient)
+  static async Task<PlaceOrderResponse?> PlaceVWAPOrderAsync(TradeClient tradeClient)
   {
     // place VWAP order
     PlaceOrderModel placeOrder = PlaceOrderModel.BuildVWAPOrder(
       "13810712", "AAPL", ActionType.BUY, 1000,
-      DateUtil.ConvertTimestamp("2023-06-14 10:30:00", CustomTimeZone.NY_ZONE),
-      DateUtil.ConvertTimestamp("2023-06-14 12:30:00", CustomTimeZone.NY_ZONE),
+      DateUtil.ConvertTimestamp("2023-06-20 10:30:00", CustomTimeZone.NY_ZONE),
+      DateUtil.ConvertTimestamp("2023-06-20 12:30:00", CustomTimeZone.NY_ZONE),
       0.5, 160.0);
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
+  static async Task<PlaceOrderResponse?> PlaceTWAPOrderAsync(TradeClient tradeClient)
+  {
+    // place TWAP order
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildTWAPOrder(
+      "13810712", "AAPL", ActionType.BUY, 1000,
+      DateUtil.ConvertTimestamp("2023-06-20 10:30:00", CustomTimeZone.NY_ZONE),
+      DateUtil.ConvertTimestamp("2023-06-20 12:30:00", CustomTimeZone.NY_ZONE),
+      160.0);
 
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
@@ -919,7 +960,7 @@ class Program
       ModelValue = new PositionsModel() {
         Account = "20200821144442583",
         SecType = SecType.STK,
-        Market = Market.CN
+        Market = Market.US
       }
     };
     return await tradeClient.ExecuteAsync(request);
