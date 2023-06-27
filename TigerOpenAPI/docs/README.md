@@ -29,4 +29,4 @@ https://developer.itigerup.com/
 
 #### OpenAPI Documentation
 
-https://quant.itigerup.com/openapi/zh/java/overview/introduction.html
+https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html
