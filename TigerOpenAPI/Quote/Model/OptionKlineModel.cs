@@ -21,6 +21,10 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "limit")]
     public Int32 Limit { get; set; } = 300;
 
+    /** Sort Direction */
+    [JsonProperty(PropertyName = "sort_dir"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public SortDir SortDir { get; set; }
+
     public OptionKlineModel() : base()
     {
     }
