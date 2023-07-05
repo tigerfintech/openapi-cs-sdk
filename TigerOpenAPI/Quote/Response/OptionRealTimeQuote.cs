@@ -36,6 +36,18 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "lastTimestamp")]
     public long LastTimestamp { get; set; }
+    [JsonProperty(PropertyName = "impliedVol")]
+    public Double ImpliedVol { get; set; }
+    [JsonProperty(PropertyName = "delta")]
+    public Double Delta { get; set; }
+    [JsonProperty(PropertyName = "gamma")]
+    public Double Gamma { get; set; }
+    [JsonProperty(PropertyName = "theta")]
+    public Double Theta { get; set; }
+    [JsonProperty(PropertyName = "vega")]
+    public Double Vega { get; set; }
+    [JsonProperty(PropertyName = "rho")]
+    public Double Rho { get; set; }
   }
 }
 

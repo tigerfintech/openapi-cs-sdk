@@ -23,7 +23,7 @@ namespace TigerOpenAPI.Trade.Model
     public SegmentType SegType { get; set; }
 
     [JsonProperty(PropertyName = "external_id")]
-    public Int64 externalId;
+    public string externalId;
 
     /**
      * order validity time range, forex order only support 'DAY' and 'GTC', default is 'DAY'

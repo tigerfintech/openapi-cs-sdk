@@ -40,7 +40,7 @@ class Program
     //{
     //  ConfigFilePath = "/data0/tiger_config/test",
     //  FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
-    //  AutoGrabPermission = false,   // (optional) default is true
+    //  AutoGrabPermission = true,   // (optional) default is true
     //  AutoRefreshToken = false,
     //  Language = Language.en_US,   // (optional) default is en_US
     //  TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
@@ -72,7 +72,7 @@ class Program
     //TigerResponse? response = await GetStockCaptialDistributionAsync(quoteClient);
     //TigerResponse? response = await GetStockBrokerAsync(quoteClient);
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
-    //TigerResponse? response = await GetOptionChainAsync(quoteClient);
+    TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
@@ -104,14 +104,14 @@ class Program
 
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
     //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
-    TigerResponse? response = await GetPositionsAsync(tradeClient);
+    //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
     //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
@@ -202,7 +202,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -1338,20 +1338,23 @@ class Program
       {
         OptionBasic = new List<OptionChainModel>()
         {
-          new OptionChainModel() { Symbol = "AAPL", Expiry = DateUtil.ConvertTimestamp("2023-03-17", CustomTimeZone.NY_ZONE)}
+          new OptionChainModel() {
+            Symbol = "AAPL",
+            Expiry = DateUtil.ConvertTimestamp("2023-06-30", CustomTimeZone.NY_ZONE)
+          }
         },
         OptionFilter = new OptionChainFilterModel()
         {
           InTheMoney = true,
-          ImpliedVolatility = new Range<Double>(0.2537, 0.6282),
-          OpenInterest = new Range<int>(100, 5000),
+          ImpliedVolatility = new Range<Double>(0.1537, 0.8282),
+          OpenInterest = new Range<int>(10, 50000),
           Greeks = new Greeks()
           {
-            Delta = new Range<Double>(-0.8, 0.9),
-            Gamma = new Range<double>(0.018, 0.071),
-            Vega = new Range<double>(0.019, 0.143),
-            Theta = new Range<double>(-0.164, -0.036),
-            Rho = new Range<double>(-0.096, 0.061)
+            Delta = new Range<Double>(-0.8, 0.6),
+            Gamma = new Range<double>(0.024, 0.3),
+            Vega = new Range<double>(0.019, 0.343),
+            Theta = new Range<double>(-0.1, 0.1),
+            Rho = new Range<double>(-0.096, 0.101)
           }
         }
       }
