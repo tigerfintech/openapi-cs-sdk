@@ -3,7 +3,7 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum SegmentType
   {
-    NONE, SEC, FUT
+    NONE, SEC, FUT, FUND
   }
 }
 

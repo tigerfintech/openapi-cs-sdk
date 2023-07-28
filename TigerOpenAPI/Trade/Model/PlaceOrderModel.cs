@@ -49,10 +49,13 @@ namespace TigerOpenAPI.Trade.Model
     public OrderType OrderType { get; set; }
 
     [JsonProperty(PropertyName = "total_quantity")]
-    public int TotalQuantity { get; set; }
+    public Int64? TotalQuantity { get; set; }
 
     [JsonProperty(PropertyName = "limit_price")]
     public Double? LimitPrice { get; set; }
+
+    [JsonProperty(PropertyName = "cash_amount")]
+    public Double? CashAmount { get; set; }
 
     /**
      * 价格微调幅度（默认为0表示不调整，正数为向上调整，负数向下调整），对传入价格自动调整到合法价位上
@@ -195,15 +198,24 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildMarketOrder(string account, ContractItem contract,
-        ActionType action, int quantity)
+        ActionType action, Int64 quantity)
     {
       PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.MKT;
       return tradeOrderModel;
     }
 
+    public static PlaceOrderModel BuildAmountOrder(string account, ContractItem contract,
+        ActionType action, Double cashAmount)
+    {
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, null);
+      tradeOrderModel.OrderType = OrderType.MKT;
+      tradeOrderModel.CashAmount = cashAmount;
+      return tradeOrderModel;
+    }
+
     public static PlaceOrderModel BuildLimitOrder(string account, ContractItem contract,
-        ActionType action, int quantity, Double limitPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double limitPrice, Double adjustLimit = 0)
     {
       PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.LMT;
@@ -213,7 +225,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildAuctionOrder(string account, ContractItem contract,
-        ActionType action, int quantity, Double limitPrice,
+        ActionType action, Int64 quantity, Double limitPrice,
         OrderType orderType = OrderType.AL,
         TimeInForce timeInForce = TimeInForce.OPG, Double adjustLimit = 0)
     {
@@ -226,7 +238,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildStopOrder(string account, ContractItem contract,
-        ActionType action, int quantity, Double auxPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double auxPrice, Double adjustLimit = 0)
     {
       PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.STP;
@@ -236,7 +248,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildStopLimitOrder(string account, ContractItem contract,
-        ActionType action, int quantity, Double limitPrice, Double auxPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double limitPrice, Double auxPrice, Double adjustLimit = 0)
     {
       PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.STP_LMT;
@@ -247,7 +259,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildTrailOrder(string account, ContractItem contract,
-        ActionType action, int quantity, Double trailingPercent, Double auxPrice)
+        ActionType action, Int64 quantity, Double trailingPercent, Double auxPrice)
     {
       PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
       tradeOrderModel.OrderType = OrderType.TRAIL;
@@ -257,7 +269,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildTradeOrderModel(string account, ContractItem contract,
-      ActionType action, int quantity)
+      ActionType action, Int64? quantity)
     {
       if (contract == null)
       {

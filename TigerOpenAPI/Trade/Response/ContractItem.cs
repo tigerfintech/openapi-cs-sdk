@@ -128,6 +128,16 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
+    public static ContractItem Convert(FundContractItem fundContractItem)
+    {
+      ContractItem contractItem = new ContractItem();
+      contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.FUND.ToString();
+      contractItem.Symbol = fundContractItem.Symbol;
+      contractItem.Market = fundContractItem.Market;
+      contractItem.Currency = fundContractItem.Currency;
+      return contractItem;
+    }
+
     public static ContractItem BuildStockContract(string symbol, string currency)
     {
       ContractItem contractItem = new ContractItem()
@@ -218,6 +228,17 @@ namespace TigerOpenAPI.Trade.Response
       ContractItem contractItem = new ContractItem()
       {
         SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString(),
+        Symbol = symbol,
+        Currency = currency
+      };
+      return contractItem;
+    }
+
+    public static ContractItem BuildFundContract(string symbol, string currency)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.FUND.ToString(),
         Symbol = symbol,
         Currency = currency
       };

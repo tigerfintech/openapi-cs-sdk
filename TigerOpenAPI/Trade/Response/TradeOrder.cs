@@ -61,8 +61,14 @@ namespace TigerOpenAPI.Trade.Response
     public Int64 TotalQuantity { get; set; }
     [JsonProperty(PropertyName = "filledQuantity")]
     public Int64 FilledQuantity { get; set; }
-    [JsonProperty(PropertyName = "cashQuantity")]
-    public Double CashQuantity { get; set; }
+    [JsonProperty(PropertyName = "filledQuantityScale")]
+    public Int32 FilledQuantityScale { get; set; }
+    [JsonProperty(PropertyName = "totalCashAmount")]
+    public Double TotalCashAmount { get; set; }
+    [JsonProperty(PropertyName = "filledCashAmount")]
+    public Double FilledCashAmount { get; set; }
+    [JsonProperty(PropertyName = "refundCashAmount")]
+    public Double RefundCashAmount { get; set; }
     [JsonProperty(PropertyName = "lastFillPrice")]
     public Double LastFillPrice { get; set; }
     [JsonProperty(PropertyName = "avgFillPrice")]
@@ -85,6 +91,8 @@ namespace TigerOpenAPI.Trade.Response
     // Is it a forced liquidation order
     [JsonProperty(PropertyName = "liquidation")]
     public Boolean Liquidation { get; set; }
+    [JsonProperty(PropertyName = "triggerStatus")]
+    public string TriggerStatus { get; set; }
 
     [JsonProperty(PropertyName = "openTime")]
     public Int64 OpenTime { get; set; }
@@ -101,6 +109,8 @@ namespace TigerOpenAPI.Trade.Response
     public string AttrDesc { get; set; }
     [JsonProperty(PropertyName = "userMark")]
     public string UserMark { get; set; }
+    [JsonProperty(PropertyName = "attrList")]
+    public List<string> AttrList { get; set; }
 
     /**
      * OCA order
