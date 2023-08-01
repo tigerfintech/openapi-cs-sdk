@@ -72,7 +72,7 @@ class Program
     //TigerResponse? response = await GetStockCaptialDistributionAsync(quoteClient);
     //TigerResponse? response = await GetStockBrokerAsync(quoteClient);
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
-    TigerResponse? response = await GetOptionChainAsync(quoteClient);
+    //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
@@ -102,6 +102,12 @@ class Program
     //TigerResponse? response = await FilterWarrantAsync(quoteClient);
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
+    // fund quote
+    TigerResponse? response = await GetAllFundSymbolsAsync(quoteClient);
+    //TigerResponse? response = await GetFundContractsAsync(quoteClient);
+    //TigerResponse? response = await GetFundQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetFundHistoryQuoteAsync(quoteClient);
+
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
@@ -123,6 +129,9 @@ class Program
 
     //TigerResponse? response = await PlaceMarketOrderAsync(tradeClient);
     // response:{"code":0,"message":"success","timestamp":1672900459461,"data":{"id":29360293078500352,"subIds":[],"orders":[{"symbol":"01810","market":"HK","secType":"STK","currency":"HKD","identifier":"01810","id":29360293078500352,"orderId":1456,"account":"20200821144442583","action":"BUY","orderType":"MKT","totalQuantity":200,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"openTime":1672900459000,"updateTime":1672900459000,"latestTime":1672900459000,"name":"XIAOMI-W","latestPrice":11.62,"attrDesc":"","userMark":"","algoStrategy":"MKT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"y3iIACssSMlurcA3TP+PZQOF0p519WqWPpQG6Y8pYKQTKeePXPv1xZwjq0J97JBxnBr92bL20cZr1J/zQCPvvvtkQNZc3QGRx08dCDfp4AUjoBBzRBuQw+xNSMUsnlY/4G1KbXoOXj5qJ3OycZeFQVxbPeJlSYEt4JJz5LhjBNs="} 
+
+    //TigerResponse? response = await PlaceFundOrderAsync(tradeClient);
+    // response:{"data":{"id":31672004552294400,"subIds":[],"orders":[{"symbol":"IE00B464Q616.USD","market":"SG","secType":"FUND","currency":"USD","expiry":null,"strike":null,"right":null,"multiplier":0.0,"identifier":"IE00B464Q616.USD","id":31672004552294400,"orderId":144,"externalId":"144","parentId":0,"account":"13810712","action":"BUY","orderType":"MKT","limitPrice":0.0,"auxPrice":0.0,"trailingPercent":0.0,"totalQuantity":0,"filledQuantity":0,"filledQuantityScale":0,"totalCashAmount":180.0,"filledCashAmount":0.0,"refundCashAmount":0.0,"lastFillPrice":0.0,"avgFillPrice":0.0,"timeInForce":"GTC","expireTime":0,"goodTillDate":null,"outsideRth":false,"commission":0.0,"realizedPnl":0.0,"remark":"","liquidation":false,"triggerStatus":null,"openTime":1690537418000,"updateTime":1690537418000,"latestTime":1690537418000,"name":"ASIA STRATEGIC INTEREST BOND FUND \"E\" (USD) INC MONTHLY","latestPrice":6.91,"attrDesc":"","userMark":"","attrList":["MONETARY","FRACTIONAL_SHARE","AUTO_SWEEP"],"ocaGroupId":0,"comboLegs":null,"allocAccounts":null,"allocShares":null,"algoStrategy":"MKT","algoParameters":null,"status":"Initial","source":"OpenApi","discount":0.0,"canModify":false,"canCancel":true,"isOpen":true,"comboType":null,"comboTypeDesc":null,"legs":null}]},"code":0,"message":"success","timestamp":1690537302312,"sign":"TMWDEbPXyjl1+GWvC1ZGfkJPDRQfBfiSiWhV7x6ViiQ17zz5b1q6qz6MhZSZElha17JTHFc3HkWyVhbowlbfac5d9GPX/z9AsvKZrTytLdQdMwblNVM8uh40VB5Fzj98ONpKllOBt8zR+kIwvrTbx6mDCeeG1WkTaiZbGI1F7ak="} 
 
     //TigerResponse? response = await PlaceLimitOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672900550991,"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"totalQuantity":1,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
@@ -859,6 +868,23 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceFundOrderAsync(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.BuildFundContract("IE00B464Q616.USD", Currency.USD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.BuildAmountOrder(
+        "13810712", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        180.0
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceMarketOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
@@ -1052,6 +1078,73 @@ class Program
     ApiLogger.Info("futures response:" + JsonConvert.SerializeObject(response, TigerClient.JsonSet));
 
     return response;
+  }
+
+  static async Task<FundHistoryQuoteResponse?> GetFundHistoryQuoteAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<FundHistoryQuoteResponse> request = new TigerRequest<FundHistoryQuoteResponse>()
+    {
+      ApiMethodName = QuoteApiService.FUND_HISTORY_QUOTE,
+      ModelValue = new FundQuoteHistoryModel()
+      {
+        Symbols = new List<string>()
+        {
+          "HK0000910932.HKD",
+          "IE00B464Q616.USD"
+        },
+        BeginTime = DateUtil.ConvertTimestamp("2023-07-01 09:00:00", CustomTimeZone.HK_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-07-26 20:00:00", CustomTimeZone.HK_ZONE),
+        Limit = 10,
+        Lang = Language.en_US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<FundQuoteResponse?> GetFundQuoteAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<FundQuoteResponse> request = new TigerRequest<FundQuoteResponse>()
+    {
+      ApiMethodName = QuoteApiService.FUND_QUOTE,
+      ModelValue = new FundSymbolModel()
+      {
+        Symbols = new List<string>()
+        {
+          "HK0000910932.HKD",
+          "IE00B464Q616.USD"
+        },
+        Lang = Language.en_US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<FundContractsResponse?> GetFundContractsAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<FundContractsResponse> request = new TigerRequest<FundContractsResponse>()
+    {
+      ApiMethodName = QuoteApiService.FUND_CONTRACTS,
+      ModelValue = new FundSymbolModel()
+      {
+        Symbols = new List<string>()
+        {
+          "HK0000910932.HKD",
+          "IE00B464Q616.USD"
+        },
+        Lang = Language.en_US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<TigerListStringResponse?> GetAllFundSymbolsAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<TigerListStringResponse> request = new TigerRequest<TigerListStringResponse>()
+    {
+      ApiMethodName = QuoteApiService.FUND_ALL_SYMBOLS,
+      ModelValue = new FundSymbolModel()
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<WarrantQuoteResponse?> GetWarrantQuoteAsync(QuoteClient quoteClient)

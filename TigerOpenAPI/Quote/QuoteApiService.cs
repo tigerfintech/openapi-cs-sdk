@@ -63,6 +63,14 @@ namespace TigerOpenAPI.Quote
     public const string FUTURE_TRADING_DATE = "future_trading_date";
 
     /**
+     * fund quote
+     */
+    public const string FUND_ALL_SYMBOLS = "fund_all_symbols";
+    public const string FUND_CONTRACTS = "fund_contracts";
+    public const string FUND_QUOTE = "fund_quote";
+    public const string FUND_HISTORY_QUOTE = "fund_history_quote";
+
+    /**
      * fundmental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
@@ -137,6 +145,14 @@ namespace TigerOpenAPI.Quote
       FUTURE_REAL_TIME_QUOTE,
       FUTURE_TICK,
       FUTURE_TRADING_DATE,
+
+      /**
+       * fund quote
+       */
+      FUND_ALL_SYMBOLS,
+      FUND_CONTRACTS,
+      FUND_QUOTE,
+      FUND_HISTORY_QUOTE,
 
       /**
        * fundmental data
