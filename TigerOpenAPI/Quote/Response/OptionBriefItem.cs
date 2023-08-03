@@ -19,11 +19,11 @@ namespace TigerOpenAPI.Quote.Response
     public long Expiry { get; set; }
 
     [JsonProperty(PropertyName = "askPrice")]
-    public Double AskPrice { get; set; }
+    public Double AskPrice { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "askSize")]
     public long AskSize { get; set; }
     [JsonProperty(PropertyName = "bidPrice")]
-    public Double BidPrice { get; set; }
+    public Double BidPrice { get; set; } = Double.NaN;
     [JsonProperty(PropertyName = "bidSize")]
     public long BidSize { get; set; }
 

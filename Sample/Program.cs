@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 using Sample;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.Common.Struct;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
@@ -103,14 +105,16 @@ class Program
     //TigerResponse? response = await GetWarrantQuoteAsync(quoteClient);
 
     // fund quote
-    TigerResponse? response = await GetAllFundSymbolsAsync(quoteClient);
+    //TigerResponse? response = await GetAllFundSymbolsAsync(quoteClient);
     //TigerResponse? response = await GetFundContractsAsync(quoteClient);
     //TigerResponse? response = await GetFundQuoteAsync(quoteClient);
     //TigerResponse? response = await GetFundHistoryQuoteAsync(quoteClient);
 
+    // fundamental data
+    //TigerResponse? response = await GetCorporateDividendAsync(quoteClient);
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -215,10 +219,28 @@ class Program
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
+
+    // =================================================option fundamentals
+    GetOptionFundamentals(quoteClient);
+
     // =================================================Push
     //SubscribePush();
 
     ApiLogger.Info("end");
+  }
+
+  static void GetOptionFundamentals(QuoteClient quoteClient)
+  {
+    try
+    {
+      OptionFundamentals? optionFundamentals = OptionCalcUtil.GetOptionFundamentals(
+          quoteClient, "TSLA", "CALL", "255.0", "2023-08-11");
+      ApiLogger.Info("response:" + JsonConvert.SerializeObject(optionFundamentals));
+    }
+    catch (Exception e)
+    {
+      ApiLogger.Error("GetOptionFundamentals failed.", e);
+    }
   }
 
   static void SubscribePush()
@@ -332,6 +354,27 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<CorporateDividendResponse?> GetCorporateDividendAsync(QuoteClient quoteClient)
+  {
+    List<string> symbols = new List<string>();
+    symbols.Add("ALB");
+    Int64 begin = DateUtil.ConvertTimestamp("2023-06-15", CustomTimeZone.HK_ZONE);
+    Int64 end = DateUtil.ConvertTimestamp("2023-06-15", CustomTimeZone.HK_ZONE);
+    TigerRequest<CorporateDividendResponse> request = new TigerRequest<CorporateDividendResponse>()
+    {
+      ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+      ModelValue = new CorporateActionModel()
+      {
+        ActionType = CorporateActionType.DIVIDEND,
+        Symbols = symbols,
+        Market = Market.US,
+        BeginDate = begin,
+        EndDate = end
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<KlineQuotaResponse?> GetKlineQuotaAsync(QuoteClient quoteClient)
