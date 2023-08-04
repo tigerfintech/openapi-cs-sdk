@@ -29,7 +29,7 @@ namespace TigerOpenAPI.Trade
 
     public override string GetServerUri<T>(TigerRequest<T> request)
     {
-      return AccountUtil.isVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
+      return AccountUtil.IsVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
     }
 
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)

@@ -44,6 +44,22 @@ namespace TigerOpenAPI.Common.Util
       return (long)(DateTimeOffset.UtcNow.DateTime - Jan1st1970).TotalMilliseconds;
     }
 
+    /**
+     * Is the date before today
+     * @param date "yyyy-MM-dd"
+     * @param timeZoneInfo TimeZoneInfo
+     * @return
+     */
+    public static bool IsDateBeforeToday(string date, TimeZoneInfo timeZoneInfo)
+    {
+      if (string.IsNullOrWhiteSpace(date))
+      {
+        return false;
+      }
+      string today = PrintSystemDate(timeZoneInfo);
+      return date.CompareTo(today) < 0;
+    }
+
     public static DateTime? ConvertTime(string datetime, TimeZoneInfo timeZoneInfo)
     {
       if (DateTime.TryParse(datetime, out DateTime curDateTime)) {
@@ -60,6 +76,12 @@ namespace TigerOpenAPI.Common.Util
         return (long)(dateTimeOffset - Jan1st1970).TotalMilliseconds;
       }
       return 0;
+    }
+
+    public static long ConvertTimestamp(DateTime datetime, TimeZoneInfo timeZoneInfo)
+    {
+      DateTimeOffset dateTimeOffset = new DateTimeOffset(datetime, timeZoneInfo.GetUtcOffset(datetime));
+      return (long)(dateTimeOffset - Jan1st1970).TotalMilliseconds;
     }
 
     /**

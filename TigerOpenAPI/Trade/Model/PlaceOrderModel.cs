@@ -296,7 +296,7 @@ namespace TigerOpenAPI.Trade.Model
       model.Multiplier = contract.Multiplier;
       if (model.SecType == SecType.FUT)
       {
-        if (AccountUtil.isGlobalAccount(account))
+        if (AccountUtil.IsGlobalAccount(account))
         {
           if (!string.IsNullOrWhiteSpace(contract.Type))
           {
