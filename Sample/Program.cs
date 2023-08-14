@@ -113,8 +113,10 @@ class Program
     // fundamental data
     //TigerResponse? response = await GetCorporateDividendAsync(quoteClient);
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
+    //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
+    TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -221,7 +223,7 @@ class Program
 
 
     // =================================================option fundamentals
-    GetOptionFundamentals(quoteClient);
+    //GetOptionFundamentals(quoteClient);
 
     // =================================================Push
     //SubscribePush();
@@ -354,6 +356,44 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<FinancialExchangeRateResponse?> GetFinancialExchangeRateAsync(QuoteClient quoteClient)
+  {
+    List<string> currencyList = new List<string>();
+    currencyList.Add("USD");
+    currencyList.Add("HKD");
+    currencyList.Add("CNY");
+    Int64 begin = DateUtil.ConvertTimestamp("2023-08-10", CustomTimeZone.HK_ZONE);
+    Int64 end = DateUtil.ConvertTimestamp("2023-08-14", CustomTimeZone.HK_ZONE);
+    TigerRequest<FinancialExchangeRateResponse> request = new TigerRequest<FinancialExchangeRateResponse>()
+    {
+      ApiMethodName = QuoteApiService.FINANCIAL_EXCHANGE_RATE,
+      ModelValue = new FinancialExchangeRateModel()
+      {
+        CurrencyList = currencyList,
+        BeginDate = begin,
+        EndDate = end
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<FinancialCurrencyResponse?> GetFinancialCurrencyAsync(QuoteClient quoteClient)
+  {
+    List<string> symbols = new List<string>();
+    symbols.Add("AAPL");
+    symbols.Add("BABA");
+    TigerRequest<FinancialCurrencyResponse> request = new TigerRequest<FinancialCurrencyResponse>()
+    {
+      ApiMethodName = QuoteApiService.FINANCIAL_CURRENCY,
+      ModelValue = new FinancialCurrencyModel()
+      {
+        Symbols = symbols,
+        Market = Market.US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<CorporateDividendResponse?> GetCorporateDividendAsync(QuoteClient quoteClient)
@@ -670,7 +710,7 @@ class Program
       Action = ActionType.SELL.ToString(),
       Ratio = 1
     };
-    List<ContractLeg> legs = new List<ContractLeg>() { leg1, leg2};
+    List<ContractLeg> legs = new List<ContractLeg>() { leg1, leg2 };
     PlaceOrderModel placeOrder = PlaceOrderModel.BuildMultiLegOrder(
       "13810712", legs, ComboType.VERTICAL, ActionType.BUY, 1,
       OrderType.LMT, 0.6, null, null);
@@ -803,7 +843,7 @@ class Program
   static async Task<PlaceOrderResponse?> PlaceProfitTakerOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.BuildStockContract("01810", Currency.HKD.ToString());
-    
+
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
@@ -968,7 +1008,8 @@ class Program
     TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
     {
       ApiMethodName = TradeApiService.PLACE_ORDER,
-      ModelValue = new PlaceOrderModel() {
+      ModelValue = new PlaceOrderModel()
+      {
         Account = "20200821144442583",
         SecType = SecType.STK,
         Symbol = "AAPL",
@@ -1013,9 +1054,11 @@ class Program
     TigerRequest<TigerDictResponse> request = new TigerRequest<TigerDictResponse>()
     {
       ApiMethodName = TradeApiService.ASSETS,
-      ModelValue = new GlobalAssetsModel() {
+      ModelValue = new GlobalAssetsModel()
+      {
         Account = "U10010705",
-        Segment = true, MarketValue = true
+        Segment = true,
+        MarketValue = true
       }
     };
     return await tradeClient.ExecuteAsync(request);
@@ -1026,7 +1069,8 @@ class Program
     TigerRequest<PositionsResponse> request = new TigerRequest<PositionsResponse>()
     {
       ApiMethodName = TradeApiService.POSITIONS,
-      ModelValue = new PositionsModel() {
+      ModelValue = new PositionsModel()
+      {
         Account = "20200821144442583",
         SecType = SecType.STK,
         Market = Market.US
@@ -1040,7 +1084,7 @@ class Program
     TigerRequest<AccountsResponse> request = new TigerRequest<AccountsResponse>()
     {
       ApiMethodName = TradeApiService.ACCOUNTS,
-      ModelValue = new ApiModel() {}
+      ModelValue = new ApiModel() { }
     };
     return await tradeClient.ExecuteAsync(request);
   }
@@ -1337,7 +1381,8 @@ class Program
     TigerRequest<FutureTradingDateResponse> request = new TigerRequest<FutureTradingDateResponse>()
     {
       ApiMethodName = QuoteApiService.FUTURE_TRADING_DATE,
-      ModelValue = new FutureTradingDateModel() {
+      ModelValue = new FutureTradingDateModel()
+      {
         ContractCode = "ES2306",
         TradingDate = DateUtil.CurrentTimeMillis()
       }
@@ -1694,7 +1739,8 @@ class Program
     TigerRequest<TigerListResponse> request = new TigerRequest<TigerListResponse>()
     {
       ApiMethodName = QuoteApiService.TRADING_CALENDAR,
-      ModelValue = new TradeCalendarModel() {
+      ModelValue = new TradeCalendarModel()
+      {
         Market = Market.HK,
         BeginDate = "2023-03-01",
         EndDate = "2023-03-15"

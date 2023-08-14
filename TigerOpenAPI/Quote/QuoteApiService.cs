@@ -79,6 +79,8 @@ namespace TigerOpenAPI.Quote
     public const string INDUSTRY_LIST = "industry_list";
     public const string INDUSTRY_STOCKS = "industry_stocks";
     public const string STOCK_INDUSTRY = "stock_industry";
+    public const string FINANCIAL_CURRENCY = "financial_currency";
+    public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
 
     /**
      * grab quote
@@ -163,6 +165,8 @@ namespace TigerOpenAPI.Quote
       INDUSTRY_LIST,
       INDUSTRY_STOCKS,
       STOCK_INDUSTRY,
+      FINANCIAL_CURRENCY,
+      FINANCIAL_EXCHANGE_RATE,
 
       /**
        * grab quote
