@@ -61,6 +61,7 @@ namespace TigerOpenAPI.Quote
     public const string FUTURE_REAL_TIME_QUOTE = "future_real_time_quote";
     public const string FUTURE_TICK = "future_tick";
     public const string FUTURE_TRADING_DATE = "future_trading_date";
+    public const string FUTURE_HISTORY_MAIN_CONTRACT = "future_history_main_contract";
 
     /**
      * fund quote
@@ -79,6 +80,8 @@ namespace TigerOpenAPI.Quote
     public const string INDUSTRY_LIST = "industry_list";
     public const string INDUSTRY_STOCKS = "industry_stocks";
     public const string STOCK_INDUSTRY = "stock_industry";
+    public const string FINANCIAL_CURRENCY = "financial_currency";
+    public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
 
     /**
      * grab quote
@@ -145,6 +148,7 @@ namespace TigerOpenAPI.Quote
       FUTURE_REAL_TIME_QUOTE,
       FUTURE_TICK,
       FUTURE_TRADING_DATE,
+      FUTURE_HISTORY_MAIN_CONTRACT,
 
       /**
        * fund quote
@@ -163,6 +167,8 @@ namespace TigerOpenAPI.Quote
       INDUSTRY_LIST,
       INDUSTRY_STOCKS,
       STOCK_INDUSTRY,
+      FINANCIAL_CURRENCY,
+      FINANCIAL_EXCHANGE_RATE,
 
       /**
        * grab quote
