@@ -61,6 +61,7 @@ namespace TigerOpenAPI.Quote
     public const string FUTURE_REAL_TIME_QUOTE = "future_real_time_quote";
     public const string FUTURE_TICK = "future_tick";
     public const string FUTURE_TRADING_DATE = "future_trading_date";
+    public const string FUTURE_HISTORY_MAIN_CONTRACT = "future_history_main_contract";
 
     /**
      * fund quote
@@ -147,6 +148,7 @@ namespace TigerOpenAPI.Quote
       FUTURE_REAL_TIME_QUOTE,
       FUTURE_TICK,
       FUTURE_TRADING_DATE,
+      FUTURE_HISTORY_MAIN_CONTRACT,
 
       /**
        * fund quote

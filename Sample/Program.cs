@@ -93,6 +93,7 @@ class Program
     //TigerResponse? response = await GetFutureKLineAsync(quoteClient);
     //TigerResponse? response = await GetFutureRealTimeQuoteAsync(quoteClient);
     //TigerResponse? response = await GetFutureTickAsync(quoteClient);
+    TigerResponse? response = await GetFutureHistoryMainContractAsync(quoteClient);
     //TigerResponse? response = await GetQuoteContractAsync(quoteClient);
 
     // Stock screener
@@ -114,7 +115,7 @@ class Program
     //TigerResponse? response = await GetCorporateDividendAsync(quoteClient);
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
-    TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
+    //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
     ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
@@ -1325,6 +1326,21 @@ class Program
         Symbol = "00700",
         SecType = SecType.WAR,
         Expiry = "20230417"
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<FutureHistoryMainContractResponse?> GetFutureHistoryMainContractAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<FutureHistoryMainContractResponse> request = new TigerRequest<FutureHistoryMainContractResponse>()
+    {
+      ApiMethodName = QuoteApiService.FUTURE_HISTORY_MAIN_CONTRACT,
+      ModelValue = new FutureHistoryMainContractModel()
+      {
+        ContractCodes = new List<string> { "ESmain" },
+        BeginTime = DateUtil.ConvertTimestamp("2023-05-06 00:00:00", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-08-30 23:59:00", CustomTimeZone.NY_ZONE),
       }
     };
     return await quoteClient.ExecuteAsync(request);
