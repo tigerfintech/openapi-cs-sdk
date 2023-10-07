@@ -180,6 +180,12 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "contract_legs")]
     private List<ContractLeg> ContractLegs { get; set; }
 
+    /**
+     * OCA BRACKETS order
+     */
+    [JsonProperty(PropertyName = "oca_orders")]
+    private List<PlaceOrderModel> OcaOrders { get; set; }
+
     public PlaceOrderModel() : base()
     {
     }
@@ -391,6 +397,38 @@ namespace TigerOpenAPI.Trade.Model
         model.AddAlgoParam(TagValue.BuildTagValue(WAP_PARTICIPATION_RATE, participationRate));
       }
       return model;
+    }
+
+    public static PlaceOrderModel BuildOCABracketsOrder(
+      string account, ContractItem contract, ActionType action, Int64 quantity,
+      Double profitTakerPrice, TimeInForce profitTakerTif, Boolean profitTakerRth,
+      Double stopLossPrice, TimeInForce stopLossTif, Boolean stopLossRth, Double? stopLossLimitPrice = null)
+    {
+      PlaceOrderModel profitTakerOrder = BuildTradeOrderModel(account, contract, action, quantity);
+      profitTakerOrder.OrderType = OrderType.LMT;
+      profitTakerOrder.LimitPrice = profitTakerPrice;
+      profitTakerOrder.TimeInForce = profitTakerTif;
+      profitTakerOrder.OutsideRth = profitTakerRth;
+
+      PlaceOrderModel stopLossOrder = BuildTradeOrderModel(account, contract, action, quantity);
+      if (stopLossLimitPrice == null)
+      {
+        stopLossOrder.OrderType = OrderType.STP;
+      }
+      else
+      {
+        stopLossOrder.OrderType = OrderType.STP_LMT;
+        stopLossOrder.LimitPrice = stopLossLimitPrice;
+      }
+      stopLossOrder.AuxPrice = stopLossPrice;
+      stopLossOrder.TimeInForce = stopLossTif;
+      stopLossOrder.OutsideRth = stopLossRth;
+
+      PlaceOrderModel tradeOrderModel = new PlaceOrderModel()
+      {
+        OcaOrders = new List<PlaceOrderModel>() { profitTakerOrder, stopLossOrder },
+      };
+      return tradeOrderModel;
     }
 
     public PlaceOrderModel AddProfitTakerOrder(
