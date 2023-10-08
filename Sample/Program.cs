@@ -93,7 +93,7 @@ class Program
     //TigerResponse? response = await GetFutureKLineAsync(quoteClient);
     //TigerResponse? response = await GetFutureRealTimeQuoteAsync(quoteClient);
     //TigerResponse? response = await GetFutureTickAsync(quoteClient);
-    TigerResponse? response = await GetFutureHistoryMainContractAsync(quoteClient);
+    //TigerResponse? response = await GetFutureHistoryMainContractAsync(quoteClient);
     //TigerResponse? response = await GetQuoteContractAsync(quoteClient);
 
     // Stock screener
@@ -117,7 +117,7 @@ class Program
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
     //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -179,6 +179,7 @@ class Program
     //TigerResponse? response = await PlaceTWAPOrderAsync(tradeClient);
     //TigerResponse? response = await PlaceVWAPOrderAsync(tradeClient);
     //TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
+    TigerResponse? response = await PlaceOCABracketsOrderAsync(tradeClient);
 
     // =================================================modify/cancel order
     //TigerResponse? response = await ModifyOrderAsync(tradeClient);
@@ -218,7 +219,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -688,6 +689,25 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceOCABracketsOrderAsync(TradeClient tradeClient)
+  {
+    // place OCA Brackets order
+    ContractItem contract = ContractItem.BuildStockContract("BILI", Currency.USD.ToString());
+    PlaceOrderModel placeOrder = PlaceOrderModel.BuildOCABracketsOrder(
+      "13810712", contract, ActionType.SELL, 1,
+      17.0, TimeInForce.DAY, true,
+      12.0, TimeInForce.DAY, false);
+    placeOrder.Lang = Language.en_US;
+    placeOrder.UserMark = "test-oca";
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = placeOrder
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceMultiLegOrderAsync(TradeClient tradeClient)
   {
     // place option multi-leg order
@@ -695,8 +715,8 @@ class Program
     {
       SecType = SecType.OPT.ToString(),
       Symbol = "AAPL",
-      Strike = "190.0",
-      Expiry = "20230721",
+      Strike = "175.0",
+      Expiry = "20231013",
       Right = Right.CALL.ToString(),
       Action = ActionType.BUY.ToString(),
       Ratio = 1
@@ -705,8 +725,8 @@ class Program
     {
       SecType = SecType.OPT.ToString(),
       Symbol = "AAPL",
-      Strike = "195.0",
-      Expiry = "20230721",
+      Strike = "180.0",
+      Expiry = "20231013",
       Right = Right.CALL.ToString(),
       Action = ActionType.SELL.ToString(),
       Ratio = 1
@@ -1339,8 +1359,8 @@ class Program
       ModelValue = new FutureHistoryMainContractModel()
       {
         ContractCodes = new List<string> { "ESmain" },
-        BeginTime = DateUtil.ConvertTimestamp("2023-05-06 00:00:00", CustomTimeZone.NY_ZONE),
-        EndTime = DateUtil.ConvertTimestamp("2023-08-30 23:59:00", CustomTimeZone.NY_ZONE),
+        BeginTime = DateUtil.ConvertTimestamp("2023-08-08 00:00:00", CustomTimeZone.NY_ZONE),
+        EndTime = DateUtil.ConvertTimestamp("2023-10-05 23:59:00", CustomTimeZone.NY_ZONE),
       }
     };
     return await quoteClient.ExecuteAsync(request);

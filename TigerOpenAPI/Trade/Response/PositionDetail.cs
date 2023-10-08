@@ -10,6 +10,8 @@ namespace TigerOpenAPI.Trade.Response
     public string Account { get; set; }
     [JsonProperty(PropertyName = "position")]
     public long Position { get; set; }
+    [JsonProperty(PropertyName = "positionScale")]
+    public int positionScale { get; set; }
 
     [JsonProperty(PropertyName = "averageCost")]
     public Double AverageCost { get; set; }
