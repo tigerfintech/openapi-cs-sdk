@@ -17,6 +17,9 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "include_hour_trading")]
     public Boolean IncludeHourTrading { get; set; }
 
+    [JsonProperty(PropertyName = "trade_session")]
+    public string TradeSession { get; set; }
+
     public QuoteSymbolModel() : base()
     {
     }
