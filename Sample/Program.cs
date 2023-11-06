@@ -1734,6 +1734,7 @@ class Program
       {
         Symbols = new List<string> { "AAPL" },
         Period = TimeLineType.day,
+        TradeSession = TradeSession.Regular.ToString(),
         BeginTime = DateUtil.ConvertTimestamp("2023-03-03 03:00:00", CustomTimeZone.NY_ZONE)
       }
     };
@@ -1755,7 +1756,7 @@ class Program
     TigerRequest<SymbolNameResponse> request = new TigerRequest<SymbolNameResponse>()
     {
       ApiMethodName = QuoteApiService.ALL_SYMBOL_NAMES,
-      ModelValue = new QuoteMarketModel() { Market = Market.US, Lang = Language.zh_CN }
+      ModelValue = new QuoteMarketModel() { Market = Market.US, Lang = Language.zh_CN, IncludeOTC = false }
     };
     return await quoteClient.ExecuteAsync(request);
   }
@@ -1765,7 +1766,7 @@ class Program
     TigerRequest<TigerListStringResponse> request = new TigerRequest<TigerListStringResponse>()
     {
       ApiMethodName = QuoteApiService.ALL_SYMBOLS,
-      ModelValue = new QuoteMarketModel() { Market = Market.US }
+      ModelValue = new QuoteMarketModel() { Market = Market.US, IncludeOTC = false }
     };
     return await quoteClient.ExecuteAsync(request);
   }
