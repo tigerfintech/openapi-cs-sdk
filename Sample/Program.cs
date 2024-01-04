@@ -126,7 +126,7 @@ class Program
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
-    //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
+    TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
 
     // =================================================palace order
@@ -179,7 +179,7 @@ class Program
     //TigerResponse? response = await PlaceTWAPOrderAsync(tradeClient);
     //TigerResponse? response = await PlaceVWAPOrderAsync(tradeClient);
     //TigerResponse? response = await PlaceMultiLegOrderAsync(tradeClient);
-    TigerResponse? response = await PlaceOCABracketsOrderAsync(tradeClient);
+    //TigerResponse? response = await PlaceOCABracketsOrderAsync(tradeClient);
 
     // =================================================modify/cancel order
     //TigerResponse? response = await ModifyOrderAsync(tradeClient);
@@ -1064,7 +1064,9 @@ class Program
       ApiMethodName = TradeApiService.PRIME_ASSETS,
       ModelValue = new PrimeAssetsModel()
       {
-        Account = "572386"
+        Account = "572386",
+        BaseCurrency = Currency.USD.ToString(),
+        Consolidated = true
       }
     };
     return await tradeClient.ExecuteAsync(request);

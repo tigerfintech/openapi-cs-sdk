@@ -433,28 +433,50 @@ namespace TigerOpenAPI.Common.Util
     }
 
     /**
-     * 该方法封装了获取期权基本面信息的请求过程
+     * Get option fundamental information（include option greek values）
      *
      * @param client QuoteClient
-     * @param symbol 股票代码
+     * @param symbol Stock code
      * @param right CALL or PUT
-     * @param strike 行权价
-     * @param expiry 过期日（yyyy-MM-dd）
-     * @return 期权基本面信息
+     * @param strike strike price
+     * @param expiry Expiration date（yyyy-MM-dd）
+     * @return option fundamental information
      * @throws Exception runtime exception
      */
     public static OptionFundamentals? GetOptionFundamentals(QuoteClient client,
       string symbol, string right, string strike, string expiry)
+    {
+      return GetOptionFundamentals(client, symbol, right, strike, expiry, null);
+    }
+
+    /**
+     * Get option fundamental information（include option greek values）
+     *
+     * @param client QuoteClient
+     * @param symbol Stock code
+     * @param right CALL or PUT
+     * @param strike strike price
+     * @param expiry Expiration date（yyyy-MM-dd）
+     * @param underlyingSymbol underlying symbol（if null, If empty, defaults to the same value as 'symbol'）
+     * @return option fundamental information
+     * @throws Exception runtime exception
+     */
+    public static OptionFundamentals? GetOptionFundamentals(QuoteClient client,
+      string symbol, string right, string strike, string expiry, string? underlyingSymbol)
     {
       TimeZoneInfo timeZoneInfo = CustomTimeZone.NY_ZONE;
       if (DateUtil.IsDateBeforeToday(expiry, timeZoneInfo))
       {
         throw new Exception("Option expiration date cannot be earlier than the current date.");
       }
+      if (string.IsNullOrWhiteSpace(underlyingSymbol))
+      {
+        underlyingSymbol = symbol;
+      }
 
-      Task<CorporateDividendItem> dividendTask = GetCorporateDividendTask(client, symbol);
+      Task<CorporateDividendItem> dividendTask = GetCorporateDividendTask(client, underlyingSymbol);
       Task<Boolean> marketStateTask = GetMarketStateTask(client);
-      Task<Double> latestPriceTask = GetLatestPriceTask(client, symbol);
+      Task<Double> latestPriceTask = GetLatestPriceTask(client, underlyingSymbol);
       Task<OptionBriefItem> optionBriefTask = GetOptionBriefTask(client, symbol,
         right, strike, DateUtil.ConvertTimestamp(expiry, timeZoneInfo));
 

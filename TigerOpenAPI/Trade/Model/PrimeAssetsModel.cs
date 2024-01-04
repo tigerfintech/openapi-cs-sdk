@@ -9,6 +9,9 @@ namespace TigerOpenAPI.Trade.Model
   {
     [JsonProperty(PropertyName = "base_currency")]
     public string BaseCurrency { get; set; }
+
+    [JsonProperty(PropertyName = "consolidated")]
+    public Boolean Consolidated { get; set; }
   }
 }
 
