@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -56,7 +57,7 @@ namespace TigerOpenAPI.Common
         throw new ArgumentNullException("TigerConfig is empty.");
       }
 
-      ConfigUtil.LoadConfigFile(config);
+      ConfigFileUtil.LoadConfigFile(config);
       if (string.IsNullOrWhiteSpace(config.TigerId))
       {
         throw new ArgumentNullException("TigerId is empty.");
@@ -88,6 +89,7 @@ namespace TigerOpenAPI.Common
 
     public string GetDefaultAccount => Config.DefaultAccount;
 
+    protected virtual void RefreshServerUri(TigerConfig config) { }
     // should be override by sub class
     public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return string.Empty; }
 
@@ -214,6 +216,10 @@ namespace TigerOpenAPI.Common
       {
         ApiLogger.Error(e, "request fail. tigerId:{}, method:{}, param:{}, response:{}",
             TigerId, request?.ApiMethodName ?? string.Empty, param, data);
+        if (e.InnerException is SocketException)
+        {
+          RefreshServerUri(Config);
+        }
         return ErrorResponse(TigerId, request, e);
       }
     }
@@ -242,6 +248,10 @@ namespace TigerOpenAPI.Common
       {
         ApiLogger.Error(e, "async request fail. tigerId:{}, method:{}, param:{}, response:{}",
             TigerId, request?.ApiMethodName ?? string.Empty, param, data);
+        if (e.InnerException is SocketException)
+        {
+          RefreshServerUri(Config);
+        }
         return ErrorResponse(TigerId, request, e);
       }
     }

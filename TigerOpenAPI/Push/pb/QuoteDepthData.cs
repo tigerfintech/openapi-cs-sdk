@@ -25,19 +25,19 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRRdW90ZURlcHRoRGF0YS5wcm90bxI0Y29tLnRpZ2VyYnJva2Vycy5zdG9j",
-            "ay5vcGVuYXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYiKtAgoOUXVvdGVEZXB0",
+            "ay5vcGVuYXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYiLNAgoOUXVvdGVEZXB0",
             "aERhdGESDgoGc3ltYm9sGAEgASgJEhEKCXRpbWVzdGFtcBgCIAEoBBJbCgNh",
             "c2sYAyABKAsyTi5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xp",
             "ZW50LnNvY2tldC5kYXRhLnBiLlF1b3RlRGVwdGhEYXRhLk9yZGVyQm9vaxJb",
             "CgNiaWQYBCABKAsyTi5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGku",
             "Y2xpZW50LnNvY2tldC5kYXRhLnBiLlF1b3RlRGVwdGhEYXRhLk9yZGVyQm9v",
-            "axo+CglPcmRlckJvb2sSDQoFcHJpY2UYASADKAESDgoGdm9sdW1lGAIgAygS",
-            "EhIKCm9yZGVyQ291bnQYAyADKA1CGKoCFVRpZ2VyT3BlbkFQSS5RdW90ZS5Q",
-            "YmIGcHJvdG8z"));
+            "axpeCglPcmRlckJvb2sSDQoFcHJpY2UYASADKAESDgoGdm9sdW1lGAIgAygS",
+            "EhIKCm9yZGVyQ291bnQYAyADKA0SEAoIZXhjaGFuZ2UYBCADKAkSDAoEdGlt",
+            "ZRgFIAMoEkIYqgIVVGlnZXJPcGVuQVBJLlF1b3RlLlBiYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteDepthData), global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Parser, new[]{ "Symbol", "Timestamp", "Ask", "Bid" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Types.OrderBook), global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Types.OrderBook.Parser, new[]{ "Price", "Volume", "OrderCount" }, null, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteDepthData), global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Parser, new[]{ "Symbol", "Timestamp", "Ask", "Bid" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Types.OrderBook), global::TigerOpenAPI.Quote.Pb.QuoteDepthData.Types.OrderBook.Parser, new[]{ "Price", "Volume", "OrderCount", "Exchange", "Time" }, null, null, null, null)})
           }));
     }
     #endregion
@@ -402,6 +402,8 @@ namespace TigerOpenAPI.Quote.Pb {
           price_ = other.price_.Clone();
           volume_ = other.volume_.Clone();
           orderCount_ = other.orderCount_.Clone();
+          exchange_ = other.exchange_.Clone();
+          time_ = other.time_.Clone();
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -447,6 +449,34 @@ namespace TigerOpenAPI.Quote.Pb {
           get { return orderCount_; }
         }
 
+        /// <summary>Field number for the "exchange" field.</summary>
+        public const int ExchangeFieldNumber = 4;
+        private static readonly pb::FieldCodec<string> _repeated_exchange_codec
+            = pb::FieldCodec.ForString(34);
+        private readonly pbc::RepeatedField<string> exchange_ = new pbc::RepeatedField<string>();
+        /// <summary>
+        /// option exchange
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<string> Exchange {
+          get { return exchange_; }
+        }
+
+        /// <summary>Field number for the "time" field.</summary>
+        public const int TimeFieldNumber = 5;
+        private static readonly pb::FieldCodec<long> _repeated_time_codec
+            = pb::FieldCodec.ForSInt64(42);
+        private readonly pbc::RepeatedField<long> time_ = new pbc::RepeatedField<long>();
+        /// <summary>
+        /// option exchange time
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<long> Time {
+          get { return time_; }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -465,6 +495,8 @@ namespace TigerOpenAPI.Quote.Pb {
           if(!price_.Equals(other.price_)) return false;
           if(!volume_.Equals(other.volume_)) return false;
           if(!orderCount_.Equals(other.orderCount_)) return false;
+          if(!exchange_.Equals(other.exchange_)) return false;
+          if(!time_.Equals(other.time_)) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -475,6 +507,8 @@ namespace TigerOpenAPI.Quote.Pb {
           hash ^= price_.GetHashCode();
           hash ^= volume_.GetHashCode();
           hash ^= orderCount_.GetHashCode();
+          hash ^= exchange_.GetHashCode();
+          hash ^= time_.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -496,6 +530,8 @@ namespace TigerOpenAPI.Quote.Pb {
           price_.WriteTo(output, _repeated_price_codec);
           volume_.WriteTo(output, _repeated_volume_codec);
           orderCount_.WriteTo(output, _repeated_orderCount_codec);
+          exchange_.WriteTo(output, _repeated_exchange_codec);
+          time_.WriteTo(output, _repeated_time_codec);
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -509,6 +545,8 @@ namespace TigerOpenAPI.Quote.Pb {
           price_.WriteTo(ref output, _repeated_price_codec);
           volume_.WriteTo(ref output, _repeated_volume_codec);
           orderCount_.WriteTo(ref output, _repeated_orderCount_codec);
+          exchange_.WriteTo(ref output, _repeated_exchange_codec);
+          time_.WriteTo(ref output, _repeated_time_codec);
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -522,6 +560,8 @@ namespace TigerOpenAPI.Quote.Pb {
           size += price_.CalculateSize(_repeated_price_codec);
           size += volume_.CalculateSize(_repeated_volume_codec);
           size += orderCount_.CalculateSize(_repeated_orderCount_codec);
+          size += exchange_.CalculateSize(_repeated_exchange_codec);
+          size += time_.CalculateSize(_repeated_time_codec);
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
           }
@@ -537,6 +577,8 @@ namespace TigerOpenAPI.Quote.Pb {
           price_.Add(other.price_);
           volume_.Add(other.volume_);
           orderCount_.Add(other.orderCount_);
+          exchange_.Add(other.exchange_);
+          time_.Add(other.time_);
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
 
@@ -567,6 +609,15 @@ namespace TigerOpenAPI.Quote.Pb {
                 orderCount_.AddEntriesFrom(input, _repeated_orderCount_codec);
                 break;
               }
+              case 34: {
+                exchange_.AddEntriesFrom(input, _repeated_exchange_codec);
+                break;
+              }
+              case 42:
+              case 40: {
+                time_.AddEntriesFrom(input, _repeated_time_codec);
+                break;
+              }
             }
           }
         #endif
@@ -595,6 +646,15 @@ namespace TigerOpenAPI.Quote.Pb {
               case 26:
               case 24: {
                 orderCount_.AddEntriesFrom(ref input, _repeated_orderCount_codec);
+                break;
+              }
+              case 34: {
+                exchange_.AddEntriesFrom(ref input, _repeated_exchange_codec);
+                break;
+              }
+              case 42:
+              case 40: {
+                time_.AddEntriesFrom(ref input, _repeated_time_codec);
                 break;
               }
             }

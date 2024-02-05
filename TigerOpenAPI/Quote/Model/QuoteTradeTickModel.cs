@@ -16,7 +16,7 @@ namespace TigerOpenAPI.Quote.Model
     public Int64 EndIndex { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
-    public Int16 Limit { get; set; } = 200;
+    public Int32 Limit { get; set; } = 200;
 
     [JsonProperty(PropertyName = "trade_session")]
     public string TradeSession { get; set; }

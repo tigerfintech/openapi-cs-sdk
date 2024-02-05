@@ -28,6 +28,10 @@ namespace TigerOpenAPI.Push
 
     void DepthQuoteChange(QuoteDepthData data);
 
+    void StockTopPush(StockTopData data);
+
+    void OptionTopPush(OptionTopData data);
+
     void SubscribeEnd(int id, string subject, string result);
 
     void CancelSubscribeEnd(int id, string subject, string result);

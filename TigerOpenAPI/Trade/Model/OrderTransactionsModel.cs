@@ -33,7 +33,7 @@ namespace TigerOpenAPI.Trade.Model
     public Int64 EndDate { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
-    public Int16 Limit { get; set; } = 20;
+    public Int32 Limit { get; set; } = 20;
 
     public OrderTransactionsModel() : base()
     {

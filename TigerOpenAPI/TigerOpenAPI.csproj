@@ -1,13 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>TigerOpenAPI</PackageId>
+    <Version>1.0.5</Version>
+    <Authors>tiger</Authors>
+    <Company>TIGER BROKERS</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>CS8618;</NoWarn>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="docs/README.md" Pack="true" PackagePath="/" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="NLog" />
     <None Remove="Common\" />
@@ -33,6 +46,8 @@
     <None Remove="Push\Model\" />
     <None Remove="DotNetty.Codecs.Protobuf" />
     <None Remove="DotNetty.Handlers" />
+    <None Remove="Properties\" />
+    <None Remove="Common\Watch\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -61,5 +76,7 @@
     <Folder Include="Push\pb\" />
     <Folder Include="Push\proto\" />
     <Folder Include="Push\Model\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Common\Watch\" />
   </ItemGroup>
 </Project>

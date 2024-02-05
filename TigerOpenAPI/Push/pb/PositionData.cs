@@ -25,7 +25,7 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJQb3NpdGlvbkRhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3RvY2su",
-            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi6gIKDFBvc2l0aW9uRGF0",
+            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIijgMKDFBvc2l0aW9uRGF0",
             "YRIPCgdhY2NvdW50GAEgASgJEg4KBnN5bWJvbBgCIAEoCRIOCgZleHBpcnkY",
             "AyABKAkSDgoGc3RyaWtlGAQgASgJEg0KBXJpZ2h0GAUgASgJEhIKCmlkZW50",
             "aWZpZXIYBiABKAkSEgoKbXVsdGlwbGllchgHIAEoDRIOCgZtYXJrZXQYCCAB",
@@ -33,12 +33,13 @@ namespace TigerOpenAPI.Quote.Pb {
             "eXBlGAsgASgJEhAKCHBvc2l0aW9uGAwgASgSEhUKDXBvc2l0aW9uU2NhbGUY",
             "DSABKBESEwoLYXZlcmFnZUNvc3QYDiABKAESEwoLbGF0ZXN0UHJpY2UYDyAB",
             "KAESEwoLbWFya2V0VmFsdWUYECABKAESFQoNdW5yZWFsaXplZFBubBgRIAEo",
-            "ARIMCgRuYW1lGBIgASgJEhEKCXRpbWVzdGFtcBgTIAEoBEIYqgIVVGlnZXJP",
-            "cGVuQVBJLlF1b3RlLlBiYgZwcm90bzM="));
+            "ARIMCgRuYW1lGBIgASgJEhEKCXRpbWVzdGFtcBgTIAEoBBIVCghzYWxlYWJs",
+            "ZRgUIAEoEkgAiAEBQgsKCV9zYWxlYWJsZUIYqgIVVGlnZXJPcGVuQVBJLlF1",
+            "b3RlLlBiYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PositionData), global::TigerOpenAPI.Quote.Pb.PositionData.Parser, new[]{ "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Market", "Currency", "SegType", "SecType", "Position", "PositionScale", "AverageCost", "LatestPrice", "MarketValue", "UnrealizedPnl", "Name", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PositionData), global::TigerOpenAPI.Quote.Pb.PositionData.Parser, new[]{ "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Market", "Currency", "SegType", "SecType", "Position", "PositionScale", "AverageCost", "LatestPrice", "MarketValue", "UnrealizedPnl", "Name", "Timestamp", "Saleable" }, new[]{ "Saleable" }, null, null, null)
           }));
     }
     #endregion
@@ -52,6 +53,7 @@ namespace TigerOpenAPI.Quote.Pb {
   {
     private static readonly pb::MessageParser<PositionData> _parser = new pb::MessageParser<PositionData>(() => new PositionData());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<PositionData> Parser { get { return _parser; } }
@@ -79,6 +81,7 @@ namespace TigerOpenAPI.Quote.Pb {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public PositionData(PositionData other) : this() {
+      _hasBits0 = other._hasBits0;
       account_ = other.account_;
       symbol_ = other.symbol_;
       expiry_ = other.expiry_;
@@ -98,6 +101,7 @@ namespace TigerOpenAPI.Quote.Pb {
       unrealizedPnl_ = other.unrealizedPnl_;
       name_ = other.name_;
       timestamp_ = other.timestamp_;
+      saleable_ = other.saleable_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -383,6 +387,34 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "saleable" field.</summary>
+    public const int SaleableFieldNumber = 20;
+    private long saleable_;
+    /// <summary>
+    /// saleable quantity for Chinese A-share market stocks
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Saleable {
+      get { if ((_hasBits0 & 1) != 0) { return saleable_; } else { return 0L; } }
+      set {
+        _hasBits0 |= 1;
+        saleable_ = value;
+      }
+    }
+    /// <summary>Gets whether the "saleable" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSaleable {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "saleable" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSaleable() {
+      _hasBits0 &= ~1;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -417,6 +449,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(UnrealizedPnl, other.UnrealizedPnl)) return false;
       if (Name != other.Name) return false;
       if (Timestamp != other.Timestamp) return false;
+      if (Saleable != other.Saleable) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -443,6 +476,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (UnrealizedPnl != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(UnrealizedPnl);
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Timestamp != 0UL) hash ^= Timestamp.GetHashCode();
+      if (HasSaleable) hash ^= Saleable.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -537,6 +571,10 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(152, 1);
         output.WriteUInt64(Timestamp);
       }
+      if (HasSaleable) {
+        output.WriteRawTag(160, 1);
+        output.WriteSInt64(Saleable);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -623,6 +661,10 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(152, 1);
         output.WriteUInt64(Timestamp);
       }
+      if (HasSaleable) {
+        output.WriteRawTag(160, 1);
+        output.WriteSInt64(Saleable);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -689,6 +731,9 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (Timestamp != 0UL) {
         size += 2 + pb::CodedOutputStream.ComputeUInt64Size(Timestamp);
+      }
+      if (HasSaleable) {
+        size += 2 + pb::CodedOutputStream.ComputeSInt64Size(Saleable);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -758,6 +803,9 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.Timestamp != 0UL) {
         Timestamp = other.Timestamp;
+      }
+      if (other.HasSaleable) {
+        Saleable = other.Saleable;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -850,6 +898,10 @@ namespace TigerOpenAPI.Quote.Pb {
             Timestamp = input.ReadUInt64();
             break;
           }
+          case 160: {
+            Saleable = input.ReadSInt64();
+            break;
+          }
         }
       }
     #endif
@@ -939,6 +991,10 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           case 152: {
             Timestamp = input.ReadUInt64();
+            break;
+          }
+          case 160: {
+            Saleable = input.ReadSInt64();
             break;
           }
         }

@@ -3,42 +3,49 @@ namespace TigerOpenAPI.Common.Enum
 {
   public class MultiTagField
   {
-
-    /** 所属行业 */
+    /** Industry */
     public static readonly MultiTagField MultiTagField_Industry = new MultiTagField(1, "industry");
-    /** 所属概念 */
+    /** Concept */
     public static readonly MultiTagField MultiTagField_Concept = new MultiTagField(2, "concept");
-    /** 是否为otc股票.1=是，0=否 */
+    /** OTC stock. 1=yes, 0=no */
     public static readonly MultiTagField MultiTagField_isOTC = new MultiTagField(3, "isOTC");
     public static readonly MultiTagField MultiTagField_StockCode = new MultiTagField(4, "symbol");
-    /** 股票类型 stock or etf ;股票类型,非0表示该股票是ETF,1表示不带杠杆的etf,2表示2倍杠杆etf,3表示3倍etf杠杆,负值表示反向的ETF */
+    /** Stock type: stock or etf; non-zero value indicates ETF, 1 indicates non-leveraged ETF, 2 indicates 2x leveraged ETF, 3 indicates 3x leveraged ETF, negative value indicates inverse ETF */
     public static readonly MultiTagField MultiTagField_Type = new MultiTagField(5, "type");
-    /** 成交量异常.1=是，0=否 ;当日实时成交量> 5* 最近一年的平均成交量 */
+    /** Volume spike. 1=yes, 0=no; real-time volume > 5 * average volume of the past year */
     public static readonly MultiTagField MultiTagField_Volume_Spike = new MultiTagField(6, "volSpike");
-    /** 破净股票；市净率PB<1 */
+    /** Net broken stock; PB ratio < 1 */
     public static readonly MultiTagField MultiTagField_Net_Broken = new MultiTagField(7, "netBroken");
-    /** 破发股票 ； 最新价<发行价 */
+    /** Broken issue stock; latest price < issue price */
     public static readonly MultiTagField MultiTagField_Issue_Price_Broken = new MultiTagField(8, "issuePriceBroken");
-    /** 跟踪指数/资产 - ETF */
+    /** Tracking index/asset - ETF */
     public static readonly MultiTagField MultiTagField_PrimaryBenchmark = new MultiTagField(9, "primaryBenchmark");
-    /** 发行人 - ETF */
+    /** Issuer - ETF */
     public static readonly MultiTagField MultiTagField_Issuer = new MultiTagField(10, "issuer");
-    /** 托管人 - ETF */
+    /** Custodian - ETF */
     public static readonly MultiTagField MultiTagField_Custodian = new MultiTagField(11, "custodian");
-    /** 分红频率 - ETF */
+    /** Distribution frequency - ETF */
     public static readonly MultiTagField MultiTagField_DistributionFrequency = new MultiTagField(12, "distributionFrequency");
-    /** 是否支持期权 - ETF ; 1=是，0=否 */
+    /** Options available - ETF; 1=yes, 0=no */
     public static readonly MultiTagField MultiTagField_OptionsAvailable = new MultiTagField(13, "optionsAvailable");
-    /** 今日创历史新高 - ETF 1=是，0=否 */
+    /** Today's historical high - ETF; 1=yes, 0=no */
     public static readonly MultiTagField MultiTagField_Today_HistoryHigh = new MultiTagField(14, "todayHistoryHigh");
-    /** 今日创历史新低 - ETF 1=是，0=否 */
+    /** Today's historical low - ETF; 1=yes, 0=no */
     public static readonly MultiTagField MultiTagField_Today_HistoryLow = new MultiTagField(15, "todayHistoryLow");
-    /** 股票包 */
+    /** Stock package */
     public static readonly MultiTagField MultiTagField_Stock_Package = new MultiTagField(16, "StockPkg");
-    /** 52周最高 0 否 1是* */
+    /** 52-week high flag; 0=no, 1=yes */
     public static readonly MultiTagField MultiTagField_Week52HighFlag = new MultiTagField(17, "week52HighFlag");
-    /** 52周最低 0 否 1是 */
+    /** 52-week low flag; 0=no, 1=yes */
     public static readonly MultiTagField MultiTagField_Week52LowFlag = new MultiTagField(18, "week52LowFlag");
+    /** Trading currency; specific currency required */
+    public static readonly MultiTagField MultiTagField_TradeCurrency = new MultiTagField(19, "tradeCurrency");
+    /** ETF type; specific type required */
+    public static readonly MultiTagField MultiTagField_ETF_TYPE = new MultiTagField(20, "etfType");
+    /** Stock market; multiple markets supported; specific type required QotMarket stock market, pass the value inside */
+    public static readonly MultiTagField MultiTagField_Market_Name = new MultiTagField(21, "marketName");
+    /** First-level industry level; specific sectorId required */
+    public static readonly MultiTagField MultiTagField_One_Sectors_Level = new MultiTagField(22, "oneSectorsLevel");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -74,6 +81,10 @@ namespace TigerOpenAPI.Common.Enum
         yield return MultiTagField_Stock_Package;
         yield return MultiTagField_Week52HighFlag;
         yield return MultiTagField_Week52LowFlag;
+        yield return MultiTagField_TradeCurrency;
+        yield return MultiTagField_ETF_TYPE;
+        yield return MultiTagField_Market_Name;
+        yield return MultiTagField_One_Sectors_Level;
       }
     }
 

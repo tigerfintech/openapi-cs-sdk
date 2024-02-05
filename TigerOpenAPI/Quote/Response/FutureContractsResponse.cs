@@ -8,10 +8,6 @@ namespace TigerOpenAPI.Quote.Response
   {
     [JsonProperty(PropertyName = "data")]
     public List<FutureContractItem> Data { get; set; }
-
-    public FutureContractsResponse()
-    {
-    }
   }
 }
 

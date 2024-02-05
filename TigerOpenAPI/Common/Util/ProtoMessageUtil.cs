@@ -16,7 +16,7 @@ namespace TigerOpenAPI.Common.Util
     {
     }
 
-    public static Request buildConnectMessage(string tigerId, string sign,
+    public static Request BuildConnectMessage(string tigerId, string sign,
       string version, int sendInterval, int receiveInterval)
     {
       Request request = new Request()
@@ -36,7 +36,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildSendMessage()
+    public static Request BuildSendMessage()
     {
       Request request = new Request()
       {
@@ -46,7 +46,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildHeartBeatMessage()
+    public static Request BuildHeartBeatMessage()
     {
       Request request = new Request()
       {
@@ -56,7 +56,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildSubscribeMessage(Subject subject)
+    public static Request BuildSubscribeMessage(Subject subject)
     {
       Request request = new Request()
       {
@@ -70,7 +70,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildSubscribeMessage(string? account, Subject subject)
+    public static Request BuildSubscribeMessage(string? account, Subject subject)
     {
       Request request = new Request()
       {
@@ -86,7 +86,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildSubscribeMessage(ISet<string> symbols, QuoteSubject subject)
+    public static Request BuildSubscribeMessage(ISet<string> symbols, QuoteSubject subject)
     {
       Request request = new Request()
       {
@@ -95,13 +95,13 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
         }
       };
       return request;
     }
 
-    public static Request buildSubscribeMessage(Market market, QuoteSubject subject)
+    public static Request BuildSubscribeMessage(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       Request request = new Request()
       {
@@ -110,13 +110,14 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Market = market.ToString()
+          Market = market.ToString(),
+          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
         }
       };
       return request;
     }
 
-    public static Request buildUnSubscribeMessage(Subject subject)
+    public static Request BuildUnSubscribeMessage(Subject subject)
     {
       Request request = new Request()
       {
@@ -130,7 +131,7 @@ namespace TigerOpenAPI.Common.Util
       return request;
     }
 
-    public static Request buildUnSubscribeMessage(ISet<string> symbols, QuoteSubject subject)
+    public static Request BuildUnSubscribeMessage(ISet<string>? symbols, QuoteSubject subject)
     {
       Request request = new Request()
       {
@@ -139,13 +140,13 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
         }
       };
       return request;
     }
 
-    public static Request buildUnSubscribeMessage(Market market, QuoteSubject subject)
+    public static Request BuildUnSubscribeMessage(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       Request request = new Request()
       {
@@ -154,13 +155,14 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Market = market.ToString()
+          Market = market.ToString(),
+          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
         }
       };
       return request;
     }
 
-    public static Request buildDisconnectMessage()
+    public static Request BuildDisconnectMessage()
     {
       Request request = new Request()
       {

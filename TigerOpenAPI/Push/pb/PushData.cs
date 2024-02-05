@@ -29,29 +29,34 @@ namespace TigerOpenAPI.Quote.Pb {
             "GhVPcmRlclN0YXR1c0RhdGEucHJvdG8aElBvc2l0aW9uRGF0YS5wcm90bxoP",
             "QXNzZXREYXRhLnByb3RvGg9RdW90ZURhdGEucHJvdG8aFFF1b3RlRGVwdGhE",
             "YXRhLnByb3RvGhNUcmFkZVRpY2tEYXRhLnByb3RvGhpPcmRlclRyYW5zYWN0",
-            "aW9uRGF0YS5wcm90byKFBgoIUHVzaERhdGESXQoIZGF0YVR5cGUYASABKA4y",
-            "Sy5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tl",
-            "dC5kYXRhLnBiLlNvY2tldENvbW1vbi5EYXRhVHlwZRJUCglxdW90ZURhdGEY",
-            "AiABKAsyPy5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50",
-            "LnNvY2tldC5kYXRhLnBiLlF1b3RlRGF0YUgAEl4KDnF1b3RlRGVwdGhEYXRh",
-            "GAMgASgLMkQuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVu",
-            "dC5zb2NrZXQuZGF0YS5wYi5RdW90ZURlcHRoRGF0YUgAElwKDXRyYWRlVGlj",
-            "a0RhdGEYBCABKAsyQy5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGku",
-            "Y2xpZW50LnNvY2tldC5kYXRhLnBiLlRyYWRlVGlja0RhdGFIABJaCgxwb3Np",
-            "dGlvbkRhdGEYBSABKAsyQi5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5h",
-            "cGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlBvc2l0aW9uRGF0YUgAElQKCWFz",
-            "c2V0RGF0YRgGIAEoCzI/LmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFw",
-            "aS5jbGllbnQuc29ja2V0LmRhdGEucGIuQXNzZXREYXRhSAASYAoPb3JkZXJT",
-            "dGF0dXNEYXRhGAcgASgLMkUuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVu",
-            "YXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYi5PcmRlclN0YXR1c0RhdGFIABJq",
-            "ChRvcmRlclRyYW5zYWN0aW9uRGF0YRgIIAEoCzJKLmNvbS50aWdlcmJyb2tl",
-            "cnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuT3JkZXJU",
-            "cmFuc2FjdGlvbkRhdGFIAEIGCgRib2R5QhiqAhVUaWdlck9wZW5BUEkuUXVv",
-            "dGUuUGJQAFABUAJQA1AEUAVQBlAHYgZwcm90bzM="));
+            "aW9uRGF0YS5wcm90bxoSU3RvY2tUb3BEYXRhLnByb3RvGhNPcHRpb25Ub3BE",
+            "YXRhLnByb3RvIr8HCghQdXNoRGF0YRJdCghkYXRhVHlwZRgBIAEoDjJLLmNv",
+            "bS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRh",
+            "dGEucGIuU29ja2V0Q29tbW9uLkRhdGFUeXBlElQKCXF1b3RlRGF0YRgCIAEo",
+            "CzI/LmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29j",
+            "a2V0LmRhdGEucGIuUXVvdGVEYXRhSAASXgoOcXVvdGVEZXB0aERhdGEYAyAB",
+            "KAsyRC5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNv",
+            "Y2tldC5kYXRhLnBiLlF1b3RlRGVwdGhEYXRhSAASXAoNdHJhZGVUaWNrRGF0",
+            "YRgEIAEoCzJDLmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGll",
+            "bnQuc29ja2V0LmRhdGEucGIuVHJhZGVUaWNrRGF0YUgAEloKDHBvc2l0aW9u",
+            "RGF0YRgFIAEoCzJCLmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5j",
+            "bGllbnQuc29ja2V0LmRhdGEucGIuUG9zaXRpb25EYXRhSAASVAoJYXNzZXRE",
+            "YXRhGAYgASgLMj8uY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNs",
+            "aWVudC5zb2NrZXQuZGF0YS5wYi5Bc3NldERhdGFIABJgCg9vcmRlclN0YXR1",
+            "c0RhdGEYByABKAsyRS5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGku",
+            "Y2xpZW50LnNvY2tldC5kYXRhLnBiLk9yZGVyU3RhdHVzRGF0YUgAEmoKFG9y",
+            "ZGVyVHJhbnNhY3Rpb25EYXRhGAggASgLMkouY29tLnRpZ2VyYnJva2Vycy5z",
+            "dG9jay5vcGVuYXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYi5PcmRlclRyYW5z",
+            "YWN0aW9uRGF0YUgAEloKDHN0b2NrVG9wRGF0YRgJIAEoCzJCLmNvbS50aWdl",
+            "cmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIu",
+            "U3RvY2tUb3BEYXRhSAASXAoNb3B0aW9uVG9wRGF0YRgKIAEoCzJDLmNvbS50",
+            "aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEu",
+            "cGIuT3B0aW9uVG9wRGF0YUgAQgYKBGJvZHlCGKoCFVRpZ2VyT3BlbkFQSS5R",
+            "dW90ZS5QYlAAUAFQAlADUARQBVAGUAdQCFAJYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderStatusDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.PositionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.AssetDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDepthDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TradeTickDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderTransactionDataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderStatusDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.PositionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.AssetDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDepthDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TradeTickDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderTransactionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.StockTopDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OptionTopDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PushData), global::TigerOpenAPI.Quote.Pb.PushData.Parser, new[]{ "DataType", "QuoteData", "QuoteDepthData", "TradeTickData", "PositionData", "AssetData", "OrderStatusData", "OrderTransactionData" }, new[]{ "Body" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PushData), global::TigerOpenAPI.Quote.Pb.PushData.Parser, new[]{ "DataType", "QuoteData", "QuoteDepthData", "TradeTickData", "PositionData", "AssetData", "OrderStatusData", "OrderTransactionData", "StockTopData", "OptionTopData" }, new[]{ "Body" }, null, null, null)
           }));
     }
     #endregion
@@ -114,6 +119,12 @@ namespace TigerOpenAPI.Quote.Pb {
           break;
         case BodyOneofCase.OrderTransactionData:
           OrderTransactionData = other.OrderTransactionData.Clone();
+          break;
+        case BodyOneofCase.StockTopData:
+          StockTopData = other.StockTopData.Clone();
+          break;
+        case BodyOneofCase.OptionTopData:
+          OptionTopData = other.OptionTopData.Clone();
           break;
       }
 
@@ -222,6 +233,30 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "stockTopData" field.</summary>
+    public const int StockTopDataFieldNumber = 9;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TigerOpenAPI.Quote.Pb.StockTopData StockTopData {
+      get { return bodyCase_ == BodyOneofCase.StockTopData ? (global::TigerOpenAPI.Quote.Pb.StockTopData) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.StockTopData;
+      }
+    }
+
+    /// <summary>Field number for the "optionTopData" field.</summary>
+    public const int OptionTopDataFieldNumber = 10;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::TigerOpenAPI.Quote.Pb.OptionTopData OptionTopData {
+      get { return bodyCase_ == BodyOneofCase.OptionTopData ? (global::TigerOpenAPI.Quote.Pb.OptionTopData) body_ : null; }
+      set {
+        body_ = value;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.OptionTopData;
+      }
+    }
+
     private object body_;
     /// <summary>Enum of possible cases for the "body" oneof.</summary>
     public enum BodyOneofCase {
@@ -233,6 +268,8 @@ namespace TigerOpenAPI.Quote.Pb {
       AssetData = 6,
       OrderStatusData = 7,
       OrderTransactionData = 8,
+      StockTopData = 9,
+      OptionTopData = 10,
     }
     private BodyOneofCase bodyCase_ = BodyOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -271,6 +308,8 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!object.Equals(AssetData, other.AssetData)) return false;
       if (!object.Equals(OrderStatusData, other.OrderStatusData)) return false;
       if (!object.Equals(OrderTransactionData, other.OrderTransactionData)) return false;
+      if (!object.Equals(StockTopData, other.StockTopData)) return false;
+      if (!object.Equals(OptionTopData, other.OptionTopData)) return false;
       if (BodyCase != other.BodyCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -287,6 +326,8 @@ namespace TigerOpenAPI.Quote.Pb {
       if (bodyCase_ == BodyOneofCase.AssetData) hash ^= AssetData.GetHashCode();
       if (bodyCase_ == BodyOneofCase.OrderStatusData) hash ^= OrderStatusData.GetHashCode();
       if (bodyCase_ == BodyOneofCase.OrderTransactionData) hash ^= OrderTransactionData.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.StockTopData) hash ^= StockTopData.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.OptionTopData) hash ^= OptionTopData.GetHashCode();
       hash ^= (int) bodyCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -338,6 +379,14 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(66);
         output.WriteMessage(OrderTransactionData);
       }
+      if (bodyCase_ == BodyOneofCase.StockTopData) {
+        output.WriteRawTag(74);
+        output.WriteMessage(StockTopData);
+      }
+      if (bodyCase_ == BodyOneofCase.OptionTopData) {
+        output.WriteRawTag(82);
+        output.WriteMessage(OptionTopData);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -380,6 +429,14 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(66);
         output.WriteMessage(OrderTransactionData);
       }
+      if (bodyCase_ == BodyOneofCase.StockTopData) {
+        output.WriteRawTag(74);
+        output.WriteMessage(StockTopData);
+      }
+      if (bodyCase_ == BodyOneofCase.OptionTopData) {
+        output.WriteRawTag(82);
+        output.WriteMessage(OptionTopData);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -413,6 +470,12 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (bodyCase_ == BodyOneofCase.OrderTransactionData) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(OrderTransactionData);
+      }
+      if (bodyCase_ == BodyOneofCase.StockTopData) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StockTopData);
+      }
+      if (bodyCase_ == BodyOneofCase.OptionTopData) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OptionTopData);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -471,6 +534,18 @@ namespace TigerOpenAPI.Quote.Pb {
             OrderTransactionData = new global::TigerOpenAPI.Quote.Pb.OrderTransactionData();
           }
           OrderTransactionData.MergeFrom(other.OrderTransactionData);
+          break;
+        case BodyOneofCase.StockTopData:
+          if (StockTopData == null) {
+            StockTopData = new global::TigerOpenAPI.Quote.Pb.StockTopData();
+          }
+          StockTopData.MergeFrom(other.StockTopData);
+          break;
+        case BodyOneofCase.OptionTopData:
+          if (OptionTopData == null) {
+            OptionTopData = new global::TigerOpenAPI.Quote.Pb.OptionTopData();
+          }
+          OptionTopData.MergeFrom(other.OptionTopData);
           break;
       }
 
@@ -556,6 +631,24 @@ namespace TigerOpenAPI.Quote.Pb {
             OrderTransactionData = subBuilder;
             break;
           }
+          case 74: {
+            global::TigerOpenAPI.Quote.Pb.StockTopData subBuilder = new global::TigerOpenAPI.Quote.Pb.StockTopData();
+            if (bodyCase_ == BodyOneofCase.StockTopData) {
+              subBuilder.MergeFrom(StockTopData);
+            }
+            input.ReadMessage(subBuilder);
+            StockTopData = subBuilder;
+            break;
+          }
+          case 82: {
+            global::TigerOpenAPI.Quote.Pb.OptionTopData subBuilder = new global::TigerOpenAPI.Quote.Pb.OptionTopData();
+            if (bodyCase_ == BodyOneofCase.OptionTopData) {
+              subBuilder.MergeFrom(OptionTopData);
+            }
+            input.ReadMessage(subBuilder);
+            OptionTopData = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -636,6 +729,24 @@ namespace TigerOpenAPI.Quote.Pb {
             }
             input.ReadMessage(subBuilder);
             OrderTransactionData = subBuilder;
+            break;
+          }
+          case 74: {
+            global::TigerOpenAPI.Quote.Pb.StockTopData subBuilder = new global::TigerOpenAPI.Quote.Pb.StockTopData();
+            if (bodyCase_ == BodyOneofCase.StockTopData) {
+              subBuilder.MergeFrom(StockTopData);
+            }
+            input.ReadMessage(subBuilder);
+            StockTopData = subBuilder;
+            break;
+          }
+          case 82: {
+            global::TigerOpenAPI.Quote.Pb.OptionTopData subBuilder = new global::TigerOpenAPI.Quote.Pb.OptionTopData();
+            if (bodyCase_ == BodyOneofCase.OptionTopData) {
+              subBuilder.MergeFrom(OptionTopData);
+            }
+            input.ReadMessage(subBuilder);
+            OptionTopData = subBuilder;
             break;
           }
         }

@@ -97,7 +97,7 @@ namespace TigerOpenAPI.Common.Util
         ApiLogger.Warn($"domain garden return:{response}, error:{ex.Message}");
       }
 
-      var defaultUrlInfoTuple = getDefaultUrlInfo(environment, protocol);
+      var defaultUrlInfoTuple = GetDefaultUrlInfo(environment, protocol);
       // if get domain config data failed and original address is not emtpy, return original address
       if (domainConfigList == null || domainConfigList.Count == 0)
       {
@@ -130,7 +130,7 @@ namespace TigerOpenAPI.Common.Util
             }
 
             string? domainUrl = item.Value?.ToString()?.Replace("https://", "");
-            UriType uriType = convertUriType(license, item.Key);
+            UriType uriType = ConvertUriType(license, item.Key);
             if (uriType != UriType.NONE && !string.IsNullOrWhiteSpace(domainUrl))
             {
               // NONE, COMMON, TRADE, QUOTE, PAPER, SOCKET
@@ -156,7 +156,7 @@ namespace TigerOpenAPI.Common.Util
       return domainUrlDict;
     }
 
-    private static (string domain, string keyField, string socketPort) getDefaultUrlInfo(Env environment, Protocol protocol)
+    private static (string domain, string keyField, string socketPort) GetDefaultUrlInfo(Env environment, Protocol protocol)
     {
       switch (environment)
       {
@@ -172,7 +172,7 @@ namespace TigerOpenAPI.Common.Util
       }
     }
 
-    private static UriType convertUriType(License license, string key)
+    private static UriType ConvertUriType(License license, string key)
     {
       if (string.Equals(key, nameof(UriType.COMMON)))
         return UriType.COMMON;

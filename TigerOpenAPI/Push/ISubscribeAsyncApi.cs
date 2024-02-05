@@ -129,6 +129,38 @@ namespace TigerOpenAPI.Push
     uint CancelSubscribeMarketQuote(Market market, QuoteSubject subject);
 
     /**
+     * subscribe stock-top-data of the specified market
+     * @param market Market
+     * @param indicators stock top quote's indicator
+     * @return
+     */
+    uint SubscribeStockTop(Market market, ISet<Indicator>? indicators = null);
+
+    /**
+     * cancel subscribe stock-top-data of the specified market
+     * @param market Market
+     * @param indicators stock top quote's indicator
+     * @return
+     */
+    uint CancelSubscribeStockTop(Market market, ISet<Indicator>? indicators = null);
+
+    /**
+     * subscribe option-top-data of the specified market
+     * @param market Market
+     * @param indicators option top quote's indicator
+     * @return
+     */
+    uint SubscribeOptionTop(Market market, ISet<Indicator>? indicators = null);
+
+    /**
+     * cancel subscribe option-top-data of the specified market
+     * @param market Market
+     * @param indicators option top quote's indicator
+     * @return
+     */
+    uint CancelSubscribeOptionTop(Market market, ISet<Indicator>? indicators = null);
+
+    /**
      * query subscribed symbol list
      *
      * @return request id

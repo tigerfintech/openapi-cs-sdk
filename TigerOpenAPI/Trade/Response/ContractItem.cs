@@ -23,7 +23,7 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "contractMonth")]
     public string ContractMonth { get; set; }
     [JsonProperty(PropertyName = "strike")]
-    public Double Strike { get; set; }
+    public Double Strike { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "right")]
     public string Right { get; set; }
     [JsonProperty(PropertyName = "multiplier")]
@@ -48,24 +48,24 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "closeOnly")]
     public Boolean CloseOnly { get; set; }
     [JsonProperty(PropertyName = "minTick")]
-    public Double MinTick { get; set; }
+    public Double MinTick { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "marginable")]
     public Boolean Marginable { get; set; }
 
     [JsonProperty(PropertyName = "shortInitialMargin")]
-    public Double ShortInitialMargin { get; set; }
+    public Double ShortInitialMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortMaintenanceMargin")]
-    public Double ShortMaintenanceMargin { get; set; }
+    public Double ShortMaintenanceMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortFeeRate")]
-    public Double ShortFeeRate { get; set; }
+    public Double ShortFeeRate { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "shortable")]
     public Boolean Shortable { get; set; }
     [JsonProperty(PropertyName = "shortableCount")]
     public long ShortableCount { get; set; }
     [JsonProperty(PropertyName = "longInitialMargin")]
-    public Double LongInitialMargin { get; set; }
+    public Double LongInitialMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "longMaintenanceMargin")]
-    public Double LongMaintenanceMargin { get; set; }
+    public Double LongMaintenanceMargin { get; set; } = double.NaN;
     [JsonProperty(PropertyName = "lastTradingDate")]
     public string LastTradingDate { get; set; }
     [JsonProperty(PropertyName = "firstNoticeDate")]
@@ -82,16 +82,31 @@ namespace TigerOpenAPI.Trade.Response
     public string IbCode { get; set; }
     [JsonProperty(PropertyName = "tickSizes")]
     public List<TickSizeItem> TickSizes { get; set; }
+
+    /** Intraday initial margin discount */
+    [JsonProperty(PropertyName = "discountedDayInitialMargin")]
+    public Double DiscountedDayInitialMargin { get; set; } = double.NaN;
+    /** Intraday maintenance margin discount */
+    [JsonProperty(PropertyName = "discountedDayMaintenanceMargin")]
+    public Double DiscountedDayMaintenanceMargin { get; set; } = double.NaN;
+    /** Intraday margin discount period time zone  */
+    [JsonProperty(PropertyName = "discountedTimeZoneCode")]
+    public string DiscountedTimeZoneCode { get; set; }
+    [JsonProperty(PropertyName = "discountedStartAt")]
+    public string DiscountedStartAt { get; set; }
+    [JsonProperty(PropertyName = "discountedEndAt")]
+    public string DiscountedEndAt { get; set; }
+
     [JsonProperty(PropertyName = "isEtf")]
     public Boolean IsEtf { get; set; }
     [JsonProperty(PropertyName = "etfLeverage")]
-    public Int16 EtfLeverage { get; set; }
+    public Int32 EtfLeverage { get; set; }
 
     public ContractItem()
     {
     }
 
-    public static ContractItem convert(FutureContractItem futureContractItem)
+    public static ContractItem Convert(FutureContractItem futureContractItem)
     {
       ContractItem contractItem = new ContractItem();
       contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString();
@@ -113,7 +128,17 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildStockContract(string symbol, string currency)
+    public static ContractItem Convert(FundContractItem fundContractItem)
+    {
+      ContractItem contractItem = new ContractItem();
+      contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.FUND.ToString();
+      contractItem.Symbol = fundContractItem.Symbol;
+      contractItem.Market = fundContractItem.Market;
+      contractItem.Currency = fundContractItem.Currency;
+      return contractItem;
+    }
+
+    public static ContractItem BuildStockContract(string symbol, string currency)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -124,7 +149,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildOptionContract(string identifier)
+    public static ContractItem BuildOptionContract(string identifier)
     {
       ContractItem contractItem = new ContractItem();
       contractItem.SecType = TigerOpenAPI.Common.Enum.SecType.OPT.ToString();
@@ -137,7 +162,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildOptionContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildOptionContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -150,7 +175,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildWarrantContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildWarrantContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -167,7 +192,7 @@ namespace TigerOpenAPI.Trade.Response
 
     }
 
-    public static ContractItem buildCbbcContract(string symbol, string expiry, double strike, string right)
+    public static ContractItem BuildCbbcContract(string symbol, string expiry, double strike, string right)
     {
       ContractItem contractItem = new ContractItem()
       {
@@ -183,7 +208,7 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildFutureContract(string symbol, string currency, string exchange,
+    public static ContractItem BuildFutureContract(string symbol, string currency, string exchange,
         string expiry, double multiplier)
     {
       ContractItem contractItem = new ContractItem()
@@ -198,11 +223,22 @@ namespace TigerOpenAPI.Trade.Response
       return contractItem;
     }
 
-    public static ContractItem buildFutureContract(string symbol, string currency)
+    public static ContractItem BuildFutureContract(string symbol, string currency)
     {
       ContractItem contractItem = new ContractItem()
       {
         SecType = TigerOpenAPI.Common.Enum.SecType.FUT.ToString(),
+        Symbol = symbol,
+        Currency = currency
+      };
+      return contractItem;
+    }
+
+    public static ContractItem BuildFundContract(string symbol, string currency)
+    {
+      ContractItem contractItem = new ContractItem()
+      {
+        SecType = TigerOpenAPI.Common.Enum.SecType.FUND.ToString(),
         Symbol = symbol,
         Currency = currency
       };

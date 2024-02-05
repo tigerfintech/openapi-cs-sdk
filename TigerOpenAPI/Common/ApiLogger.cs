@@ -36,7 +36,7 @@ namespace TigerOpenAPI.Common
         Name = "TigerOpenAPI",
         Layout = simpleLayout,
         AutoFlush = true,
-        FileName = logDir + @"/tiger_openapi_${date:format=yyyy-MM-dd}.txt",
+        FileName = logDir + @"/tiger_openapi_${date:format=yyyy-MM-dd}.log",
         CreateDirs = true,
       };
       var consoleTarget = new NLog.Targets.ConsoleTarget

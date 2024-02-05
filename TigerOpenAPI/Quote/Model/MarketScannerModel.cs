@@ -112,7 +112,7 @@ namespace TigerOpenAPI.Quote.Model
     /** 排序属性 */
     [JsonProperty(PropertyName = "field_name")]
     public Int32 FieldName { get; set; }
-    /** */
+    /** 时间周期 AccumulatePeriod, 非必传项-只有排序为Accumulate相关字段，需要此字段 */
     [JsonProperty(PropertyName = "period")]
     private Int32 Period { get; set; }
     /** 排序属性所属类别 参考 FieldBelongType */

@@ -16,9 +16,7 @@ namespace TigerOpenAPI.Quote
     public QuoteClient(TigerConfig config) : base(config)
     {
       ApiLogger.Debug($"QuoteClient env:{config.Environment}, license:{config.License}");
-      Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
-      ServerUrl = (uriDict.ContainsKey(UriType.QUOTE) && !string.IsNullOrWhiteSpace(uriDict[UriType.QUOTE]))
-        ? uriDict[UriType.QUOTE] : uriDict[UriType.COMMON];
+      RefreshServerUri(config);
 
       TokenManager.GetInstance().Init(config, this);
       if (config.AutoGrabPermission)
@@ -29,6 +27,13 @@ namespace TigerOpenAPI.Quote
         };
         Execute(request);
       }
+    }
+
+    protected override void RefreshServerUri(TigerConfig config)
+    {
+      Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
+      ServerUrl = (uriDict.ContainsKey(UriType.QUOTE) && !string.IsNullOrWhiteSpace(uriDict[UriType.QUOTE]))
+        ? uriDict[UriType.QUOTE] : uriDict[UriType.COMMON];
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)

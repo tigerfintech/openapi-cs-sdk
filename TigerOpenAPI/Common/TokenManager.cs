@@ -1,7 +1,10 @@
 ﻿using System;
+using DotNetty.Common.Utilities;
+using System.IO;
 using Newtonsoft.Json;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Util;
+using TigerOpenAPI.Common.Watch;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
@@ -14,7 +17,9 @@ namespace TigerOpenAPI.Common
   {
     private static readonly TokenManager instance = new TokenManager();
 
-    private long REFRESH_INTERVAL_MS = Convert.ToInt64(TimeSpan.FromDays(1).TotalMilliseconds);
+    // refresh every 5 days by default
+    private const int defaultRefreshIntervalDays = 5;
+    private long refreshIntervalMs = Convert.ToInt64(TimeSpan.FromDays(defaultRefreshIntervalDays).TotalMilliseconds);
     private System.Threading.Timer timer;
     private TigerClient? client;
     private TigerConfig config;
@@ -43,33 +48,38 @@ namespace TigerOpenAPI.Common
       Monitor.Enter(this);
       try
       {
-        if (config == null || !config.AutoRefreshToken)
-        {
-          return;
-        }
-        if (this.client != null)
+        if (config == null || this.client != null)
         {
           return;
         }
         this.client = client;
         this.config = config;
-        bool result = ConfigUtil.LoadTokenFile(config);
-        long tokenCreateTime = 0;
-        try
+        Register(defaultCallback);
+        LoadTokenFile(config);
+        AddTokenFileWatch(config);
+
+        if (!config.AutoRefreshToken)
         {
-          tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
-        }
-        catch
-        {
-          // ignore
+          return;
         }
 
-        Register(defaultCallback);
-        if (result && tokenCreateTime > 0)
+        if (config.RefreshTokenIntervalDays > 0)
         {
-          long initialDelay = tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis();
-          initialDelay = initialDelay < 0 ? 0 : initialDelay;
-          timer = new System.Threading.Timer(RefreshToken, null, initialDelay, REFRESH_INTERVAL_MS);
+          refreshIntervalMs = Convert.ToInt64(TimeSpan.FromDays(config.RefreshTokenIntervalDays).TotalMilliseconds);
+        }
+        long tokenCreateTime = ConfigFileUtil.TryGetCreateTime(config.Token);
+        long initialDelay = tokenCreateTime + refreshIntervalMs - DateUtil.CurrentTimeMillis();
+        if (initialDelay <= 0)
+        {
+          RefreshToken(null);
+          tokenCreateTime = ConfigFileUtil.TryGetCreateTime(config.Token);
+          initialDelay = tokenCreateTime + refreshIntervalMs - DateUtil.CurrentTimeMillis();
+        }
+        initialDelay = GetDelayTime(config.RefreshTokenTime, initialDelay);
+
+        timer = new System.Threading.Timer(RefreshToken, null, initialDelay, refreshIntervalMs);
+        if (!string.IsNullOrWhiteSpace(config.Token))
+        {
           ApiLogger.Info($"init refresh token task success");
         }
       }
@@ -102,20 +112,17 @@ namespace TigerOpenAPI.Common
 
     private void RefreshToken(object? state)
     {
-      if (client is null)
+      if (client is null || string.IsNullOrWhiteSpace(config.Token) && !LoadTokenFile(config))
       {
         return;
       }
-      long tokenCreateTime = 0;
-      try
+      long tokenCreateTime = ConfigFileUtil.TryGetCreateTime(config.Token);
+      if (tokenCreateTime == 0)
       {
-        tokenCreateTime = ConfigUtil.GetCreateTime(config.Token);
+        ApiLogger.Warn($"local token is invalid:{config.Token}, refreshToken ignore");
+        return;
       }
-      catch
-      {
-        // ignore
-      }
-      if (tokenCreateTime + REFRESH_INTERVAL_MS - DateUtil.CurrentTimeMillis() > 0)
+      if (tokenCreateTime + refreshIntervalMs - DateUtil.CurrentTimeMillis() > 0)
       {
         ApiLogger.Info("refreshToken last update time:{}, ignore",
             DateUtil.PrintDateTime(tokenCreateTime, config.TimeZone));
@@ -152,6 +159,96 @@ namespace TigerOpenAPI.Common
           count--;
         }
       } while (count > 0) ;
+    }
+
+    public bool LoadTokenFile(TigerConfig tigerConfig)
+    {
+      if (!ConfigFileUtil.CheckFile(tigerConfig.ConfigFilePath, TigerApiConstants.TOKEN_FILENAME))
+      {
+        return false;
+      }
+
+      string tokenFile = Path.Combine(tigerConfig.ConfigFilePath.Trim(), TigerApiConstants.TOKEN_FILENAME);
+      Dictionary<string, string> dataDict = ConfigFileUtil.ReadPropertiesFile(tokenFile);
+      string token = dataDict[ConfigFileUtil.TOKEN_FILE_TOKEN];
+
+      if (string.IsNullOrWhiteSpace(token))
+      {
+        return false;
+      }
+      tigerConfig.Token = token;
+      return true;
+    }
+
+    /**
+     * Update the hour, minute, and second for the specified timestamp
+     * @param baseTimestamp the specified timestamp
+     * @param time formate:HH:mm:ss, 16:30:00 etc
+     * @return
+     */
+    private long GetTimeInMillis(long baseTimestamp, string time)
+    {
+      if (string.IsNullOrWhiteSpace(time))
+      {
+        return -1;
+      }
+      TimeZoneInfo timeZone = config.TimeZone;
+      long timestamp = DateUtil.ConvertTimestamp(
+        DateUtil.PrintDate(baseTimestamp, timeZone) + " " + time, timeZone);
+      return timestamp <= 0 ? -1 : timestamp;
+    }
+
+    /**
+     * get the delay time for refresh token
+     * @param time formate:HH:mm:ss, 16:30:00 etc
+     * @return
+     */
+    private long GetDelayTime(string time, long initialDelay)
+    {
+      initialDelay = initialDelay <= 0 ? 0 : initialDelay;
+      long baseTimestamp = DateUtil.CurrentTimeMillis();
+      long refreshTimestamp = GetTimeInMillis(baseTimestamp, time);
+      if (refreshTimestamp < 0)
+      {
+        return initialDelay;
+      }
+
+      if (initialDelay > 0)
+      {
+        baseTimestamp += initialDelay;
+        refreshTimestamp = GetTimeInMillis(baseTimestamp, time);
+      }
+      long delayTime = refreshTimestamp - baseTimestamp + initialDelay;
+      if (delayTime < 0)
+      {
+        delayTime += Convert.ToInt64(TimeSpan.FromDays(1).TotalMilliseconds);
+      }
+      return delayTime;
+    }
+
+    public void AddTokenFileWatch(TigerConfig config)
+    {
+      try
+      {
+        if (null == config || string.IsNullOrWhiteSpace(config.ConfigFilePath))
+        {
+          return;
+        }
+        // if token file exists, add listener
+        if (ConfigFileUtil.CheckFile(config.ConfigFilePath, TigerApiConstants.TOKEN_FILENAME))
+        {
+          IFileWatchedListener tokenFileListener = new TokenFileWatched(config);
+          FileWatcher fileWatcher = new FileWatcher(config.ConfigFilePath,
+            tokenFileListener, TigerApiConstants.TOKEN_FILENAME);
+          fileWatcher.Watch();
+
+          ApiLogger.Info("addTokenFileWatch success.");
+        }
+      }
+      catch (Exception e)
+      {
+        ApiLogger.Error("addTokenFileWatch fail.", e);
+      }
     }
   }
 }

@@ -3,60 +3,58 @@ namespace TigerOpenAPI.Common.Enum
 {
   public class AccumulateField
   {
-    /** 涨跌幅*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间  */
+    /** Change rate* (accurate to 3 decimal places, excess parts will be discarded) For example, fill in the [0.005, 0.01] value range */
     public static readonly AccumulateField AccumulateField_ChangeRate = new AccumulateField(1, "changeRate");
-    /** 涨跌额*（精确到小数点后 3 位，超出部分会被舍弃）例如填写 [0.005,0.01] 值区间 */
-    public static readonly AccumulateField AccumulateField_ChangeValue = new AccumulateField(2, "change");
-    /** 总负债增长率 */
+    /** Change value* (accurate to 3 decimal places, excess parts will be discarded) For example, fill in the [0.005, 0.01] value range */
+    public static readonly AccumulateField AccumulateField_ChangeValue = new AccumulateField(2, "changeVal");
+    /** Total liabilities growth rate */
     public static readonly AccumulateField AccumulateField_TotalLiabilities_Ratio_Annual = new AccumulateField(3, "totalLiabilitiesRatio");
-    /** 净资产增长率 */
+    /** Net asset growth rate */
     public static readonly AccumulateField AccumulateField_TotalCommonEquity_Ratio_Annual = new AccumulateField(4, "totalCommonEquityRatio");
-    /** 每股收益同比增长率 */
+    /** Year-on-year growth rate of earnings per share */
     public static readonly AccumulateField AccumulateField_BasicEps_Ratio_Annual = new AccumulateField(5, "basicEpsRatio");
-    /** 净利润同比增长率 */
+    /** Year-on-year growth rate of net profit */
     public static readonly AccumulateField AccumulateField_NetIncome_Ratio_Annual = new AccumulateField(6, "netIncomeRatio");
-    /** 营业利润同比增长率 */
+    /** Year-on-year growth rate of operating profit */
     public static readonly AccumulateField AccumulateField_OperatingIncome_Ratio_Annual = new AccumulateField(7, "opeIncomeratio");
-    /** 每股收益 */
+    /** Earnings per share */
     public static readonly AccumulateField AccumulateField_Eps = new AccumulateField(8, "eps");
-    /** 每股净资产 */
+    /** Net asset per share */
     public static readonly AccumulateField AccumulateField_NetAsset_PerShare = new AccumulateField(9, "bookValueshare");
-    /** 净利润 */
+    /** Net profit */
     public static readonly AccumulateField AccumulateField_Net_Income = new AccumulateField(10, "netIncome");
-    /** 营业利润 */
+    /** Operating profit */
     public static readonly AccumulateField AccumulateField_Operating_Income = new AccumulateField(11, "operatingIncome");
-    /** 营业收入 */
+    /** Operating revenue */
     public static readonly AccumulateField AccumulateField_Total_Revenue = new AccumulateField(12, "total_revenue");
-    /** ROE = 资产回报率 */
+    /** ROE = Return on equity */
     public static readonly AccumulateField AccumulateField_ROE = new AccumulateField(13, "ROE");
-    /** ROA =净资产收益率 */
+    /** ROA = Return on assets */
     public static readonly AccumulateField AccumulateField_ROA = new AccumulateField(14, "ROA");
-    /** 股息   hermes $ */
-    public static readonly AccumulateField AccumulateField_DividePrice = new AccumulateField(15, "dividePrice");
-    /** 股息收益率 选股服务自身计算 */
-    public static readonly AccumulateField AccumulateField_DivideRate = new AccumulateField(16, "divideRate");
-    /** 毛利率 */
+    /** Gross profit rate */
     public static readonly AccumulateField AccumulateField_GrossProfitRate = new AccumulateField(17, "grossMargin");
-    /** 净利率* */
+    /** Net profit margin */
     public static readonly AccumulateField AccumulateField_NetProfitRate = new AccumulateField(18, "netIncomeMargin");
-    /** 总资产* */
+    /** Total assets */
     public static readonly AccumulateField AccumulateField_TotalAssets = new AccumulateField(19, "totalAssets");
-    /** 流动比率 */
+    /** Current ratio */
     public static readonly AccumulateField AccumulateField_CurrentRatio = new AccumulateField(20, "currentRatio");
-    /** 速动比率 */
+    /** Quick ratio */
     public static readonly AccumulateField AccumulateField_QuickRatio = new AccumulateField(21, "quickRatio");
-    /** 经营现金流 */
-    public static readonly AccumulateField AccumulateField_CashFromOps = new AccumulateField(22, "cash4Ops");
-    /** 投资现金流 */
+    /** Year-on-year growth rate of operating cash flow */
+    public static readonly AccumulateField AccumulateField_CashFromOpsRatio = new AccumulateField(22, "cash4OpsRatio");
+    /** Cash flow from investing */
     public static readonly AccumulateField AccumulateField_CashFromInvesting = new AccumulateField(23, "cash4Invest");
-    /** 筹资现金流 */
+    /** Cash flow from financing */
     public static readonly AccumulateField AccumulateField_CashFromFinancing = new AccumulateField(24, "cash4Finance");
-    /** 资产负债率 */
+    /** Debt to asset ratio */
     public static readonly AccumulateField AccumulateField_TotalLiabilitiesToTotalAssets = new AccumulateField(25, "allLiabAndAssets");
-    /** 经营现金流同比增长率; （T期CFO-T-1期CFO）/T-1期CFO *100%  */
-    public static readonly AccumulateField AccumulateField_CashFromOps_yearOnYear_Ratio = new AccumulateField(26, "cash4OpsYearOnYearRatio");
-    /** 净资产收益率ROE同比增长率  （T期ROE-T-1期ROE）/T-1期ROE *100%*/
+    /** Year-on-year growth rate of net income return on equity (T period ROE-T-1 period ROE) / T-1 period ROE * 100% */
     public static readonly AccumulateField AccumulateField_ROE_yearOnYear_Ratio = new AccumulateField(27, "netIncomeYearOnYearRatio");
+    /** Operating profit ratio */
+    public static readonly AccumulateField AccumulateField_Operating_Profits_Ratio = new AccumulateField(28, "OperatingProfitsRatio");
+    /** Operating cash flow */
+    public static readonly AccumulateField AccumulateField_CashFromOpsVal = new AccumulateField(29, "cash4OpsVal");
 
     private readonly int index;
     public int Index { get { return index; } }
@@ -87,19 +85,18 @@ namespace TigerOpenAPI.Common.Enum
         yield return AccumulateField_Total_Revenue;
         yield return AccumulateField_ROE;
         yield return AccumulateField_ROA;
-        yield return AccumulateField_DividePrice;
-        yield return AccumulateField_DivideRate;
         yield return AccumulateField_GrossProfitRate;
         yield return AccumulateField_NetProfitRate;
         yield return AccumulateField_TotalAssets;
         yield return AccumulateField_CurrentRatio;
         yield return AccumulateField_QuickRatio;
-        yield return AccumulateField_CashFromOps;
+        yield return AccumulateField_CashFromOpsRatio;
         yield return AccumulateField_CashFromInvesting;
         yield return AccumulateField_CashFromFinancing;
         yield return AccumulateField_TotalLiabilitiesToTotalAssets;
-        yield return AccumulateField_CashFromOps_yearOnYear_Ratio;
         yield return AccumulateField_ROE_yearOnYear_Ratio;
+        yield return AccumulateField_Operating_Profits_Ratio;
+        yield return AccumulateField_CashFromOpsVal;
       }
     }
 

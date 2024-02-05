@@ -27,7 +27,7 @@ namespace TigerOpenAPI.Push
       {
         if (IdleState.WriterIdle == eventState.State)
         {
-          context.Channel.WriteAndFlushAsync(ProtoMessageUtil.buildHeartBeatMessage());
+          context.Channel.WriteAndFlushAsync(ProtoMessageUtil.BuildHeartBeatMessage());
         }
         else if (IdleState.ReaderIdle == eventState.State)
         {

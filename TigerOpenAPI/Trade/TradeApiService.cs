@@ -12,6 +12,9 @@ namespace TigerOpenAPI.Trade
     public const string PLACE_ORDER = "place_order";
     public const string CANCEL_ORDER = "cancel_order";
     public const string MODIFY_ORDER = "modify_order";
+    public const string TRANSFER_SEGMENT_FUND = "transfer_segment_fund";
+    public const string CANCEL_SEGMENT_FUND = "cancel_segment_fund";
+    public const string PLACE_FOREX_ORDER = "place_forex_order";
 
     /**
      * account/asset
@@ -26,6 +29,9 @@ namespace TigerOpenAPI.Trade
     public const string INACTIVE_ORDERS = "inactive_orders";
     public const string FILLED_ORDERS = "filled_orders";
     public const string ORDER_TRANSACTIONS = "order_transactions";
+    public const string SEGMENT_FUND_HISTORY = "segment_fund_history";
+    public const string SEGMENT_FUND_AVAILABLE = "segment_fund_available";
+    public const string ESTIMATE_TRADABLE_QUANTITY = "estimate_tradable_quantity";
 
     /**
      * contract
@@ -43,6 +49,9 @@ namespace TigerOpenAPI.Trade
       PLACE_ORDER,
       CANCEL_ORDER,
       MODIFY_ORDER,
+      TRANSFER_SEGMENT_FUND,
+      CANCEL_SEGMENT_FUND,
+      PLACE_FOREX_ORDER,
 
       /**
        * account/asset
@@ -57,6 +66,9 @@ namespace TigerOpenAPI.Trade
       INACTIVE_ORDERS,
       FILLED_ORDERS,
       ORDER_TRANSACTIONS,
+      SEGMENT_FUND_HISTORY,
+      SEGMENT_FUND_AVAILABLE,
+      ESTIMATE_TRADABLE_QUANTITY,
 
       /**
        * contract

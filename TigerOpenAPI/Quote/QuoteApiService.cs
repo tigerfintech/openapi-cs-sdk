@@ -31,6 +31,7 @@ namespace TigerOpenAPI.Quote
     public const string CAPITAL_DISTRIBUTION = "capital_distribution";
     public const string CAPITAL_FLOW = "capital_flow";
     public const string MARKET_SCANNER = "market_scanner";
+    public const string MARKET_SCANNER_TAGS = "market_scanner_tags";
 
     /**
      * option quote
@@ -60,6 +61,15 @@ namespace TigerOpenAPI.Quote
     public const string FUTURE_REAL_TIME_QUOTE = "future_real_time_quote";
     public const string FUTURE_TICK = "future_tick";
     public const string FUTURE_TRADING_DATE = "future_trading_date";
+    public const string FUTURE_HISTORY_MAIN_CONTRACT = "future_history_main_contract";
+
+    /**
+     * fund quote
+     */
+    public const string FUND_ALL_SYMBOLS = "fund_all_symbols";
+    public const string FUND_CONTRACTS = "fund_contracts";
+    public const string FUND_QUOTE = "fund_quote";
+    public const string FUND_HISTORY_QUOTE = "fund_history_quote";
 
     /**
      * fundmental data
@@ -70,12 +80,15 @@ namespace TigerOpenAPI.Quote
     public const string INDUSTRY_LIST = "industry_list";
     public const string INDUSTRY_STOCKS = "industry_stocks";
     public const string STOCK_INDUSTRY = "stock_industry";
+    public const string FINANCIAL_CURRENCY = "financial_currency";
+    public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
 
     /**
      * grab quote
      */
     public const string GRAB_QUOTE_PERMISSION = "grab_quote_permission";
     public const string GET_QUOTE_PERMISSION = "get_quote_permission";
+    public const string KLINE_QUOTA = "kline_quota";
 
     public const string USER_LICENSE = "user_license";
     public const string USER_TOKEN_REFRESH = "user_token_refresh";
@@ -105,6 +118,7 @@ namespace TigerOpenAPI.Quote
       CAPITAL_DISTRIBUTION,
       CAPITAL_FLOW,
       MARKET_SCANNER,
+      MARKET_SCANNER_TAGS,
 
       /**
        * option quote
@@ -134,6 +148,15 @@ namespace TigerOpenAPI.Quote
       FUTURE_REAL_TIME_QUOTE,
       FUTURE_TICK,
       FUTURE_TRADING_DATE,
+      FUTURE_HISTORY_MAIN_CONTRACT,
+
+      /**
+       * fund quote
+       */
+      FUND_ALL_SYMBOLS,
+      FUND_CONTRACTS,
+      FUND_QUOTE,
+      FUND_HISTORY_QUOTE,
 
       /**
        * fundmental data
@@ -144,12 +167,15 @@ namespace TigerOpenAPI.Quote
       INDUSTRY_LIST,
       INDUSTRY_STOCKS,
       STOCK_INDUSTRY,
+      FINANCIAL_CURRENCY,
+      FINANCIAL_EXCHANGE_RATE,
 
       /**
        * grab quote
        */
       GRAB_QUOTE_PERMISSION,
       GET_QUOTE_PERMISSION,
+      KLINE_QUOTA,
       USER_LICENSE,
       USER_TOKEN_REFRESH
 

@@ -25,26 +25,30 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChVPcmRlclN0YXR1c0RhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3Rv",
-            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi6gQKD09yZGVyU3Rh",
+            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIimAYKD09yZGVyU3Rh",
             "dHVzRGF0YRIKCgJpZBgBIAEoEhIPCgdhY2NvdW50GAIgASgJEg4KBnN5bWJv",
-            "bBgDIAEoCRISCgppZGVudGlmaWVyGAQgASgJEhIKCm11bHRpcGxpZXIYBSAB",
-            "KA0SDgoGYWN0aW9uGAYgASgJEg4KBm1hcmtldBgHIAEoCRIQCghjdXJyZW5j",
-            "eRgIIAEoCRIPCgdzZWdUeXBlGAkgASgJEg8KB3NlY1R5cGUYCiABKAkSEQoJ",
-            "b3JkZXJUeXBlGAsgASgJEg4KBmlzTG9uZxgMIAEoCBIVCg10b3RhbFF1YW50",
-            "aXR5GA0gASgSEhoKEnRvdGFsUXVhbnRpdHlTY2FsZRgOIAEoERIWCg5maWxs",
-            "ZWRRdWFudGl0eRgPIAEoEhIbChNmaWxsZWRRdWFudGl0eVNjYWxlGBAgASgR",
-            "EhQKDGF2Z0ZpbGxQcmljZRgRIAEoARISCgpsaW1pdFByaWNlGBIgASgBEhMK",
-            "C3JlYWxpemVkUG5sGBMgASgBEg4KBnN0YXR1cxgUIAEoCRIVCg1yZXBsYWNl",
-            "U3RhdHVzGBUgASgJEhQKDGNhbmNlbFN0YXR1cxgWIAEoCRISCgpvdXRzaWRl",
-            "UnRoGBcgASgIEhEKCWNhbk1vZGlmeRgYIAEoCBIRCgljYW5DYW5jZWwYGSAB",
-            "KAgSDAoEbmFtZRgaIAEoCRIOCgZzb3VyY2UYGyABKAkSEAoIZXJyb3JNc2cY",
-            "HCABKAkSGAoQY29tbWlzc2lvbkFuZEZlZRgdIAEoAhIQCghvcGVuVGltZRge",
-            "IAEoBBIRCgl0aW1lc3RhbXAYHyABKARCGKoCFVRpZ2VyT3BlbkFQSS5RdW90",
-            "ZS5QYmIGcHJvdG8z"));
+            "bBgDIAEoCRIOCgZleHBpcnkYBCABKAkSDgoGc3RyaWtlGAUgASgJEg0KBXJp",
+            "Z2h0GAYgASgJEhIKCmlkZW50aWZpZXIYByABKAkSEgoKbXVsdGlwbGllchgI",
+            "IAEoDRIOCgZhY3Rpb24YCSABKAkSDgoGbWFya2V0GAogASgJEhAKCGN1cnJl",
+            "bmN5GAsgASgJEg8KB3NlZ1R5cGUYDCABKAkSDwoHc2VjVHlwZRgNIAEoCRIR",
+            "CglvcmRlclR5cGUYDiABKAkSDgoGaXNMb25nGA8gASgIEhUKDXRvdGFsUXVh",
+            "bnRpdHkYECABKBISGgoSdG90YWxRdWFudGl0eVNjYWxlGBEgASgREhYKDmZp",
+            "bGxlZFF1YW50aXR5GBIgASgSEhsKE2ZpbGxlZFF1YW50aXR5U2NhbGUYEyAB",
+            "KBESFAoMYXZnRmlsbFByaWNlGBQgASgBEhIKCmxpbWl0UHJpY2UYFSABKAES",
+            "EQoJc3RvcFByaWNlGBYgASgBEhMKC3JlYWxpemVkUG5sGBcgASgBEg4KBnN0",
+            "YXR1cxgYIAEoCRIVCg1yZXBsYWNlU3RhdHVzGBkgASgJEhQKDGNhbmNlbFN0",
+            "YXR1cxgaIAEoCRISCgpvdXRzaWRlUnRoGBsgASgIEhEKCWNhbk1vZGlmeRgc",
+            "IAEoCBIRCgljYW5DYW5jZWwYHSABKAgSEwoLbGlxdWlkYXRpb24YHiABKAgS",
+            "DAoEbmFtZRgfIAEoCRIOCgZzb3VyY2UYICABKAkSEAoIZXJyb3JNc2cYISAB",
+            "KAkSEAoIYXR0ckRlc2MYIiABKAkSGAoQY29tbWlzc2lvbkFuZEZlZRgjIAEo",
+            "AhIQCghvcGVuVGltZRgkIAEoBBIRCgl0aW1lc3RhbXAYJSABKAQSEAoIdXNl",
+            "ck1hcmsYJiABKAkSFwoPdG90YWxDYXNoQW1vdW50GCcgASgBEhgKEGZpbGxl",
+            "ZENhc2hBbW91bnQYKCABKAFCGKoCFVRpZ2VyT3BlbkFQSS5RdW90ZS5QYmIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Name", "Source", "ErrorMsg", "CommissionAndFee", "OpenTime", "Timestamp" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "StopPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Liquidation", "Name", "Source", "ErrorMsg", "AttrDesc", "CommissionAndFee", "OpenTime", "Timestamp", "UserMark", "TotalCashAmount", "FilledCashAmount" }, null, null, null, null)
           }));
     }
     #endregion
@@ -88,6 +92,9 @@ namespace TigerOpenAPI.Quote.Pb {
       id_ = other.id_;
       account_ = other.account_;
       symbol_ = other.symbol_;
+      expiry_ = other.expiry_;
+      strike_ = other.strike_;
+      right_ = other.right_;
       identifier_ = other.identifier_;
       multiplier_ = other.multiplier_;
       action_ = other.action_;
@@ -103,6 +110,7 @@ namespace TigerOpenAPI.Quote.Pb {
       filledQuantityScale_ = other.filledQuantityScale_;
       avgFillPrice_ = other.avgFillPrice_;
       limitPrice_ = other.limitPrice_;
+      stopPrice_ = other.stopPrice_;
       realizedPnl_ = other.realizedPnl_;
       status_ = other.status_;
       replaceStatus_ = other.replaceStatus_;
@@ -110,12 +118,17 @@ namespace TigerOpenAPI.Quote.Pb {
       outsideRth_ = other.outsideRth_;
       canModify_ = other.canModify_;
       canCancel_ = other.canCancel_;
+      liquidation_ = other.liquidation_;
       name_ = other.name_;
       source_ = other.source_;
       errorMsg_ = other.errorMsg_;
+      attrDesc_ = other.attrDesc_;
       commissionAndFee_ = other.commissionAndFee_;
       openTime_ = other.openTime_;
       timestamp_ = other.timestamp_;
+      userMark_ = other.userMark_;
+      totalCashAmount_ = other.totalCashAmount_;
+      filledCashAmount_ = other.filledCashAmount_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -167,8 +180,53 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "expiry" field.</summary>
+    public const int ExpiryFieldNumber = 4;
+    private string expiry_ = "";
+    /// <summary>
+    /// for options, formate:yyyyMMdd
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Expiry {
+      get { return expiry_; }
+      set {
+        expiry_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "strike" field.</summary>
+    public const int StrikeFieldNumber = 5;
+    private string strike_ = "";
+    /// <summary>
+    /// for options
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Strike {
+      get { return strike_; }
+      set {
+        strike_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "right" field.</summary>
+    public const int RightFieldNumber = 6;
+    private string right_ = "";
+    /// <summary>
+    /// for options
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Right {
+      get { return right_; }
+      set {
+        right_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "identifier" field.</summary>
-    public const int IdentifierFieldNumber = 4;
+    public const int IdentifierFieldNumber = 7;
     private string identifier_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -180,7 +238,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "multiplier" field.</summary>
-    public const int MultiplierFieldNumber = 5;
+    public const int MultiplierFieldNumber = 8;
     private uint multiplier_;
     /// <summary>
     /// multiplier for futures, options, warrants and CBBC
@@ -195,7 +253,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "action" field.</summary>
-    public const int ActionFieldNumber = 6;
+    public const int ActionFieldNumber = 9;
     private string action_ = "";
     /// <summary>
     /// BUY or SELL
@@ -210,7 +268,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "market" field.</summary>
-    public const int MarketFieldNumber = 7;
+    public const int MarketFieldNumber = 10;
     private string market_ = "";
     /// <summary>
     /// market. US, HK, etc.
@@ -225,7 +283,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "currency" field.</summary>
-    public const int CurrencyFieldNumber = 8;
+    public const int CurrencyFieldNumber = 11;
     private string currency_ = "";
     /// <summary>
     /// currency. USD, HKD, etc.
@@ -240,7 +298,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "segType" field.</summary>
-    public const int SegTypeFieldNumber = 9;
+    public const int SegTypeFieldNumber = 12;
     private string segType_ = "";
     /// <summary>
     /// Securities Category C: (Commodities Futures), S: (Securities Stocks)
@@ -255,7 +313,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "secType" field.</summary>
-    public const int SecTypeFieldNumber = 10;
+    public const int SecTypeFieldNumber = 13;
     private string secType_ = "";
     /// <summary>
     /// STK Stocks, OPT Options, WAR Warrants, IOPT CBBC, CASH FOREX, FUT Futures, FOP Future Options
@@ -270,7 +328,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "orderType" field.</summary>
-    public const int OrderTypeFieldNumber = 11;
+    public const int OrderTypeFieldNumber = 14;
     private string orderType_ = "";
     /// <summary>
     /// order type
@@ -285,7 +343,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "isLong" field.</summary>
-    public const int IsLongFieldNumber = 12;
+    public const int IsLongFieldNumber = 15;
     private bool isLong_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -297,7 +355,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "totalQuantity" field.</summary>
-    public const int TotalQuantityFieldNumber = 13;
+    public const int TotalQuantityFieldNumber = 16;
     private long totalQuantity_;
     /// <summary>
     /// total quantity
@@ -312,7 +370,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "totalQuantityScale" field.</summary>
-    public const int TotalQuantityScaleFieldNumber = 14;
+    public const int TotalQuantityScaleFieldNumber = 17;
     private int totalQuantityScale_;
     /// <summary>
     /// total quantity scale
@@ -327,7 +385,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "filledQuantity" field.</summary>
-    public const int FilledQuantityFieldNumber = 15;
+    public const int FilledQuantityFieldNumber = 18;
     private long filledQuantity_;
     /// <summary>
     /// filled quantity
@@ -342,7 +400,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "filledQuantityScale" field.</summary>
-    public const int FilledQuantityScaleFieldNumber = 16;
+    public const int FilledQuantityScaleFieldNumber = 19;
     private int filledQuantityScale_;
     /// <summary>
     /// filled quantity scale
@@ -357,7 +415,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "avgFillPrice" field.</summary>
-    public const int AvgFillPriceFieldNumber = 17;
+    public const int AvgFillPriceFieldNumber = 20;
     private double avgFillPrice_;
     /// <summary>
     /// average price at which the orders got filled
@@ -372,7 +430,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "limitPrice" field.</summary>
-    public const int LimitPriceFieldNumber = 18;
+    public const int LimitPriceFieldNumber = 21;
     private double limitPrice_;
     /// <summary>
     /// limit price（required when orderType is 'LMT'）
@@ -386,8 +444,23 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "stopPrice" field.</summary>
+    public const int StopPriceFieldNumber = 22;
+    private double stopPrice_;
+    /// <summary>
+    /// stop price（required when orderType is 'STP'）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double StopPrice {
+      get { return stopPrice_; }
+      set {
+        stopPrice_ = value;
+      }
+    }
+
     /// <summary>Field number for the "realizedPnl" field.</summary>
-    public const int RealizedPnlFieldNumber = 19;
+    public const int RealizedPnlFieldNumber = 23;
     private double realizedPnl_;
     /// <summary>
     /// realized profit and loss
@@ -402,7 +475,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "status" field.</summary>
-    public const int StatusFieldNumber = 20;
+    public const int StatusFieldNumber = 24;
     private string status_ = "";
     /// <summary>
     /// order status
@@ -417,7 +490,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "replaceStatus" field.</summary>
-    public const int ReplaceStatusFieldNumber = 21;
+    public const int ReplaceStatusFieldNumber = 25;
     private string replaceStatus_ = "";
     /// <summary>
     /// order replace status
@@ -432,7 +505,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "cancelStatus" field.</summary>
-    public const int CancelStatusFieldNumber = 22;
+    public const int CancelStatusFieldNumber = 26;
     private string cancelStatus_ = "";
     /// <summary>
     /// order cancel status
@@ -447,7 +520,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "outsideRth" field.</summary>
-    public const int OutsideRthFieldNumber = 23;
+    public const int OutsideRthFieldNumber = 27;
     private bool outsideRth_;
     /// <summary>
     /// if trade outside regular trading hours (only applicable to U.S. market)
@@ -462,7 +535,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "canModify" field.</summary>
-    public const int CanModifyFieldNumber = 24;
+    public const int CanModifyFieldNumber = 28;
     private bool canModify_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -474,7 +547,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "canCancel" field.</summary>
-    public const int CanCancelFieldNumber = 25;
+    public const int CanCancelFieldNumber = 29;
     private bool canCancel_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -485,8 +558,20 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "liquidation" field.</summary>
+    public const int LiquidationFieldNumber = 30;
+    private bool liquidation_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Liquidation {
+      get { return liquidation_; }
+      set {
+        liquidation_ = value;
+      }
+    }
+
     /// <summary>Field number for the "name" field.</summary>
-    public const int NameFieldNumber = 26;
+    public const int NameFieldNumber = 31;
     private string name_ = "";
     /// <summary>
     /// symbol name
@@ -501,7 +586,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "source" field.</summary>
-    public const int SourceFieldNumber = 27;
+    public const int SourceFieldNumber = 32;
     private string source_ = "";
     /// <summary>
     /// order source(from 'OpenApi', or not)
@@ -516,7 +601,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "errorMsg" field.</summary>
-    public const int ErrorMsgFieldNumber = 28;
+    public const int ErrorMsgFieldNumber = 33;
     private string errorMsg_ = "";
     /// <summary>
     /// error message
@@ -530,8 +615,23 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "attrDesc" field.</summary>
+    public const int AttrDescFieldNumber = 34;
+    private string attrDesc_ = "";
+    /// <summary>
+    /// order description
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string AttrDesc {
+      get { return attrDesc_; }
+      set {
+        attrDesc_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "commissionAndFee" field.</summary>
-    public const int CommissionAndFeeFieldNumber = 29;
+    public const int CommissionAndFeeFieldNumber = 35;
     private float commissionAndFee_;
     /// <summary>
     /// commission and fee
@@ -546,7 +646,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "openTime" field.</summary>
-    public const int OpenTimeFieldNumber = 30;
+    public const int OpenTimeFieldNumber = 36;
     private ulong openTime_;
     /// <summary>
     /// timestamp when the order is placed
@@ -561,7 +661,7 @@ namespace TigerOpenAPI.Quote.Pb {
     }
 
     /// <summary>Field number for the "timestamp" field.</summary>
-    public const int TimestampFieldNumber = 31;
+    public const int TimestampFieldNumber = 37;
     private ulong timestamp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -569,6 +669,42 @@ namespace TigerOpenAPI.Quote.Pb {
       get { return timestamp_; }
       set {
         timestamp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "userMark" field.</summary>
+    public const int UserMarkFieldNumber = 38;
+    private string userMark_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string UserMark {
+      get { return userMark_; }
+      set {
+        userMark_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "totalCashAmount" field.</summary>
+    public const int TotalCashAmountFieldNumber = 39;
+    private double totalCashAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double TotalCashAmount {
+      get { return totalCashAmount_; }
+      set {
+        totalCashAmount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "filledCashAmount" field.</summary>
+    public const int FilledCashAmountFieldNumber = 40;
+    private double filledCashAmount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double FilledCashAmount {
+      get { return filledCashAmount_; }
+      set {
+        filledCashAmount_ = value;
       }
     }
 
@@ -590,6 +726,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (Id != other.Id) return false;
       if (Account != other.Account) return false;
       if (Symbol != other.Symbol) return false;
+      if (Expiry != other.Expiry) return false;
+      if (Strike != other.Strike) return false;
+      if (Right != other.Right) return false;
       if (Identifier != other.Identifier) return false;
       if (Multiplier != other.Multiplier) return false;
       if (Action != other.Action) return false;
@@ -605,6 +744,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (FilledQuantityScale != other.FilledQuantityScale) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(AvgFillPrice, other.AvgFillPrice)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(LimitPrice, other.LimitPrice)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(StopPrice, other.StopPrice)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RealizedPnl, other.RealizedPnl)) return false;
       if (Status != other.Status) return false;
       if (ReplaceStatus != other.ReplaceStatus) return false;
@@ -612,12 +752,17 @@ namespace TigerOpenAPI.Quote.Pb {
       if (OutsideRth != other.OutsideRth) return false;
       if (CanModify != other.CanModify) return false;
       if (CanCancel != other.CanCancel) return false;
+      if (Liquidation != other.Liquidation) return false;
       if (Name != other.Name) return false;
       if (Source != other.Source) return false;
       if (ErrorMsg != other.ErrorMsg) return false;
+      if (AttrDesc != other.AttrDesc) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CommissionAndFee, other.CommissionAndFee)) return false;
       if (OpenTime != other.OpenTime) return false;
       if (Timestamp != other.Timestamp) return false;
+      if (UserMark != other.UserMark) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TotalCashAmount, other.TotalCashAmount)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(FilledCashAmount, other.FilledCashAmount)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -628,6 +773,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (Id != 0L) hash ^= Id.GetHashCode();
       if (Account.Length != 0) hash ^= Account.GetHashCode();
       if (Symbol.Length != 0) hash ^= Symbol.GetHashCode();
+      if (Expiry.Length != 0) hash ^= Expiry.GetHashCode();
+      if (Strike.Length != 0) hash ^= Strike.GetHashCode();
+      if (Right.Length != 0) hash ^= Right.GetHashCode();
       if (Identifier.Length != 0) hash ^= Identifier.GetHashCode();
       if (Multiplier != 0) hash ^= Multiplier.GetHashCode();
       if (Action.Length != 0) hash ^= Action.GetHashCode();
@@ -643,6 +791,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (FilledQuantityScale != 0) hash ^= FilledQuantityScale.GetHashCode();
       if (AvgFillPrice != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(AvgFillPrice);
       if (LimitPrice != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(LimitPrice);
+      if (StopPrice != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(StopPrice);
       if (RealizedPnl != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RealizedPnl);
       if (Status.Length != 0) hash ^= Status.GetHashCode();
       if (ReplaceStatus.Length != 0) hash ^= ReplaceStatus.GetHashCode();
@@ -650,12 +799,17 @@ namespace TigerOpenAPI.Quote.Pb {
       if (OutsideRth != false) hash ^= OutsideRth.GetHashCode();
       if (CanModify != false) hash ^= CanModify.GetHashCode();
       if (CanCancel != false) hash ^= CanCancel.GetHashCode();
+      if (Liquidation != false) hash ^= Liquidation.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Source.Length != 0) hash ^= Source.GetHashCode();
       if (ErrorMsg.Length != 0) hash ^= ErrorMsg.GetHashCode();
+      if (AttrDesc.Length != 0) hash ^= AttrDesc.GetHashCode();
       if (CommissionAndFee != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CommissionAndFee);
       if (OpenTime != 0UL) hash ^= OpenTime.GetHashCode();
       if (Timestamp != 0UL) hash ^= Timestamp.GetHashCode();
+      if (UserMark.Length != 0) hash ^= UserMark.GetHashCode();
+      if (TotalCashAmount != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TotalCashAmount);
+      if (FilledCashAmount != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(FilledCashAmount);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -686,117 +840,153 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(26);
         output.WriteString(Symbol);
       }
-      if (Identifier.Length != 0) {
+      if (Expiry.Length != 0) {
         output.WriteRawTag(34);
+        output.WriteString(Expiry);
+      }
+      if (Strike.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Strike);
+      }
+      if (Right.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Right);
+      }
+      if (Identifier.Length != 0) {
+        output.WriteRawTag(58);
         output.WriteString(Identifier);
       }
       if (Multiplier != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(64);
         output.WriteUInt32(Multiplier);
       }
       if (Action.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(74);
         output.WriteString(Action);
       }
       if (Market.Length != 0) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(82);
         output.WriteString(Market);
       }
       if (Currency.Length != 0) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(90);
         output.WriteString(Currency);
       }
       if (SegType.Length != 0) {
-        output.WriteRawTag(74);
+        output.WriteRawTag(98);
         output.WriteString(SegType);
       }
       if (SecType.Length != 0) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(106);
         output.WriteString(SecType);
       }
       if (OrderType.Length != 0) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(114);
         output.WriteString(OrderType);
       }
       if (IsLong != false) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(120);
         output.WriteBool(IsLong);
       }
       if (TotalQuantity != 0L) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(128, 1);
         output.WriteSInt64(TotalQuantity);
       }
       if (TotalQuantityScale != 0) {
-        output.WriteRawTag(112);
+        output.WriteRawTag(136, 1);
         output.WriteSInt32(TotalQuantityScale);
       }
       if (FilledQuantity != 0L) {
-        output.WriteRawTag(120);
+        output.WriteRawTag(144, 1);
         output.WriteSInt64(FilledQuantity);
       }
       if (FilledQuantityScale != 0) {
-        output.WriteRawTag(128, 1);
+        output.WriteRawTag(152, 1);
         output.WriteSInt32(FilledQuantityScale);
       }
       if (AvgFillPrice != 0D) {
-        output.WriteRawTag(137, 1);
+        output.WriteRawTag(161, 1);
         output.WriteDouble(AvgFillPrice);
       }
       if (LimitPrice != 0D) {
-        output.WriteRawTag(145, 1);
+        output.WriteRawTag(169, 1);
         output.WriteDouble(LimitPrice);
       }
+      if (StopPrice != 0D) {
+        output.WriteRawTag(177, 1);
+        output.WriteDouble(StopPrice);
+      }
       if (RealizedPnl != 0D) {
-        output.WriteRawTag(153, 1);
+        output.WriteRawTag(185, 1);
         output.WriteDouble(RealizedPnl);
       }
       if (Status.Length != 0) {
-        output.WriteRawTag(162, 1);
+        output.WriteRawTag(194, 1);
         output.WriteString(Status);
       }
       if (ReplaceStatus.Length != 0) {
-        output.WriteRawTag(170, 1);
+        output.WriteRawTag(202, 1);
         output.WriteString(ReplaceStatus);
       }
       if (CancelStatus.Length != 0) {
-        output.WriteRawTag(178, 1);
+        output.WriteRawTag(210, 1);
         output.WriteString(CancelStatus);
       }
       if (OutsideRth != false) {
-        output.WriteRawTag(184, 1);
+        output.WriteRawTag(216, 1);
         output.WriteBool(OutsideRth);
       }
       if (CanModify != false) {
-        output.WriteRawTag(192, 1);
+        output.WriteRawTag(224, 1);
         output.WriteBool(CanModify);
       }
       if (CanCancel != false) {
-        output.WriteRawTag(200, 1);
+        output.WriteRawTag(232, 1);
         output.WriteBool(CanCancel);
       }
+      if (Liquidation != false) {
+        output.WriteRawTag(240, 1);
+        output.WriteBool(Liquidation);
+      }
       if (Name.Length != 0) {
-        output.WriteRawTag(210, 1);
+        output.WriteRawTag(250, 1);
         output.WriteString(Name);
       }
       if (Source.Length != 0) {
-        output.WriteRawTag(218, 1);
+        output.WriteRawTag(130, 2);
         output.WriteString(Source);
       }
       if (ErrorMsg.Length != 0) {
-        output.WriteRawTag(226, 1);
+        output.WriteRawTag(138, 2);
         output.WriteString(ErrorMsg);
       }
+      if (AttrDesc.Length != 0) {
+        output.WriteRawTag(146, 2);
+        output.WriteString(AttrDesc);
+      }
       if (CommissionAndFee != 0F) {
-        output.WriteRawTag(237, 1);
+        output.WriteRawTag(157, 2);
         output.WriteFloat(CommissionAndFee);
       }
       if (OpenTime != 0UL) {
-        output.WriteRawTag(240, 1);
+        output.WriteRawTag(160, 2);
         output.WriteUInt64(OpenTime);
       }
       if (Timestamp != 0UL) {
-        output.WriteRawTag(248, 1);
+        output.WriteRawTag(168, 2);
         output.WriteUInt64(Timestamp);
+      }
+      if (UserMark.Length != 0) {
+        output.WriteRawTag(178, 2);
+        output.WriteString(UserMark);
+      }
+      if (TotalCashAmount != 0D) {
+        output.WriteRawTag(185, 2);
+        output.WriteDouble(TotalCashAmount);
+      }
+      if (FilledCashAmount != 0D) {
+        output.WriteRawTag(193, 2);
+        output.WriteDouble(FilledCashAmount);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -820,117 +1010,153 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(26);
         output.WriteString(Symbol);
       }
-      if (Identifier.Length != 0) {
+      if (Expiry.Length != 0) {
         output.WriteRawTag(34);
+        output.WriteString(Expiry);
+      }
+      if (Strike.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Strike);
+      }
+      if (Right.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Right);
+      }
+      if (Identifier.Length != 0) {
+        output.WriteRawTag(58);
         output.WriteString(Identifier);
       }
       if (Multiplier != 0) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(64);
         output.WriteUInt32(Multiplier);
       }
       if (Action.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(74);
         output.WriteString(Action);
       }
       if (Market.Length != 0) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(82);
         output.WriteString(Market);
       }
       if (Currency.Length != 0) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(90);
         output.WriteString(Currency);
       }
       if (SegType.Length != 0) {
-        output.WriteRawTag(74);
+        output.WriteRawTag(98);
         output.WriteString(SegType);
       }
       if (SecType.Length != 0) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(106);
         output.WriteString(SecType);
       }
       if (OrderType.Length != 0) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(114);
         output.WriteString(OrderType);
       }
       if (IsLong != false) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(120);
         output.WriteBool(IsLong);
       }
       if (TotalQuantity != 0L) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(128, 1);
         output.WriteSInt64(TotalQuantity);
       }
       if (TotalQuantityScale != 0) {
-        output.WriteRawTag(112);
+        output.WriteRawTag(136, 1);
         output.WriteSInt32(TotalQuantityScale);
       }
       if (FilledQuantity != 0L) {
-        output.WriteRawTag(120);
+        output.WriteRawTag(144, 1);
         output.WriteSInt64(FilledQuantity);
       }
       if (FilledQuantityScale != 0) {
-        output.WriteRawTag(128, 1);
+        output.WriteRawTag(152, 1);
         output.WriteSInt32(FilledQuantityScale);
       }
       if (AvgFillPrice != 0D) {
-        output.WriteRawTag(137, 1);
+        output.WriteRawTag(161, 1);
         output.WriteDouble(AvgFillPrice);
       }
       if (LimitPrice != 0D) {
-        output.WriteRawTag(145, 1);
+        output.WriteRawTag(169, 1);
         output.WriteDouble(LimitPrice);
       }
+      if (StopPrice != 0D) {
+        output.WriteRawTag(177, 1);
+        output.WriteDouble(StopPrice);
+      }
       if (RealizedPnl != 0D) {
-        output.WriteRawTag(153, 1);
+        output.WriteRawTag(185, 1);
         output.WriteDouble(RealizedPnl);
       }
       if (Status.Length != 0) {
-        output.WriteRawTag(162, 1);
+        output.WriteRawTag(194, 1);
         output.WriteString(Status);
       }
       if (ReplaceStatus.Length != 0) {
-        output.WriteRawTag(170, 1);
+        output.WriteRawTag(202, 1);
         output.WriteString(ReplaceStatus);
       }
       if (CancelStatus.Length != 0) {
-        output.WriteRawTag(178, 1);
+        output.WriteRawTag(210, 1);
         output.WriteString(CancelStatus);
       }
       if (OutsideRth != false) {
-        output.WriteRawTag(184, 1);
+        output.WriteRawTag(216, 1);
         output.WriteBool(OutsideRth);
       }
       if (CanModify != false) {
-        output.WriteRawTag(192, 1);
+        output.WriteRawTag(224, 1);
         output.WriteBool(CanModify);
       }
       if (CanCancel != false) {
-        output.WriteRawTag(200, 1);
+        output.WriteRawTag(232, 1);
         output.WriteBool(CanCancel);
       }
+      if (Liquidation != false) {
+        output.WriteRawTag(240, 1);
+        output.WriteBool(Liquidation);
+      }
       if (Name.Length != 0) {
-        output.WriteRawTag(210, 1);
+        output.WriteRawTag(250, 1);
         output.WriteString(Name);
       }
       if (Source.Length != 0) {
-        output.WriteRawTag(218, 1);
+        output.WriteRawTag(130, 2);
         output.WriteString(Source);
       }
       if (ErrorMsg.Length != 0) {
-        output.WriteRawTag(226, 1);
+        output.WriteRawTag(138, 2);
         output.WriteString(ErrorMsg);
       }
+      if (AttrDesc.Length != 0) {
+        output.WriteRawTag(146, 2);
+        output.WriteString(AttrDesc);
+      }
       if (CommissionAndFee != 0F) {
-        output.WriteRawTag(237, 1);
+        output.WriteRawTag(157, 2);
         output.WriteFloat(CommissionAndFee);
       }
       if (OpenTime != 0UL) {
-        output.WriteRawTag(240, 1);
+        output.WriteRawTag(160, 2);
         output.WriteUInt64(OpenTime);
       }
       if (Timestamp != 0UL) {
-        output.WriteRawTag(248, 1);
+        output.WriteRawTag(168, 2);
         output.WriteUInt64(Timestamp);
+      }
+      if (UserMark.Length != 0) {
+        output.WriteRawTag(178, 2);
+        output.WriteString(UserMark);
+      }
+      if (TotalCashAmount != 0D) {
+        output.WriteRawTag(185, 2);
+        output.WriteDouble(TotalCashAmount);
+      }
+      if (FilledCashAmount != 0D) {
+        output.WriteRawTag(193, 2);
+        output.WriteDouble(FilledCashAmount);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -950,6 +1176,15 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (Symbol.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Symbol);
+      }
+      if (Expiry.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Expiry);
+      }
+      if (Strike.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Strike);
+      }
+      if (Right.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Right);
       }
       if (Identifier.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Identifier);
@@ -979,13 +1214,13 @@ namespace TigerOpenAPI.Quote.Pb {
         size += 1 + 1;
       }
       if (TotalQuantity != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeSInt64Size(TotalQuantity);
+        size += 2 + pb::CodedOutputStream.ComputeSInt64Size(TotalQuantity);
       }
       if (TotalQuantityScale != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeSInt32Size(TotalQuantityScale);
+        size += 2 + pb::CodedOutputStream.ComputeSInt32Size(TotalQuantityScale);
       }
       if (FilledQuantity != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeSInt64Size(FilledQuantity);
+        size += 2 + pb::CodedOutputStream.ComputeSInt64Size(FilledQuantity);
       }
       if (FilledQuantityScale != 0) {
         size += 2 + pb::CodedOutputStream.ComputeSInt32Size(FilledQuantityScale);
@@ -994,6 +1229,9 @@ namespace TigerOpenAPI.Quote.Pb {
         size += 2 + 8;
       }
       if (LimitPrice != 0D) {
+        size += 2 + 8;
+      }
+      if (StopPrice != 0D) {
         size += 2 + 8;
       }
       if (RealizedPnl != 0D) {
@@ -1017,6 +1255,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (CanCancel != false) {
         size += 2 + 1;
       }
+      if (Liquidation != false) {
+        size += 2 + 1;
+      }
       if (Name.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
@@ -1026,6 +1267,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (ErrorMsg.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(ErrorMsg);
       }
+      if (AttrDesc.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(AttrDesc);
+      }
       if (CommissionAndFee != 0F) {
         size += 2 + 4;
       }
@@ -1034,6 +1278,15 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (Timestamp != 0UL) {
         size += 2 + pb::CodedOutputStream.ComputeUInt64Size(Timestamp);
+      }
+      if (UserMark.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(UserMark);
+      }
+      if (TotalCashAmount != 0D) {
+        size += 2 + 8;
+      }
+      if (FilledCashAmount != 0D) {
+        size += 2 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1055,6 +1308,15 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.Symbol.Length != 0) {
         Symbol = other.Symbol;
+      }
+      if (other.Expiry.Length != 0) {
+        Expiry = other.Expiry;
+      }
+      if (other.Strike.Length != 0) {
+        Strike = other.Strike;
+      }
+      if (other.Right.Length != 0) {
+        Right = other.Right;
       }
       if (other.Identifier.Length != 0) {
         Identifier = other.Identifier;
@@ -1101,6 +1363,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (other.LimitPrice != 0D) {
         LimitPrice = other.LimitPrice;
       }
+      if (other.StopPrice != 0D) {
+        StopPrice = other.StopPrice;
+      }
       if (other.RealizedPnl != 0D) {
         RealizedPnl = other.RealizedPnl;
       }
@@ -1122,6 +1387,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (other.CanCancel != false) {
         CanCancel = other.CanCancel;
       }
+      if (other.Liquidation != false) {
+        Liquidation = other.Liquidation;
+      }
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
@@ -1131,6 +1399,9 @@ namespace TigerOpenAPI.Quote.Pb {
       if (other.ErrorMsg.Length != 0) {
         ErrorMsg = other.ErrorMsg;
       }
+      if (other.AttrDesc.Length != 0) {
+        AttrDesc = other.AttrDesc;
+      }
       if (other.CommissionAndFee != 0F) {
         CommissionAndFee = other.CommissionAndFee;
       }
@@ -1139,6 +1410,15 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.Timestamp != 0UL) {
         Timestamp = other.Timestamp;
+      }
+      if (other.UserMark.Length != 0) {
+        UserMark = other.UserMark;
+      }
+      if (other.TotalCashAmount != 0D) {
+        TotalCashAmount = other.TotalCashAmount;
+      }
+      if (other.FilledCashAmount != 0D) {
+        FilledCashAmount = other.FilledCashAmount;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1168,115 +1448,151 @@ namespace TigerOpenAPI.Quote.Pb {
             break;
           }
           case 34: {
-            Identifier = input.ReadString();
+            Expiry = input.ReadString();
             break;
           }
-          case 40: {
-            Multiplier = input.ReadUInt32();
+          case 42: {
+            Strike = input.ReadString();
             break;
           }
           case 50: {
-            Action = input.ReadString();
+            Right = input.ReadString();
             break;
           }
           case 58: {
-            Market = input.ReadString();
+            Identifier = input.ReadString();
             break;
           }
-          case 66: {
-            Currency = input.ReadString();
+          case 64: {
+            Multiplier = input.ReadUInt32();
             break;
           }
           case 74: {
-            SegType = input.ReadString();
+            Action = input.ReadString();
             break;
           }
           case 82: {
-            SecType = input.ReadString();
+            Market = input.ReadString();
             break;
           }
           case 90: {
+            Currency = input.ReadString();
+            break;
+          }
+          case 98: {
+            SegType = input.ReadString();
+            break;
+          }
+          case 106: {
+            SecType = input.ReadString();
+            break;
+          }
+          case 114: {
             OrderType = input.ReadString();
             break;
           }
-          case 96: {
+          case 120: {
             IsLong = input.ReadBool();
             break;
           }
-          case 104: {
+          case 128: {
             TotalQuantity = input.ReadSInt64();
             break;
           }
-          case 112: {
+          case 136: {
             TotalQuantityScale = input.ReadSInt32();
             break;
           }
-          case 120: {
+          case 144: {
             FilledQuantity = input.ReadSInt64();
             break;
           }
-          case 128: {
+          case 152: {
             FilledQuantityScale = input.ReadSInt32();
             break;
           }
-          case 137: {
+          case 161: {
             AvgFillPrice = input.ReadDouble();
             break;
           }
-          case 145: {
+          case 169: {
             LimitPrice = input.ReadDouble();
             break;
           }
-          case 153: {
+          case 177: {
+            StopPrice = input.ReadDouble();
+            break;
+          }
+          case 185: {
             RealizedPnl = input.ReadDouble();
             break;
           }
-          case 162: {
+          case 194: {
             Status = input.ReadString();
             break;
           }
-          case 170: {
+          case 202: {
             ReplaceStatus = input.ReadString();
             break;
           }
-          case 178: {
+          case 210: {
             CancelStatus = input.ReadString();
             break;
           }
-          case 184: {
+          case 216: {
             OutsideRth = input.ReadBool();
             break;
           }
-          case 192: {
+          case 224: {
             CanModify = input.ReadBool();
             break;
           }
-          case 200: {
+          case 232: {
             CanCancel = input.ReadBool();
             break;
           }
-          case 210: {
+          case 240: {
+            Liquidation = input.ReadBool();
+            break;
+          }
+          case 250: {
             Name = input.ReadString();
             break;
           }
-          case 218: {
+          case 258: {
             Source = input.ReadString();
             break;
           }
-          case 226: {
+          case 266: {
             ErrorMsg = input.ReadString();
             break;
           }
-          case 237: {
+          case 274: {
+            AttrDesc = input.ReadString();
+            break;
+          }
+          case 285: {
             CommissionAndFee = input.ReadFloat();
             break;
           }
-          case 240: {
+          case 288: {
             OpenTime = input.ReadUInt64();
             break;
           }
-          case 248: {
+          case 296: {
             Timestamp = input.ReadUInt64();
+            break;
+          }
+          case 306: {
+            UserMark = input.ReadString();
+            break;
+          }
+          case 313: {
+            TotalCashAmount = input.ReadDouble();
+            break;
+          }
+          case 321: {
+            FilledCashAmount = input.ReadDouble();
             break;
           }
         }
@@ -1307,115 +1623,151 @@ namespace TigerOpenAPI.Quote.Pb {
             break;
           }
           case 34: {
-            Identifier = input.ReadString();
+            Expiry = input.ReadString();
             break;
           }
-          case 40: {
-            Multiplier = input.ReadUInt32();
+          case 42: {
+            Strike = input.ReadString();
             break;
           }
           case 50: {
-            Action = input.ReadString();
+            Right = input.ReadString();
             break;
           }
           case 58: {
-            Market = input.ReadString();
+            Identifier = input.ReadString();
             break;
           }
-          case 66: {
-            Currency = input.ReadString();
+          case 64: {
+            Multiplier = input.ReadUInt32();
             break;
           }
           case 74: {
-            SegType = input.ReadString();
+            Action = input.ReadString();
             break;
           }
           case 82: {
-            SecType = input.ReadString();
+            Market = input.ReadString();
             break;
           }
           case 90: {
+            Currency = input.ReadString();
+            break;
+          }
+          case 98: {
+            SegType = input.ReadString();
+            break;
+          }
+          case 106: {
+            SecType = input.ReadString();
+            break;
+          }
+          case 114: {
             OrderType = input.ReadString();
             break;
           }
-          case 96: {
+          case 120: {
             IsLong = input.ReadBool();
             break;
           }
-          case 104: {
+          case 128: {
             TotalQuantity = input.ReadSInt64();
             break;
           }
-          case 112: {
+          case 136: {
             TotalQuantityScale = input.ReadSInt32();
             break;
           }
-          case 120: {
+          case 144: {
             FilledQuantity = input.ReadSInt64();
             break;
           }
-          case 128: {
+          case 152: {
             FilledQuantityScale = input.ReadSInt32();
             break;
           }
-          case 137: {
+          case 161: {
             AvgFillPrice = input.ReadDouble();
             break;
           }
-          case 145: {
+          case 169: {
             LimitPrice = input.ReadDouble();
             break;
           }
-          case 153: {
+          case 177: {
+            StopPrice = input.ReadDouble();
+            break;
+          }
+          case 185: {
             RealizedPnl = input.ReadDouble();
             break;
           }
-          case 162: {
+          case 194: {
             Status = input.ReadString();
             break;
           }
-          case 170: {
+          case 202: {
             ReplaceStatus = input.ReadString();
             break;
           }
-          case 178: {
+          case 210: {
             CancelStatus = input.ReadString();
             break;
           }
-          case 184: {
+          case 216: {
             OutsideRth = input.ReadBool();
             break;
           }
-          case 192: {
+          case 224: {
             CanModify = input.ReadBool();
             break;
           }
-          case 200: {
+          case 232: {
             CanCancel = input.ReadBool();
             break;
           }
-          case 210: {
+          case 240: {
+            Liquidation = input.ReadBool();
+            break;
+          }
+          case 250: {
             Name = input.ReadString();
             break;
           }
-          case 218: {
+          case 258: {
             Source = input.ReadString();
             break;
           }
-          case 226: {
+          case 266: {
             ErrorMsg = input.ReadString();
             break;
           }
-          case 237: {
+          case 274: {
+            AttrDesc = input.ReadString();
+            break;
+          }
+          case 285: {
             CommissionAndFee = input.ReadFloat();
             break;
           }
-          case 240: {
+          case 288: {
             OpenTime = input.ReadUInt64();
             break;
           }
-          case 248: {
+          case 296: {
             Timestamp = input.ReadUInt64();
+            break;
+          }
+          case 306: {
+            UserMark = input.ReadString();
+            break;
+          }
+          case 313: {
+            TotalCashAmount = input.ReadDouble();
+            break;
+          }
+          case 321: {
+            FilledCashAmount = input.ReadDouble();
             break;
           }
         }

@@ -19,7 +19,7 @@ namespace TigerOpenAPI.Common
         ApiLogger.Info("tokenChange oldToken:{}, newTokenInfo:{}",
             oldToken, JsonConvert.SerializeObject(userToken));
         config.Token = userToken.Token;
-        ConfigUtil.UpdateTokenFile(config, userToken.Token);
+        ConfigFileUtil.UpdateTokenFile(config, userToken.Token);
       }
       catch (Exception e)
       {

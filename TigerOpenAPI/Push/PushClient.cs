@@ -51,9 +51,9 @@ namespace TigerOpenAPI.Push
 
     public PushClient Config(TigerConfig config)
     {
-      ConfigUtil.LoadConfigFile(config);
+      ConfigFileUtil.LoadConfigFile(config);
       this.tigerConfig = config;
-      this.authentication = ApiAuthentication.build(config.TigerId, config.PrivateKey);
+      this.authentication = ApiAuthentication.Build(config.TigerId, config.PrivateKey);
       GetSocketUrL();
       return this;
     }
@@ -261,7 +261,7 @@ namespace TigerOpenAPI.Push
         return;
       }
 
-      Request request = ProtoMessageUtil.buildDisconnectMessage();
+      Request request = ProtoMessageUtil.BuildDisconnectMessage();
       Task task = channel.WriteAndFlushAsync(request);
       try
       {
@@ -286,7 +286,7 @@ namespace TigerOpenAPI.Push
         NotConnect();
         return 0;
       }
-      Request request = ProtoMessageUtil.buildSubscribeMessage(account, subject);
+      Request request = ProtoMessageUtil.BuildSubscribeMessage(account, subject);
 
       channel.WriteAndFlushAsync(request).Wait();
       return request.Id;
@@ -299,7 +299,7 @@ namespace TigerOpenAPI.Push
         NotConnect();
         return 0;
       }
-      Request request = ProtoMessageUtil.buildUnSubscribeMessage(subject);
+      Request request = ProtoMessageUtil.BuildUnSubscribeMessage(subject);
       channel.WriteAndFlushAsync(request).Wait();
       return request.Id;
     }
@@ -309,7 +309,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Quote);
     }
 
-    public uint CancelSubscribeQuote(ISet<string> symbols)
+    public uint CancelSubscribeQuote(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Quote);
     }
@@ -319,7 +319,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.TradeTick);
     }
 
-    public uint CancelSubscribeTradeTick(ISet<string> symbols)
+    public uint CancelSubscribeTradeTick(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.TradeTick);
     }
@@ -329,7 +329,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Option);
     }
 
-    public uint CancelSubscribeOption(ISet<string> symbols)
+    public uint CancelSubscribeOption(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Option);
     }
@@ -339,7 +339,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.Future);
     }
 
-    public uint CancelSubscribeFuture(ISet<string> symbols)
+    public uint CancelSubscribeFuture(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.Future);
     }
@@ -349,7 +349,7 @@ namespace TigerOpenAPI.Push
       return SubscribeQuote(symbols, QuoteSubject.QuoteDepth);
     }
 
-    public uint CancelSubscribeDepthQuote(ISet<string> symbols)
+    public uint CancelSubscribeDepthQuote(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.QuoteDepth);
     }
@@ -361,13 +361,13 @@ namespace TigerOpenAPI.Push
         NotConnect();
         return 0;
       }
-      Request request = ProtoMessageUtil.buildSubscribeMessage(symbols, subject);
+      Request request = ProtoMessageUtil.BuildSubscribeMessage(symbols, subject);
       channel.WriteAndFlushAsync(request).Wait();
       ApiLogger.Info("send subscribe [{}] message, symbols:{}", subject, symbols);
       return request.Id;
     }
 
-    private uint CancelSubscribeQuote(ISet<string> symbols, QuoteSubject subject)
+    private uint CancelSubscribeQuote(ISet<string>? symbols, QuoteSubject subject)
     {
       if (channel is null || !IsConnected())
       {
@@ -375,28 +375,58 @@ namespace TigerOpenAPI.Push
         return 0;
       }
 
-      Request request = ProtoMessageUtil.buildUnSubscribeMessage(symbols, subject);
+      Request request = ProtoMessageUtil.BuildUnSubscribeMessage(symbols, subject);
       channel.WriteAndFlushAsync(request).Wait();
-      ApiLogger.Info("send cancel subscribe [{}] message, symbols:{}.", subject, symbols);
+      ApiLogger.Info($"send cancel subscribe [{subject}] message, symbols:{symbols}.");
       return request.Id;
     }
 
     public uint SubscribeMarketQuote(Market market, QuoteSubject subject)
     {
+      return SubscribeMarketData(market, subject);
+    }
+
+    public uint CancelSubscribeMarketQuote(Market market, QuoteSubject subject)
+    {
+      return CancelSubscribeMarketData(market, subject);
+    }
+
+    public uint SubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return SubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+    }
+
+    public uint CancelSubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return CancelSubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+    }
+
+    public uint SubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return SubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+    }
+
+    public uint CancelSubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
+    {
+      return CancelSubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+    }
+
+    private uint SubscribeMarketData(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
+    {
       if (channel is null || !IsConnected())
       {
         NotConnect();
         return 0;
       }
 
-      Request request = ProtoMessageUtil.buildSubscribeMessage(market, subject);
+      Request request = ProtoMessageUtil.BuildSubscribeMessage(market, subject, indicatorNames);
       channel.WriteAndFlushAsync(request).Wait();
 
       ApiLogger.Info("send subscribe [{}] message, market:{}", subject, market);
       return request.Id;
     }
 
-    public uint CancelSubscribeMarketQuote(Market market, QuoteSubject subject)
+    private uint CancelSubscribeMarketData(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)
     {
       if (channel is null || !IsConnected())
       {
@@ -404,7 +434,7 @@ namespace TigerOpenAPI.Push
         return 0;
       }
 
-      Request request = ProtoMessageUtil.buildUnSubscribeMessage(market, subject);
+      Request request = ProtoMessageUtil.BuildUnSubscribeMessage(market, subject, indicatorNames);
       channel.WriteAndFlushAsync(request).Wait();
 
       ApiLogger.Info("send cancel subscribe [{}] message, market:{}", subject, market);
@@ -420,7 +450,7 @@ namespace TigerOpenAPI.Push
       }
       ApiLogger.Info("send getSubscribedSymbols message");
 
-      Request request = ProtoMessageUtil.buildSendMessage();
+      Request request = ProtoMessageUtil.BuildSendMessage();
       channel.WriteAndFlushAsync(request).Wait();
       return request.Id;
     }

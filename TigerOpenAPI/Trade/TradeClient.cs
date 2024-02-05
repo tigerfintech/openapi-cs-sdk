@@ -17,19 +17,24 @@ namespace TigerOpenAPI.Trade
     public TradeClient(TigerConfig config) : base(config)
     {
       ApiLogger.Debug($"TradeClient env:{config.Environment}, license:{config.License}");
+      RefreshServerUri(config);
+
+      TokenManager.GetInstance().Init(config, this);
+    }
+
+    protected override void RefreshServerUri(TigerConfig config)
+    {
       // get serverAddress by Env and license
       Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
       ServerUrl = (uriDict.ContainsKey(UriType.TRADE) && !string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]))
         ? uriDict[UriType.TRADE] : uriDict[UriType.COMMON];
       ServerUrlForPaper = (uriDict.ContainsKey(UriType.PAPER) && !string.IsNullOrWhiteSpace(uriDict[UriType.PAPER]))
         ? uriDict[UriType.PAPER] : uriDict[UriType.COMMON];
-
-      TokenManager.GetInstance().Init(config, this);
     }
 
     public override string GetServerUri<T>(TigerRequest<T> request)
     {
-      return AccountUtil.isVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
+      return AccountUtil.IsVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
     }
 
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)

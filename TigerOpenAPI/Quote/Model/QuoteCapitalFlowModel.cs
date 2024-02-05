@@ -20,7 +20,7 @@ namespace TigerOpenAPI.Quote.Model
     public Int64 EndTime { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
-    public Int16 Limit { get; set; } = 200;
+    public Int32 Limit { get; set; } = 200;
 
     public QuoteCapitalFlowModel() : base()
     {

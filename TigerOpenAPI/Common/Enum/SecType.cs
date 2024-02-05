@@ -3,7 +3,7 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum SecType
   {
-    NONE, STK, OPT, WAR, IOPT, CASH, FUT, FOP
+    NONE, STK, OPT, WAR, IOPT, CASH, FUT, FOP, FUND, MLEG, FOREX
   }
 }
 

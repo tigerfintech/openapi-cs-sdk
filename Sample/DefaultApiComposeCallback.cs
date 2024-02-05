@@ -57,9 +57,6 @@ namespace Sample
     }
 
 
-
-
-
     void ISubscribeApiCallback.GetSubscribedSymbolEnd(SubscribedSymbol subscribedSymbol)
     {
       ApiLogger.Info("GetSubscribedSymbolEnd:"
@@ -75,8 +72,6 @@ namespace Sample
     {
       ApiLogger.Info($"CancelSubscribeEnd, {subject}, id:{id}, result:{result}");
     }
-
-
 
 
     void ISubscribeApiCallback.AssetChange(AssetData data)
@@ -98,8 +93,6 @@ namespace Sample
     {
       ApiLogger.Info("OrderTransactionChange:" + data);
     }
-
-
 
 
     void ISubscribeApiCallback.QuoteAskBidChange(QuoteBBOData data)
@@ -141,6 +134,28 @@ namespace Sample
     void ISubscribeApiCallback.OptionChange(QuoteBasicData data)
     {
       ApiLogger.Info("OptionChange:" + data);
+    }
+
+    void ISubscribeApiCallback.StockTopPush(StockTopData data)
+    {
+      ApiLogger.Info("StockTopPush, ==========:" + data);
+      ApiLogger.Info("StockTopPush, market:" + data.Market);
+      foreach (StockTopData.Types.TopData topData in data.TopData)
+      {
+        ApiLogger.Info("StockTopPush, targetName:" + topData.TargetName
+            + ", topList:" + topData);
+      }
+    }
+
+    void ISubscribeApiCallback.OptionTopPush(OptionTopData data)
+    {
+      ApiLogger.Info("OptionTopPush, ==========:" + data);
+      ApiLogger.Info("OptionTopPush, market:" + data.Market);
+      foreach (OptionTopData.Types.TopData topData in data.TopData)
+      {
+        ApiLogger.Info("OptionTopPush, targetName:" + topData.TargetName
+            + ", topList:" + topData);
+      }
     }
   }
 }
