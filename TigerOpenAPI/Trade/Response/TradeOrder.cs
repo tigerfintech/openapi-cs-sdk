@@ -84,6 +84,9 @@ namespace TigerOpenAPI.Trade.Response
 
     [JsonProperty(PropertyName = "commission")]
     public Double Commission { get; set; }
+    /** Goods and Services Tax (TBSG only) */
+    [JsonProperty(PropertyName = "gst")]
+    public Double Gst { get; set; }
     [JsonProperty(PropertyName = "realizedPnl")]
     public Double RealizedPnl { get; set; }
     [JsonProperty(PropertyName = "remark")]
