@@ -92,5 +92,9 @@ namespace TigerOpenAPI.Config
      */
     public bool IsSslSocket { get; set; } = true;
 
+    /**
+     * subscribed tradetick data, Whether to use the full version of the stock tick
+     */
+    public bool UseFullStockTick { get; set; } = false;
   }
 }

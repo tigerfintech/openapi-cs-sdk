@@ -111,6 +111,16 @@ namespace Sample
         + JsonConvert.SerializeObject(data, TigerClient.JsonSet));
     }
 
+    void ISubscribeApiCallback.FullTickChange(TickData data)
+    {
+      ApiLogger.Info("FullTickChange:" + data);
+    }
+
+    void ISubscribeApiCallback.BarChange(BarData data)
+    {
+      ApiLogger.Info("BarChange:" + data);
+    }
+
     void ISubscribeApiCallback.DepthQuoteChange(QuoteDepthData data)
     {
       ApiLogger.Info("DepthQuoteChange:" + data);

@@ -258,6 +258,7 @@ class Program
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
+      UseFullStockTick = true,
       IsSslSocket = false
     };
     ApiLogger.DebugEnabled = false;
@@ -272,7 +273,23 @@ class Program
     //SubscribeQuote();
     //SubscribeTradeTick();
     //SubscribeStockTop();
-    SubscribeOptionTop();
+    //SubscribeOptionTop();
+    SubscribeKline();
+  }
+
+  public static void SubscribeKline()
+  {
+    PushClient client = PushClient.GetInstance();
+
+    ISet<string> symbols = new HashSet<string>();
+    symbols.Add("AAPL");
+    ApiLogger.Info($"SubscribeKline:{client.SubscribeKline(symbols)}");
+    Sleep(90);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    ApiLogger.Info($"CancelSubscribeKline:{client.CancelSubscribeKline(symbols)}");
+    Sleep(2);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(2);
   }
 
   public static void SubscribeAsset()
@@ -308,7 +325,7 @@ class Program
     PushClient client = PushClient.GetInstance();
 
     ISet<string> symbols = new HashSet<string>();
-    symbols.Add("00700");
+    symbols.Add("AAPL");
     ApiLogger.Info($"SubscribeTradeTick:{client.SubscribeTradeTick(symbols)}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");

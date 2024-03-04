@@ -121,7 +121,7 @@ namespace TigerOpenAPI.Push
               stream => new SslStream(stream, false, (sender, certificate, chain, errors) => true),
                 new ClientTlsSettings(uri.Host)));
           }
-          ProtoSocketHandler handler = new ProtoSocketHandler(authentication, apiComposeCallback, heartBeatData);
+          ProtoSocketHandler handler = new ProtoSocketHandler(authentication, apiComposeCallback, heartBeatData, tigerConfig.UseFullStockTick);
 
           pipeline.AddLast(SOCKET_DECODER, new ProtobufVarint32FrameDecoder());
           pipeline.AddLast(new ProtobufDecoder(Response.Parser));
@@ -352,6 +352,16 @@ namespace TigerOpenAPI.Push
     public uint CancelSubscribeDepthQuote(ISet<string>? symbols = null)
     {
       return CancelSubscribeQuote(symbols, QuoteSubject.QuoteDepth);
+    }
+
+    public uint SubscribeKline(ISet<string> symbols)
+    {
+      return SubscribeQuote(symbols, QuoteSubject.Kline);
+    }
+
+    public uint CancelSubscribeKline(ISet<string>? symbols = null)
+    {
+      return CancelSubscribeQuote(symbols, QuoteSubject.Kline);
     }
 
     private uint SubscribeQuote(ISet<string> symbols, QuoteSubject subject)

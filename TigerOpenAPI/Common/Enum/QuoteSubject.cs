@@ -3,7 +3,7 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum QuoteSubject
   {
-    None, Quote, Option, Future, QuoteDepth, TradeTick, StockTop, OptionTop
+    None, Quote, Option, Future, QuoteDepth, TradeTick, StockTop, OptionTop, Kline
   }
 }
 

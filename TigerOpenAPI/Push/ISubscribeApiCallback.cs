@@ -16,6 +16,7 @@ namespace TigerOpenAPI.Push
     void AssetChange(AssetData data);
 
     void TradeTickChange(TradeTick data);
+    void FullTickChange(TickData data);
 
     void QuoteChange(QuoteBasicData data);
     void QuoteAskBidChange(QuoteBBOData data);
@@ -27,6 +28,8 @@ namespace TigerOpenAPI.Push
     void FutureAskBidChange(QuoteBBOData data);
 
     void DepthQuoteChange(QuoteDepthData data);
+
+    void BarChange(BarData data);
 
     void StockTopPush(StockTopData data);
 
