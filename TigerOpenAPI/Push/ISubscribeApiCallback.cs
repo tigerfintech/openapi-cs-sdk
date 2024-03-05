@@ -29,7 +29,7 @@ namespace TigerOpenAPI.Push
 
     void DepthQuoteChange(QuoteDepthData data);
 
-    void BarChange(BarData data);
+    void KlineChange(KlineData data);
 
     void StockTopPush(StockTopData data);
 

@@ -30,38 +30,38 @@ namespace TigerOpenAPI.Quote.Pb {
             "QXNzZXREYXRhLnByb3RvGg9RdW90ZURhdGEucHJvdG8aFFF1b3RlRGVwdGhE",
             "YXRhLnByb3RvGhNUcmFkZVRpY2tEYXRhLnByb3RvGhpPcmRlclRyYW5zYWN0",
             "aW9uRGF0YS5wcm90bxoSU3RvY2tUb3BEYXRhLnByb3RvGhNPcHRpb25Ub3BE",
-            "YXRhLnByb3RvGg1CYXJEYXRhLnByb3RvGg5UaWNrRGF0YS5wcm90byLlCAoI",
-            "UHVzaERhdGESXQoIZGF0YVR5cGUYASABKA4ySy5jb20udGlnZXJicm9rZXJz",
-            "LnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlNvY2tldENv",
-            "bW1vbi5EYXRhVHlwZRJUCglxdW90ZURhdGEYAiABKAsyPy5jb20udGlnZXJi",
-            "cm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlF1",
-            "b3RlRGF0YUgAEl4KDnF1b3RlRGVwdGhEYXRhGAMgASgLMkQuY29tLnRpZ2Vy",
-            "YnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYi5R",
-            "dW90ZURlcHRoRGF0YUgAElwKDXRyYWRlVGlja0RhdGEYBCABKAsyQy5jb20u",
-            "dGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRh",
-            "LnBiLlRyYWRlVGlja0RhdGFIABJaCgxwb3NpdGlvbkRhdGEYBSABKAsyQi5j",
-            "b20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5k",
-            "YXRhLnBiLlBvc2l0aW9uRGF0YUgAElQKCWFzc2V0RGF0YRgGIAEoCzI/LmNv",
+            "YXRhLnByb3RvGg9LbGluZURhdGEucHJvdG8aDlRpY2tEYXRhLnByb3RvIukI",
+            "CghQdXNoRGF0YRJdCghkYXRhVHlwZRgBIAEoDjJLLmNvbS50aWdlcmJyb2tl",
+            "cnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuU29ja2V0",
+            "Q29tbW9uLkRhdGFUeXBlElQKCXF1b3RlRGF0YRgCIAEoCzI/LmNvbS50aWdl",
+            "cmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIu",
+            "UXVvdGVEYXRhSAASXgoOcXVvdGVEZXB0aERhdGEYAyABKAsyRC5jb20udGln",
+            "ZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBi",
+            "LlF1b3RlRGVwdGhEYXRhSAASXAoNdHJhZGVUaWNrRGF0YRgEIAEoCzJDLmNv",
             "bS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRh",
-            "dGEucGIuQXNzZXREYXRhSAASYAoPb3JkZXJTdGF0dXNEYXRhGAcgASgLMkUu",
+            "dGEucGIuVHJhZGVUaWNrRGF0YUgAEloKDHBvc2l0aW9uRGF0YRgFIAEoCzJC",
+            "LmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0",
+            "LmRhdGEucGIuUG9zaXRpb25EYXRhSAASVAoJYXNzZXREYXRhGAYgASgLMj8u",
             "Y29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVudC5zb2NrZXQu",
-            "ZGF0YS5wYi5PcmRlclN0YXR1c0RhdGFIABJqChRvcmRlclRyYW5zYWN0aW9u",
-            "RGF0YRgIIAEoCzJKLmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5j",
-            "bGllbnQuc29ja2V0LmRhdGEucGIuT3JkZXJUcmFuc2FjdGlvbkRhdGFIABJa",
-            "CgxzdG9ja1RvcERhdGEYCSABKAsyQi5jb20udGlnZXJicm9rZXJzLnN0b2Nr",
-            "Lm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlN0b2NrVG9wRGF0YUgA",
-            "ElwKDW9wdGlvblRvcERhdGEYCiABKAsyQy5jb20udGlnZXJicm9rZXJzLnN0",
-            "b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLk9wdGlvblRvcERh",
-            "dGFIABJQCgdiYXJEYXRhGAsgASgLMj0uY29tLnRpZ2VyYnJva2Vycy5zdG9j",
-            "ay5vcGVuYXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYi5CYXJEYXRhSAASUgoI",
-            "dGlja0RhdGEYDCABKAsyPi5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5h",
-            "cGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlRpY2tEYXRhSABCBgoEYm9keUIY",
-            "qgIVVGlnZXJPcGVuQVBJLlF1b3RlLlBiUABQAVACUANQBFAFUAZQB1AIUAlQ",
-            "ClALYgZwcm90bzM="));
+            "ZGF0YS5wYi5Bc3NldERhdGFIABJgCg9vcmRlclN0YXR1c0RhdGEYByABKAsy",
+            "RS5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50LnNvY2tl",
+            "dC5kYXRhLnBiLk9yZGVyU3RhdHVzRGF0YUgAEmoKFG9yZGVyVHJhbnNhY3Rp",
+            "b25EYXRhGAggASgLMkouY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBp",
+            "LmNsaWVudC5zb2NrZXQuZGF0YS5wYi5PcmRlclRyYW5zYWN0aW9uRGF0YUgA",
+            "EloKDHN0b2NrVG9wRGF0YRgJIAEoCzJCLmNvbS50aWdlcmJyb2tlcnMuc3Rv",
+            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuU3RvY2tUb3BEYXRh",
+            "SAASXAoNb3B0aW9uVG9wRGF0YRgKIAEoCzJDLmNvbS50aWdlcmJyb2tlcnMu",
+            "c3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuT3B0aW9uVG9w",
+            "RGF0YUgAElQKCWtsaW5lRGF0YRgLIAEoCzI/LmNvbS50aWdlcmJyb2tlcnMu",
+            "c3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuS2xpbmVEYXRh",
+            "SAASUgoIdGlja0RhdGEYDCABKAsyPi5jb20udGlnZXJicm9rZXJzLnN0b2Nr",
+            "Lm9wZW5hcGkuY2xpZW50LnNvY2tldC5kYXRhLnBiLlRpY2tEYXRhSABCBgoE",
+            "Ym9keUIYqgIVVGlnZXJPcGVuQVBJLlF1b3RlLlBiUABQAVACUANQBFAFUAZQ",
+            "B1AIUAlQClALYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderStatusDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.PositionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.AssetDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDepthDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TradeTickDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderTransactionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.StockTopDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OptionTopDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.BarDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TickDataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderStatusDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.PositionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.AssetDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.QuoteDepthDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TradeTickDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OrderTransactionDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.StockTopDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.OptionTopDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.KlineDataReflection.Descriptor, global::TigerOpenAPI.Quote.Pb.TickDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PushData), global::TigerOpenAPI.Quote.Pb.PushData.Parser, new[]{ "DataType", "QuoteData", "QuoteDepthData", "TradeTickData", "PositionData", "AssetData", "OrderStatusData", "OrderTransactionData", "StockTopData", "OptionTopData", "BarData", "TickData" }, new[]{ "Body" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PushData), global::TigerOpenAPI.Quote.Pb.PushData.Parser, new[]{ "DataType", "QuoteData", "QuoteDepthData", "TradeTickData", "PositionData", "AssetData", "OrderStatusData", "OrderTransactionData", "StockTopData", "OptionTopData", "KlineData", "TickData" }, new[]{ "Body" }, null, null, null)
           }));
     }
     #endregion
@@ -131,8 +131,8 @@ namespace TigerOpenAPI.Quote.Pb {
         case BodyOneofCase.OptionTopData:
           OptionTopData = other.OptionTopData.Clone();
           break;
-        case BodyOneofCase.BarData:
-          BarData = other.BarData.Clone();
+        case BodyOneofCase.KlineData:
+          KlineData = other.KlineData.Clone();
           break;
         case BodyOneofCase.TickData:
           TickData = other.TickData.Clone();
@@ -268,15 +268,15 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
-    /// <summary>Field number for the "barData" field.</summary>
-    public const int BarDataFieldNumber = 11;
+    /// <summary>Field number for the "klineData" field.</summary>
+    public const int KlineDataFieldNumber = 11;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::TigerOpenAPI.Quote.Pb.BarData BarData {
-      get { return bodyCase_ == BodyOneofCase.BarData ? (global::TigerOpenAPI.Quote.Pb.BarData) body_ : null; }
+    public global::TigerOpenAPI.Quote.Pb.KlineData KlineData {
+      get { return bodyCase_ == BodyOneofCase.KlineData ? (global::TigerOpenAPI.Quote.Pb.KlineData) body_ : null; }
       set {
         body_ = value;
-        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.BarData;
+        bodyCase_ = value == null ? BodyOneofCase.None : BodyOneofCase.KlineData;
       }
     }
 
@@ -305,7 +305,7 @@ namespace TigerOpenAPI.Quote.Pb {
       OrderTransactionData = 8,
       StockTopData = 9,
       OptionTopData = 10,
-      BarData = 11,
+      KlineData = 11,
       TickData = 12,
     }
     private BodyOneofCase bodyCase_ = BodyOneofCase.None;
@@ -347,7 +347,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!object.Equals(OrderTransactionData, other.OrderTransactionData)) return false;
       if (!object.Equals(StockTopData, other.StockTopData)) return false;
       if (!object.Equals(OptionTopData, other.OptionTopData)) return false;
-      if (!object.Equals(BarData, other.BarData)) return false;
+      if (!object.Equals(KlineData, other.KlineData)) return false;
       if (!object.Equals(TickData, other.TickData)) return false;
       if (BodyCase != other.BodyCase) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -367,7 +367,7 @@ namespace TigerOpenAPI.Quote.Pb {
       if (bodyCase_ == BodyOneofCase.OrderTransactionData) hash ^= OrderTransactionData.GetHashCode();
       if (bodyCase_ == BodyOneofCase.StockTopData) hash ^= StockTopData.GetHashCode();
       if (bodyCase_ == BodyOneofCase.OptionTopData) hash ^= OptionTopData.GetHashCode();
-      if (bodyCase_ == BodyOneofCase.BarData) hash ^= BarData.GetHashCode();
+      if (bodyCase_ == BodyOneofCase.KlineData) hash ^= KlineData.GetHashCode();
       if (bodyCase_ == BodyOneofCase.TickData) hash ^= TickData.GetHashCode();
       hash ^= (int) bodyCase_;
       if (_unknownFields != null) {
@@ -428,9 +428,9 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(82);
         output.WriteMessage(OptionTopData);
       }
-      if (bodyCase_ == BodyOneofCase.BarData) {
+      if (bodyCase_ == BodyOneofCase.KlineData) {
         output.WriteRawTag(90);
-        output.WriteMessage(BarData);
+        output.WriteMessage(KlineData);
       }
       if (bodyCase_ == BodyOneofCase.TickData) {
         output.WriteRawTag(98);
@@ -486,9 +486,9 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(82);
         output.WriteMessage(OptionTopData);
       }
-      if (bodyCase_ == BodyOneofCase.BarData) {
+      if (bodyCase_ == BodyOneofCase.KlineData) {
         output.WriteRawTag(90);
-        output.WriteMessage(BarData);
+        output.WriteMessage(KlineData);
       }
       if (bodyCase_ == BodyOneofCase.TickData) {
         output.WriteRawTag(98);
@@ -534,8 +534,8 @@ namespace TigerOpenAPI.Quote.Pb {
       if (bodyCase_ == BodyOneofCase.OptionTopData) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(OptionTopData);
       }
-      if (bodyCase_ == BodyOneofCase.BarData) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BarData);
+      if (bodyCase_ == BodyOneofCase.KlineData) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(KlineData);
       }
       if (bodyCase_ == BodyOneofCase.TickData) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(TickData);
@@ -610,11 +610,11 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           OptionTopData.MergeFrom(other.OptionTopData);
           break;
-        case BodyOneofCase.BarData:
-          if (BarData == null) {
-            BarData = new global::TigerOpenAPI.Quote.Pb.BarData();
+        case BodyOneofCase.KlineData:
+          if (KlineData == null) {
+            KlineData = new global::TigerOpenAPI.Quote.Pb.KlineData();
           }
-          BarData.MergeFrom(other.BarData);
+          KlineData.MergeFrom(other.KlineData);
           break;
         case BodyOneofCase.TickData:
           if (TickData == null) {
@@ -725,12 +725,12 @@ namespace TigerOpenAPI.Quote.Pb {
             break;
           }
           case 90: {
-            global::TigerOpenAPI.Quote.Pb.BarData subBuilder = new global::TigerOpenAPI.Quote.Pb.BarData();
-            if (bodyCase_ == BodyOneofCase.BarData) {
-              subBuilder.MergeFrom(BarData);
+            global::TigerOpenAPI.Quote.Pb.KlineData subBuilder = new global::TigerOpenAPI.Quote.Pb.KlineData();
+            if (bodyCase_ == BodyOneofCase.KlineData) {
+              subBuilder.MergeFrom(KlineData);
             }
             input.ReadMessage(subBuilder);
-            BarData = subBuilder;
+            KlineData = subBuilder;
             break;
           }
           case 98: {
@@ -843,12 +843,12 @@ namespace TigerOpenAPI.Quote.Pb {
             break;
           }
           case 90: {
-            global::TigerOpenAPI.Quote.Pb.BarData subBuilder = new global::TigerOpenAPI.Quote.Pb.BarData();
-            if (bodyCase_ == BodyOneofCase.BarData) {
-              subBuilder.MergeFrom(BarData);
+            global::TigerOpenAPI.Quote.Pb.KlineData subBuilder = new global::TigerOpenAPI.Quote.Pb.KlineData();
+            if (bodyCase_ == BodyOneofCase.KlineData) {
+              subBuilder.MergeFrom(KlineData);
             }
             input.ReadMessage(subBuilder);
-            BarData = subBuilder;
+            KlineData = subBuilder;
             break;
           }
           case 98: {

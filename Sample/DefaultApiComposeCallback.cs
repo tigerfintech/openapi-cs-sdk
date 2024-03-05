@@ -116,9 +116,9 @@ namespace Sample
       ApiLogger.Info("FullTickChange:" + data);
     }
 
-    void ISubscribeApiCallback.BarChange(BarData data)
+    void ISubscribeApiCallback.KlineChange(KlineData data)
     {
-      ApiLogger.Info("BarChange:" + data);
+      ApiLogger.Info("KlineChange:" + data);
     }
 
     void ISubscribeApiCallback.DepthQuoteChange(QuoteDepthData data)

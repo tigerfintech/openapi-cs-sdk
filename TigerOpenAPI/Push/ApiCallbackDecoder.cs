@@ -127,7 +127,7 @@ namespace TigerOpenAPI.Push
           callback.OptionTopPush(pushData.OptionTopData);
           break;
         case DataType.Kline:
-          callback.BarChange(pushData.BarData);
+          callback.KlineChange(pushData.KlineData);
           break;
         default:
           ApiLogger.Info("push data cannot be processed. {}", msg);
