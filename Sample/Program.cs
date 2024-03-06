@@ -258,7 +258,7 @@ class Program
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
-      UseFullStockTick = true,
+      UseFullTick = true,
       IsSslSocket = false
     };
     ApiLogger.DebugEnabled = false;

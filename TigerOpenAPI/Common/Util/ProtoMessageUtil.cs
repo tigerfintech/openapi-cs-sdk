@@ -17,7 +17,7 @@ namespace TigerOpenAPI.Common.Util
     }
 
     public static Request BuildConnectMessage(string tigerId, string sign,
-      string version, int sendInterval, int receiveInterval, bool useFullStockTick = false)
+      string version, int sendInterval, int receiveInterval, bool useFullTick = false)
     {
       Request request = new Request()
       {
@@ -29,7 +29,7 @@ namespace TigerOpenAPI.Common.Util
           TigerId = tigerId,
           Sign = sign,
           SendInterval = (uint)sendInterval,
-          UseFullStockTick = useFullStockTick,
+          UseFullTick = useFullTick,
           ReceiveInterval = (uint)receiveInterval
         }
       };

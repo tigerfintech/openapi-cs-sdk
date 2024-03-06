@@ -121,7 +121,7 @@ namespace TigerOpenAPI.Push
               stream => new SslStream(stream, false, (sender, certificate, chain, errors) => true),
                 new ClientTlsSettings(uri.Host)));
           }
-          ProtoSocketHandler handler = new ProtoSocketHandler(authentication, apiComposeCallback, heartBeatData, tigerConfig.UseFullStockTick);
+          ProtoSocketHandler handler = new ProtoSocketHandler(authentication, apiComposeCallback, heartBeatData, tigerConfig.UseFullTick);
 
           pipeline.AddLast(SOCKET_DECODER, new ProtobufVarint32FrameDecoder());
           pipeline.AddLast(new ProtobufDecoder(Response.Parser));
