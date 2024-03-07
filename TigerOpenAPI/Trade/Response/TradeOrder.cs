@@ -59,6 +59,8 @@ namespace TigerOpenAPI.Trade.Response
     //public Double TrailStopPrice { get; set; }
     [JsonProperty(PropertyName = "totalQuantity")]
     public Int64 TotalQuantity { get; set; }
+    [JsonProperty(PropertyName = "totalQuantityScale")]
+    public Int32 TotalQuantityScale { get; set; }
     [JsonProperty(PropertyName = "filledQuantity")]
     public Int64 FilledQuantity { get; set; }
     [JsonProperty(PropertyName = "filledQuantityScale")]
