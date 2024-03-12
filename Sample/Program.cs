@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using Sample;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
@@ -26,6 +27,10 @@ class Program
     TigerConfig.LogDir = "/data0/logs/tiger-openapi-cs";
     ApiLogger.DebugEnabled = true;
     ApiLogger.Info("start");
+
+    //StockPriceTests stockPriceTests = new StockPriceTests();
+    //stockPriceTests.TestStockPrice();
+    //TestStockPrice();
 
     // tiger config
     TigerConfig config = new TigerConfig()
@@ -126,7 +131,7 @@ class Program
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
-    TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
+    //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
 
     // =================================================palace order
@@ -143,6 +148,8 @@ class Program
     //TigerResponse? response = await PlaceLimitOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672900550991,"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"totalQuantity":1,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
     // response:{"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","expiry":null,"strike":null,"right":null,"multiplier":0.0,"identifier":"AAPL","id":29360305075913728,"orderId":1457,"parentId":0,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"auxPrice":0.0,"trailingPercent":0.0,"totalQuantity":1,"filledQuantity":0,"cashQuantity":0.0,"lastFillPrice":0.0,"avgFillPrice":0.0,"timeInForce":"DAY","expireTime":0,"goodTillDate":null,"outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","ocaGroupId":0,"comboLegs":null,"allocAccounts":null,"allocShares":null,"algoStrategy":"LMT","algoParameters":null,"status":"Initial","source":null,"discount":0.0,"canModify":true,"canCancel":true}]},"code":0,"message":"success","timestamp":1672900550991,"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
+
+    TigerResponse? response = await PlaceOddLotOrderAsync(tradeClient);
 
     //TigerResponse? response = await PlaceAuctionOrderAsync(tradeClient);
 
@@ -258,6 +265,7 @@ class Program
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
+      UseFullTick = true,
       IsSslSocket = false
     };
     ApiLogger.DebugEnabled = false;
@@ -272,7 +280,23 @@ class Program
     //SubscribeQuote();
     //SubscribeTradeTick();
     //SubscribeStockTop();
-    SubscribeOptionTop();
+    //SubscribeOptionTop();
+    SubscribeKline();
+  }
+
+  public static void SubscribeKline()
+  {
+    PushClient client = PushClient.GetInstance();
+
+    ISet<string> symbols = new HashSet<string>();
+    symbols.Add("AAPL");
+    ApiLogger.Info($"SubscribeKline:{client.SubscribeKline(symbols)}");
+    Sleep(90);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    ApiLogger.Info($"CancelSubscribeKline:{client.CancelSubscribeKline(symbols)}");
+    Sleep(2);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(2);
   }
 
   public static void SubscribeAsset()
@@ -308,7 +332,7 @@ class Program
     PushClient client = PushClient.GetInstance();
 
     ISet<string> symbols = new HashSet<string>();
-    symbols.Add("00700");
+    symbols.Add("AAPL");
     ApiLogger.Info($"SubscribeTradeTick:{client.SubscribeTradeTick(symbols)}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
@@ -950,6 +974,24 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceOddLotOrderAsync(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.BuildStockContract("AAPL", Currency.USD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.BuildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        1234, 110.0, 0.002,
+        3 // totalQuantityScale is 3, actual quantity is 1.234
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceLimitOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.BuildStockContract("AAPL", Currency.USD.ToString());
@@ -961,7 +1003,7 @@ class Program
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
-        1, 120.0
+        1, 120.0, 0.002
       )
     };
     // set other parameter
@@ -1823,5 +1865,35 @@ class Program
       ApiMethodName = QuoteApiService.USER_LICENSE
     };
     return await quoteClient.ExecuteAsync(request);
+  }
+
+  public static void TestStockPrice()
+  {
+    string content = "[{\"begin\":\"0\",\"end\":\"0.25\",\"type\":\"CLOSED\",\"tickSize\":0.001},"
+        + "{\"begin\":\"0.25\",\"end\":\"0.5\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.005},"
+        + "{\"begin\":\"0.5\",\"end\":\"10\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.01},"
+        + "{\"begin\":\"10\",\"end\":\"20\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.02},"
+        + "{\"begin\":\"20\",\"end\":\"100\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.05},"
+        + "{\"begin\":\"100\",\"end\":\"200\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.1},"
+        + "{\"begin\":\"200\",\"end\":\"500\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.2},"
+        + "{\"begin\":\"500\",\"end\":\"1000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.5},"
+        + "{\"begin\":\"1000\",\"end\":\"2000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":1.0},"
+        + "{\"begin\":\"2000\",\"end\":\"5000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":2.0},"
+        + "{\"begin\":\"5000\",\"end\":\"Infinity\",\"type\":\"OPEN\",\"tickSize\":5.0}]";
+
+    List<TickSizeItem>? tickSizeItemList = JsonConvert.DeserializeObject<List<TickSizeItem>>(content);
+
+    ApiLogger.Info("input: 0.34m output expect: 10.34m, result: " + (10.34m == StockPriceUtil.FixPriceByTickSize(10.34m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.35m output expect: 10.34m, result: " + (10.34m == StockPriceUtil.FixPriceByTickSize(10.35m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.36m output expect: 10.36m, result: " + (10.36m == StockPriceUtil.FixPriceByTickSize(10.36m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.35m output expect: 10.36m, result: " + (10.36m == StockPriceUtil.FixPriceByTickSize(10.35m, tickSizeItemList, true)));
+
+    ApiLogger.Info("input: 0.34m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.34m, tickSizeItemList));
+    ApiLogger.Info("input: 0.35m output expect: false, result: " + StockPriceUtil.MatchTickSize(10.35m, tickSizeItemList));
+    ApiLogger.Info("input: 0.36m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.36m, tickSizeItemList));
+
+    ApiLogger.Info("input: 0.360m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.360m, tickSizeItemList));
+    ApiLogger.Info("input: 0.361m output expect: fasle, result: " + StockPriceUtil.MatchTickSize(10.361m, tickSizeItemList));
+
   }
 }

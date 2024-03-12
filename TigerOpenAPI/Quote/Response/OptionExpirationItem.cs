@@ -16,6 +16,8 @@ namespace TigerOpenAPI.Quote.Response
     public List<string> Dates { get; set; }
     [JsonProperty(PropertyName = "timestamps")]
     public List<long> Timestamps { get; set; }
+    [JsonProperty(PropertyName = "periodTags")]
+    public List<string> PeriodTags { get; set; }
 
   }
 }

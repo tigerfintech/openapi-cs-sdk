@@ -10,4 +10,10 @@
   <ItemGroup>
     <ProjectReference Include="..\TigerOpenAPI\TigerOpenAPI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="NUnit" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="4.1.0" />
+  </ItemGroup>
 </Project>
