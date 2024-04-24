@@ -70,7 +70,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
-    //TigerResponse? response = await GetKLineAsync(quoteClient);
+    TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
     //TigerResponse? response = await GetTradeTickAsync(quoteClient);
@@ -79,7 +79,7 @@ class Program
     //TigerResponse? response = await GetStockCaptialDistributionAsync(quoteClient);
     //TigerResponse? response = await GetStockBrokerAsync(quoteClient);
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
-    TigerResponse? response = await GetOptionChainAsync(quoteClient);
+    //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
@@ -1731,8 +1731,8 @@ class Program
       ModelValue = new QuoteKlineModel()
       {
         Symbols = new List<string> { "AAPL" },
-        Period = KLineType.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2023-03-01", CustomTimeZone.NY_ZONE),
+        Period = KLineType.min3.Value,
+        BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
         Rigth = RightOption.br
       }
