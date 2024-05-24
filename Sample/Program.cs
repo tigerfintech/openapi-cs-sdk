@@ -83,6 +83,7 @@ class Program
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
+    TigerResponse? response = await GetOptionDepthAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
     //TigerResponse? response = await GetFutureContractByExchangeCodeAsync(quoteClient);
@@ -122,7 +123,7 @@ class Program
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
     //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
-    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -196,7 +197,7 @@ class Program
     // response:{"data":{"id":29360305075913728},"message":"success","timestamp":1672917172001,"sign":"QZnYKt55byk4/jwCsniS1y+BExrEUUGHiNGmRMGnBPBnR8nW8Knu15hUjjOfonDhIV+xpGLb3LrBt6hEEp8+dhG/aflx4CCCf5ivMNiOPk1epr4gMGlFmclTmqf9c5Mc3rqGqKxM3b05Qk9bLr4OLCPPk7oA6b86rvnc/ZHymWM="} 
 
     // =================================================query order
-    TigerResponse? response = await QueryOrderByIdAsync(tradeClient);
+    //TigerResponse? response = await QueryOrderByIdAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672919642606,"data":{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":121.0,"totalQuantity":2,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"liquidation":false,"openTime":1672900550000,"updateTime":1672917172000,"latestTime":1672917172000,"name":"Apple","attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Cancelled","discount":0.0,"canModify":false,"canCancel":false},"sign":"JKLW5HivW+CF4kbRlEkNMgj2MM74wCaG1pUlkMy9FBZzQiD4PZN/rTAvg6bYOIkrpXZO2PmQgRY8o/Bs73a3nRutLq5y7i04zeUbWu7Zh9k3wsx2/iQiVv6RtXQaWwrzTru4+NsYqq6F3gqoT6WHXDifywqCSLmqu8UJAzysSb4="} 
     // response:{"data":{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":121.0,"totalQuantity":2,"timeInForce":"DAY","outsideRth":true,"openTime":1672900550000,"updateTime":1672917172000,"latestTime":1672917172000,"name":"Apple","attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Cancelled"},"message":"success","timestamp":1672919642606,"sign":"JKLW5HivW+CF4kbRlEkNMgj2MM74wCaG1pUlkMy9FBZzQiD4PZN/rTAvg6bYOIkrpXZO2PmQgRY8o/Bs73a3nRutLq5y7i04zeUbWu7Zh9k3wsx2/iQiVv6RtXQaWwrzTru4+NsYqq6F3gqoT6WHXDifywqCSLmqu8UJAzysSb4="} 
 
@@ -226,7 +227,7 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -1584,6 +1585,28 @@ class Program
         {
           new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
             Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE)}
+        }
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<OptionDepthResponse?> GetOptionDepthAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<OptionDepthResponse> request = new TigerRequest<OptionDepthResponse>()
+    {
+      ApiMethodName = QuoteApiService.OPTION_DEPTH,
+      ModelValue = new OptionBasicModel()
+      {
+        Market = Market.US,
+        OptionBasic = new List<OptionCommonModel>()
+        {
+          new OptionCommonModel() {
+            Symbol = "AAPL",
+            Right = "CALL",
+            Strike = "160.0",
+            Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE)
+          }
         }
       }
     };

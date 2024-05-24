@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using DotNetty.Common.Utilities;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
 
@@ -12,6 +13,7 @@ namespace TigerOpenAPI.Common.Util
 
     private static string CHAR_SYMBOL_PATTERN = "[A-Z]+(.[A-Z0-9]+)?";
     private static string FUTURE_SYMBOL_PATTERN = "^[0-9A-Z]+([0-9]{4}|main){1}$";
+    private static readonly string MARKET_POSTFIX_HK = ".HK";
 
     public static OptionSymbol convertToOptionSymbol(string identifier)
     {
@@ -49,11 +51,24 @@ namespace TigerOpenAPI.Common.Util
       return Regex.IsMatch(symbol, CHAR_SYMBOL_PATTERN);
     }
 
+    public static bool IsHkOptionSymbol(string symbol)
+    {
+      if (string.IsNullOrWhiteSpace(symbol))
+      {
+        return false;
+      }
+      return symbol.EndsWith(MARKET_POSTFIX_HK);
+    }
+
     public static TimeZoneInfo getZoneIdBySymbol(string symbol, TimeZoneInfo defaultTimeZoneInfo)
     {
       if (string.IsNullOrWhiteSpace(symbol))
       {
         return defaultTimeZoneInfo;
+      }
+      if (IsHkOptionSymbol(symbol))
+      {
+        return CustomTimeZone.HK_ZONE;
       }
       return isUsStockSymbol(symbol) ? CustomTimeZone.NY_ZONE : CustomTimeZone.HK_ZONE;
     }

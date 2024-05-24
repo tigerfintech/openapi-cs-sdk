@@ -41,6 +41,8 @@ namespace TigerOpenAPI.Quote
     public const string OPTION_BRIEF = "option_brief";
     public const string OPTION_KLINE = "option_kline";
     public const string OPTION_TRADE_TICK = "option_trade_tick";
+    public const string OPTION_DEPTH = "option_depth";
+    public const string ALL_HK_OPTION_SYMBOLS = "all_hk_option_symbols";
 
     /**
      * warrant/cbbc quote
@@ -128,6 +130,8 @@ namespace TigerOpenAPI.Quote
       OPTION_BRIEF,
       OPTION_KLINE,
       OPTION_TRADE_TICK,
+      OPTION_DEPTH,
+      ALL_HK_OPTION_SYMBOLS,
 
       /**
        * warrant/cbbc quote
