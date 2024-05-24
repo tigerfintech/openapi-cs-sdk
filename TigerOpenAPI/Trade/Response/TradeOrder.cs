@@ -83,6 +83,8 @@ namespace TigerOpenAPI.Trade.Response
     public string GoodTillDate { get; set; }
     [JsonProperty(PropertyName = "outsideRth")]
     public Boolean OutsideRth { get; set; }
+    [JsonProperty(PropertyName = "tradingSessionType")]
+    public string TradingSessionType { get; set; }
 
     [JsonProperty(PropertyName = "commission")]
     public Double Commission { get; set; }
