@@ -6,7 +6,7 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Quote.Model
 {
-  public class OptionChainV3Model : ApiModel
+  public class OptionChainV3Model : OptionModel
   {
 
     [JsonProperty(PropertyName = "option_basic")]
