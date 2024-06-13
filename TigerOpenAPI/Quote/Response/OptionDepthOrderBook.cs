@@ -9,8 +9,8 @@ namespace TigerOpenAPI.Quote.Response
   {
     [JsonProperty(PropertyName = "price")]
     public Double Price { get; set; }
-    [JsonProperty(PropertyName = "code"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
-    public PartCode Code { get; set; }
+    [JsonProperty(PropertyName = "code")]
+    public string Code { get; set; }
     [JsonProperty(PropertyName = "size")]
     public Int32 Size { get; set; }
     [JsonProperty(PropertyName = "timestamp")]
