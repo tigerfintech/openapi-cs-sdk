@@ -13,6 +13,8 @@ namespace TigerOpenAPI.Common.Enum
     public static readonly KLineType min15 = new KLineType("15min");
     public static readonly KLineType min30 = new KLineType("30min");
     public static readonly KLineType min60 = new KLineType("60min");
+    public static readonly KLineType min120 = new KLineType("120min");
+    public static readonly KLineType min240 = new KLineType("240min");
 
     public static IEnumerable<KLineType> Values
     {
@@ -28,6 +30,8 @@ namespace TigerOpenAPI.Common.Enum
         yield return min15;
         yield return min30;
         yield return min60;
+        yield return min120;
+        yield return min240;
       }
     }
     private readonly string value;
