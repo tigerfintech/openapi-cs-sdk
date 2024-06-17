@@ -18,13 +18,14 @@ namespace TigerOpenAPI.Common.Enum
     BX = 12,
     C2 = 13,
     PHLX = 14,
-    BZX = 15
+    BZX = 15,
+    MEMX = 16
   }
 
   public static class PartCodeExtensions
   {
-    private static readonly PartCode[] partCodes = new PartCode[16];
-    private static readonly string[] codes = new string[16] { "a", "b", "c", "d", "e", "h", "i", "j", "m", "n", "p", "q", "t", "w", "x", "z" };
+    private static readonly PartCode[] partCodes = new PartCode[17];
+    private static readonly string[] codes = new string[17] { "a", "b", "c", "d", "e", "h", "i", "j", "m", "n", "p", "q", "t", "w", "x", "z", "u" };
 
     static PartCodeExtensions()
     {
