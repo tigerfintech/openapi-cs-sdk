@@ -1015,6 +1015,7 @@ class Program
     // ((PlaceOrderModel)request.ModelValue).TimeInForce = TimeInForce.GTD;
     // ((PlaceOrderModel)request.ModelValue).ExpireTime = DateUtil.ConvertTimestamp(
     //  "2023-01-20 23:59:59", SymbolUtil.getZoneIdBySymbol("AAPL", tradeClient.GetConfigTimeZone));
+    ((PlaceOrderModel)request.ModelValue).TradingSessionType = TradeSession.OverNight;
     return await tradeClient.ExecuteAsync(request);
   }
 
@@ -1566,11 +1567,12 @@ class Program
         {
           new OptionKlineModel() {
             Symbol = "AAPL", Right = "CALL", Strike = "170.0",
-            Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE),
-            BeginTime = DateUtil.ConvertTimestamp("2024-05-22", CustomTimeZone.NY_ZONE),
-            EndTime = DateUtil.ConvertTimestamp("2024-05-24", CustomTimeZone.NY_ZONE),
+            Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2024-06-24", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2024-06-26", CustomTimeZone.NY_ZONE),
             Period = OptionKType.min60.Value,
-            Limit = 300
+            SortDir = SortDir.SortDir_Descend,
+            Limit = 10
           }
         }
         //Market = Market.HK,
@@ -1618,29 +1620,29 @@ class Program
     TigerRequest<OptionBriefResponse> request = new TigerRequest<OptionBriefResponse>()
     {
       ApiMethodName = QuoteApiService.OPTION_BRIEF,
-        ModelValue = new OptionBasicModel()
+      ModelValue = new OptionBasicModel()
       {
-          //Market = Market.US,
-          //OptionBasic = new List<OptionCommonModel>()
-          //{
-          //  new OptionCommonModel() {
-          //    Symbol = "AAPL",
-          //    Right = "CALL",
-          //    Strike = "160.0",
-          //    Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE)
-          //  }
-          //}
-          Market = Market.HK,
-          OptionBasic = new List<OptionCommonModel>()
+        Market = Market.US,
+        OptionBasic = new List<OptionCommonModel>()
           {
             new OptionCommonModel() {
-              Symbol = "TCH.HK",
+              Symbol = "AAPL",
               Right = "CALL",
-              Strike = "370.0",
-              Expiry = DateUtil.ConvertTimestamp("2024-06-27", CustomTimeZone.HK_ZONE)
+              Strike = "160.0",
+              Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE)
             }
           }
-        }
+        //Market = Market.HK,
+        //OptionBasic = new List<OptionCommonModel>()
+        //{
+        //  new OptionCommonModel() {
+        //    Symbol = "TCH.HK",
+        //    Right = "CALL",
+        //    Strike = "370.0",
+        //    Expiry = DateUtil.ConvertTimestamp("2024-06-27", CustomTimeZone.HK_ZONE)
+        //  }
+        //}
+      }
     };
     return await quoteClient.ExecuteAsync(request);
   }
@@ -1688,9 +1690,9 @@ class Program
         {
           new OptionCommonModel() {
             Symbol = "AAPL",
-            Right = "CALL",
-            Strike = "160.0",
-            Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE)
+            Right = "PUT",
+            Strike = "210.0",
+            Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE)
           }
         }
       }
@@ -1710,7 +1712,7 @@ class Program
         {
           new OptionChainModel() {
             Symbol = "AAPL",
-            Expiry = DateUtil.ConvertTimestamp("2024-05-31", CustomTimeZone.NY_ZONE)
+            Expiry = DateUtil.ConvertTimestamp("2024-07-26", CustomTimeZone.NY_ZONE)
           }
         },
         OptionFilter = new OptionChainFilterModel()

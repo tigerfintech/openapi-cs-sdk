@@ -10,7 +10,7 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "price")]
     public Double Price { get; set; }
     [JsonProperty(PropertyName = "code")]
-    public Int32 Size { get; set; }
+    public string Code { get; set; }
     [JsonProperty(PropertyName = "timestamp")]
     public Int64 Timestamp { get; set; }
     [JsonProperty(PropertyName = "volume")]
