@@ -49,6 +49,14 @@ namespace TigerOpenAPI.Quote
         errorMsg = string.Format(TigerApiCode.HTTP_COMMON_PARAM_ERROR.Message, $"'ApiMethodName'({request?.ApiMethodName}) is not quote api");
         return false;
       }
+      if (QuoteApiService.OPTION_BRIEF.Equals(request.ApiMethodName) && (request.ModelValue as OptionBasicModel) is null)
+      {
+        request.ApiVersion = TigerApiConstants.API_VERSION_1;
+      }
+      else if (QuoteApiService.OPTION_KLINE.Equals(request.ApiMethodName) && (request.ModelValue as OptionKlineV2Model) is null)
+      {
+        request.ApiVersion = TigerApiConstants.API_VERSION_1;
+      }
       // other param check
       return true;
     }

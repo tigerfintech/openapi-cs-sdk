@@ -59,6 +59,13 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "updateTimestamp")]
     public long UpdateTimestamp { get; set; }
 
+    // maintenance margin percent
+    [JsonProperty(PropertyName = "mmPercent")]
+    public Double MmPercent { get; set; } = Double.NaN;
+    // maintenance margin value
+    [JsonProperty(PropertyName = "mmValue")]
+    public Double MmValue { get; set; } = Double.NaN;
+
     public PositionDetail()
     {
     }

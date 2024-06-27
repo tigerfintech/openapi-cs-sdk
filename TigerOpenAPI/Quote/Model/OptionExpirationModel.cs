@@ -5,7 +5,7 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Quote.Model
 {
-  public class OptionExpirationModel : ApiModel
+  public class OptionExpirationModel : OptionModel
   {
 
     [JsonProperty(PropertyName = "symbols")]

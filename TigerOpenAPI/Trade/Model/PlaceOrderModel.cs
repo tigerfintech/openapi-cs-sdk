@@ -103,6 +103,12 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "outside_rth")]
     public Boolean OutsideRth { get; set; } = true;
 
+    /**
+     * set place overnight order in the US market. value: OverNight
+     */
+    [JsonProperty(PropertyName = "trading_session_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public TradeSession TradingSessionType { get; set; }
+
     [JsonProperty(PropertyName = "exchange")]
     public string Exchange { get; set; }
 
