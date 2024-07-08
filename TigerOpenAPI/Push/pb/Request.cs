@@ -26,28 +26,29 @@ namespace TigerOpenAPI.Quote.Pb {
           string.Concat(
             "Cg1SZXF1ZXN0LnByb3RvEjRjb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5h",
             "cGkuY2xpZW50LnNvY2tldC5kYXRhLnBiGhJTb2NrZXRDb21tb24ucHJvdG8i",
-            "5gUKB1JlcXVlc3QSWwoHY29tbWFuZBgBIAEoDjJKLmNvbS50aWdlcmJyb2tl",
+            "kAYKB1JlcXVlc3QSWwoHY29tbWFuZBgBIAEoDjJKLmNvbS50aWdlcmJyb2tl",
             "cnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuU29ja2V0",
             "Q29tbW9uLkNvbW1hbmQSCgoCaWQYAiABKA0SXwoJc3Vic2NyaWJlGAMgASgL",
             "MkcuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVudC5zb2Nr",
             "ZXQuZGF0YS5wYi5SZXF1ZXN0LlN1YnNjcmliZUgAiAEBElsKB2Nvbm5lY3QY",
             "BCABKAsyRS5jb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5hcGkuY2xpZW50",
-            "LnNvY2tldC5kYXRhLnBiLlJlcXVlc3QuQ29ubmVjdEgBiAEBGsgBCgdDb25u",
+            "LnNvY2tldC5kYXRhLnBiLlJlcXVlc3QuQ29ubmVjdEgBiAEBGvIBCgdDb25u",
             "ZWN0Eg8KB3RpZ2VySWQYASABKAkSDAoEc2lnbhgCIAEoCRISCgpzZGtWZXJz",
             "aW9uGAMgASgJEhoKDWFjY2VwdFZlcnNpb24YBCABKAlIAIgBARIZCgxzZW5k",
             "SW50ZXJ2YWwYBSABKA1IAYgBARIcCg9yZWNlaXZlSW50ZXJ2YWwYBiABKA1I",
-            "AogBAUIQCg5fYWNjZXB0VmVyc2lvbkIPCg1fc2VuZEludGVydmFsQhIKEF9y",
-            "ZWNlaXZlSW50ZXJ2YWwazgEKCVN1YnNjcmliZRJdCghkYXRhVHlwZRgBIAEo",
-            "DjJLLmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29j",
-            "a2V0LmRhdGEucGIuU29ja2V0Q29tbW9uLkRhdGFUeXBlEhQKB3N5bWJvbHMY",
-            "AiABKAlIAIgBARIUCgdhY2NvdW50GAMgASgJSAGIAQESEwoGbWFya2V0GAQg",
-            "ASgJSAKIAQFCCgoIX3N5bWJvbHNCCgoIX2FjY291bnRCCQoHX21hcmtldEIM",
-            "Cgpfc3Vic2NyaWJlQgoKCF9jb25uZWN0QhiqAhVUaWdlck9wZW5BUEkuUXVv",
-            "dGUuUGJQAGIGcHJvdG8z"));
+            "AogBARIYCgt1c2VGdWxsVGljaxgHIAEoCEgDiAEBQhAKDl9hY2NlcHRWZXJz",
+            "aW9uQg8KDV9zZW5kSW50ZXJ2YWxCEgoQX3JlY2VpdmVJbnRlcnZhbEIOCgxf",
+            "dXNlRnVsbFRpY2sazgEKCVN1YnNjcmliZRJdCghkYXRhVHlwZRgBIAEoDjJL",
+            "LmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0",
+            "LmRhdGEucGIuU29ja2V0Q29tbW9uLkRhdGFUeXBlEhQKB3N5bWJvbHMYAiAB",
+            "KAlIAIgBARIUCgdhY2NvdW50GAMgASgJSAGIAQESEwoGbWFya2V0GAQgASgJ",
+            "SAKIAQFCCgoIX3N5bWJvbHNCCgoIX2FjY291bnRCCQoHX21hcmtldEIMCgpf",
+            "c3Vic2NyaWJlQgoKCF9jb25uZWN0QhiqAhVUaWdlck9wZW5BUEkuUXVvdGUu",
+            "UGJQAGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request), global::TigerOpenAPI.Quote.Pb.Request.Parser, new[]{ "Command", "Id", "Subscribe", "Connect" }, new[]{ "Subscribe", "Connect" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Connect), global::TigerOpenAPI.Quote.Pb.Request.Types.Connect.Parser, new[]{ "TigerId", "Sign", "SdkVersion", "AcceptVersion", "SendInterval", "ReceiveInterval" }, new[]{ "AcceptVersion", "SendInterval", "ReceiveInterval" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request), global::TigerOpenAPI.Quote.Pb.Request.Parser, new[]{ "Command", "Id", "Subscribe", "Connect" }, new[]{ "Subscribe", "Connect" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Connect), global::TigerOpenAPI.Quote.Pb.Request.Types.Connect.Parser, new[]{ "TigerId", "Sign", "SdkVersion", "AcceptVersion", "SendInterval", "ReceiveInterval", "UseFullTick" }, new[]{ "AcceptVersion", "SendInterval", "ReceiveInterval", "UseFullTick" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe), global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe.Parser, new[]{ "DataType", "Symbols", "Account", "Market" }, new[]{ "Symbols", "Account", "Market" }, null, null, null)})
           }));
     }
@@ -418,6 +419,7 @@ namespace TigerOpenAPI.Quote.Pb {
           acceptVersion_ = other.acceptVersion_;
           sendInterval_ = other.sendInterval_;
           receiveInterval_ = other.receiveInterval_;
+          useFullTick_ = other.useFullTick_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -537,6 +539,31 @@ namespace TigerOpenAPI.Quote.Pb {
           _hasBits0 &= ~2;
         }
 
+        /// <summary>Field number for the "useFullTick" field.</summary>
+        public const int UseFullTickFieldNumber = 7;
+        private bool useFullTick_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool UseFullTick {
+          get { if ((_hasBits0 & 4) != 0) { return useFullTick_; } else { return false; } }
+          set {
+            _hasBits0 |= 4;
+            useFullTick_ = value;
+          }
+        }
+        /// <summary>Gets whether the "useFullTick" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasUseFullTick {
+          get { return (_hasBits0 & 4) != 0; }
+        }
+        /// <summary>Clears the value of the "useFullTick" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearUseFullTick() {
+          _hasBits0 &= ~4;
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -558,6 +585,7 @@ namespace TigerOpenAPI.Quote.Pb {
           if (AcceptVersion != other.AcceptVersion) return false;
           if (SendInterval != other.SendInterval) return false;
           if (ReceiveInterval != other.ReceiveInterval) return false;
+          if (UseFullTick != other.UseFullTick) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -571,6 +599,7 @@ namespace TigerOpenAPI.Quote.Pb {
           if (HasAcceptVersion) hash ^= AcceptVersion.GetHashCode();
           if (HasSendInterval) hash ^= SendInterval.GetHashCode();
           if (HasReceiveInterval) hash ^= ReceiveInterval.GetHashCode();
+          if (HasUseFullTick) hash ^= UseFullTick.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -613,6 +642,10 @@ namespace TigerOpenAPI.Quote.Pb {
             output.WriteRawTag(48);
             output.WriteUInt32(ReceiveInterval);
           }
+          if (HasUseFullTick) {
+            output.WriteRawTag(56);
+            output.WriteBool(UseFullTick);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -647,6 +680,10 @@ namespace TigerOpenAPI.Quote.Pb {
             output.WriteRawTag(48);
             output.WriteUInt32(ReceiveInterval);
           }
+          if (HasUseFullTick) {
+            output.WriteRawTag(56);
+            output.WriteBool(UseFullTick);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -674,6 +711,9 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           if (HasReceiveInterval) {
             size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ReceiveInterval);
+          }
+          if (HasUseFullTick) {
+            size += 1 + 1;
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -704,6 +744,9 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           if (other.HasReceiveInterval) {
             ReceiveInterval = other.ReceiveInterval;
+          }
+          if (other.HasUseFullTick) {
+            UseFullTick = other.UseFullTick;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -744,6 +787,10 @@ namespace TigerOpenAPI.Quote.Pb {
                 ReceiveInterval = input.ReadUInt32();
                 break;
               }
+              case 56: {
+                UseFullTick = input.ReadBool();
+                break;
+              }
             }
           }
         #endif
@@ -781,6 +828,10 @@ namespace TigerOpenAPI.Quote.Pb {
               }
               case 48: {
                 ReceiveInterval = input.ReadUInt32();
+                break;
+              }
+              case 56: {
+                UseFullTick = input.ReadBool();
                 break;
               }
             }

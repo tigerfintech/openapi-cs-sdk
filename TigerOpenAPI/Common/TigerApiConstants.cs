@@ -5,7 +5,13 @@ namespace TigerOpenAPI.Common
   {
     public const string SEPARATOR = ",";
 
-    public const string DEFAULT_VERSION = "3.0";
+    public const string API_VERSION_1 = "1.0";
+
+    public const string API_VERSION_2 = "2.0";
+
+    public const string API_VERSION_3 = "3.0";
+
+    public const string DEFAULT_VERSION = API_VERSION_3;
 
     public const string SIGN_TYPE = "sign_type";
 

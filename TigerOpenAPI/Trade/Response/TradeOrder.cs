@@ -59,6 +59,8 @@ namespace TigerOpenAPI.Trade.Response
     //public Double TrailStopPrice { get; set; }
     [JsonProperty(PropertyName = "totalQuantity")]
     public Int64 TotalQuantity { get; set; }
+    [JsonProperty(PropertyName = "totalQuantityScale")]
+    public Int32 TotalQuantityScale { get; set; }
     [JsonProperty(PropertyName = "filledQuantity")]
     public Int64 FilledQuantity { get; set; }
     [JsonProperty(PropertyName = "filledQuantityScale")]
@@ -81,9 +83,14 @@ namespace TigerOpenAPI.Trade.Response
     public string GoodTillDate { get; set; }
     [JsonProperty(PropertyName = "outsideRth")]
     public Boolean OutsideRth { get; set; }
+    [JsonProperty(PropertyName = "tradingSessionType")]
+    public string TradingSessionType { get; set; }
 
     [JsonProperty(PropertyName = "commission")]
     public Double Commission { get; set; }
+    /** Goods and Services Tax (TBSG only) */
+    [JsonProperty(PropertyName = "gst")]
+    public Double Gst { get; set; }
     [JsonProperty(PropertyName = "realizedPnl")]
     public Double RealizedPnl { get; set; }
     [JsonProperty(PropertyName = "remark")]
