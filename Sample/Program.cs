@@ -83,7 +83,7 @@ class Program
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefV2Async(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
-    TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
+    //TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
     //TigerResponse? response = await GetOptionDepthAsync(quoteClient);
     //TigerResponse? response = await GetHKOptionSymbolsAsync(quoteClient);
@@ -126,14 +126,14 @@ class Program
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
     //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
     //TigerResponse? response = await GetContractAsync(tradeClient);
     //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
-    //TigerResponse? response = await GetPositionsAsync(tradeClient);
+    TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
     //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
@@ -1141,7 +1141,7 @@ class Program
       ApiMethodName = TradeApiService.POSITIONS,
       ModelValue = new PositionsModel()
       {
-        Account = "20200821144442583",
+        Account = "13810712",
         SecType = SecType.STK,
         Market = Market.US
       }
