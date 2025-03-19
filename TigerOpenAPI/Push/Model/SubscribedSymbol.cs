@@ -30,6 +30,12 @@ namespace TigerOpenAPI.Push.Model
     [JsonProperty(PropertyName = "tradeTickUsed")]
     public int TradeTickUsed { get; set; }
 
+    [JsonProperty(PropertyName = "klineLimit")]
+    public int KlineLimit { get; set; }
+
+    [JsonProperty(PropertyName = "klineUsed")]
+    public int KlineUsed { get; set; }
+
     /**
      * subscribed quote symbol's detail
      */
@@ -50,6 +56,12 @@ namespace TigerOpenAPI.Push.Model
 
     [JsonProperty(PropertyName = "subscribedMarketQuote")]
     public ISet<String> SubscribedMarketQuote { get; set; }
+
+    /**
+     * subscribed kline symbol's detail
+     */
+    [JsonProperty(PropertyName = "subscribedKlineSymbols")]
+    public ISet<String> SubscribedKlineSymbols { get; set; }
 
     public SubscribedSymbol()
     {

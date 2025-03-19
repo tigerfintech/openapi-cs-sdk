@@ -4,6 +4,7 @@ namespace TigerOpenAPI.Common.Enum
   public class FutureKType
   {
     public static readonly FutureKType min1 = new FutureKType("min");
+    public static readonly FutureKType min2 = new FutureKType("2min");
     public static readonly FutureKType min3 = new FutureKType("3min");
     public static readonly FutureKType min5 = new FutureKType("5min");
     public static readonly FutureKType min10 = new FutureKType("10min");
@@ -24,6 +25,7 @@ namespace TigerOpenAPI.Common.Enum
       get
       {
         yield return min1;
+        yield return min2;
         yield return min3;
         yield return min5;
         yield return min10;

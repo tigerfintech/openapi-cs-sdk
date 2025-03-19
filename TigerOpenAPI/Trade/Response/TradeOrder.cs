@@ -59,6 +59,8 @@ namespace TigerOpenAPI.Trade.Response
     //public Double TrailStopPrice { get; set; }
     [JsonProperty(PropertyName = "totalQuantity")]
     public Int64 TotalQuantity { get; set; }
+    [JsonProperty(PropertyName = "totalQuantityScale")]
+    public Int32 TotalQuantityScale { get; set; }
     [JsonProperty(PropertyName = "filledQuantity")]
     public Int64 FilledQuantity { get; set; }
     [JsonProperty(PropertyName = "filledQuantityScale")]
@@ -81,9 +83,14 @@ namespace TigerOpenAPI.Trade.Response
     public string GoodTillDate { get; set; }
     [JsonProperty(PropertyName = "outsideRth")]
     public Boolean OutsideRth { get; set; }
+    [JsonProperty(PropertyName = "tradingSessionType")]
+    public string TradingSessionType { get; set; }
 
     [JsonProperty(PropertyName = "commission")]
     public Double Commission { get; set; }
+    /** Goods and Services Tax (TBSG only) */
+    [JsonProperty(PropertyName = "gst")]
+    public Double Gst { get; set; }
     [JsonProperty(PropertyName = "realizedPnl")]
     public Double RealizedPnl { get; set; }
     [JsonProperty(PropertyName = "remark")]
@@ -111,6 +118,19 @@ namespace TigerOpenAPI.Trade.Response
     public string UserMark { get; set; }
     [JsonProperty(PropertyName = "attrList")]
     public List<string> AttrList { get; set; }
+
+    /** charge details. Only valid when querying order by ID and 'IsShowCharges' = true */
+    [JsonProperty(PropertyName = "charges")]
+    public List<Charge> Charges;
+    /** commission discount amount. Only valid when querying order by ID */
+    [JsonProperty(PropertyName = "commissionDiscountAmount")]
+    public Double CommissionDiscountAmount;
+    /** order discount status. 1：unfinished；2：finished；0：default */
+    [JsonProperty(PropertyName = "orderDiscount")]
+    public Int32 OrderDiscount;
+    /** order discount amount. Only valid when querying order by ID */
+    [JsonProperty(PropertyName = "orderDiscountAmount")]
+    public Double OrderDiscountAmount;
 
     /**
      * OCA order
@@ -142,10 +162,15 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "status"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public OrderStatus Status { get; set; }
 
+    /** order replace status(NONE, RECEIVED, REPLACED, FAILED) */
+    public string ReplaceStatus { get; set; }
+    /** order cancel status(NONE, RECEIVED, FAILED) */
+    public string CancelStatus { get; set; }
+
     [JsonProperty(PropertyName = "source")]
     public string Source { get; set; }
     [JsonProperty(PropertyName = "discount")]
-    public Double Discount { get; set; }
+    public Int32 Discount { get; set; }
 
     [JsonProperty(PropertyName = "canModify")]
     public Boolean CanModify { get; set; }

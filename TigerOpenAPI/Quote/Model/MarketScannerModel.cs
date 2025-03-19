@@ -114,7 +114,7 @@ namespace TigerOpenAPI.Quote.Model
     public Int32 FieldName { get; set; }
     /** 时间周期 AccumulatePeriod, 非必传项-只有排序为Accumulate相关字段，需要此字段 */
     [JsonProperty(PropertyName = "period")]
-    private Int32 Period { get; set; }
+    public Int32 Period { get; set; }
     /** 排序属性所属类别 参考 FieldBelongType */
     [JsonProperty(PropertyName = "field_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public FieldBelongType FieldType { get; set; }

@@ -28,6 +28,8 @@ namespace TigerOpenAPI.Trade.Response
     public string Right { get; set; }
     [JsonProperty(PropertyName = "multiplier")]
     public Double Multiplier { get; set; }
+    [JsonProperty(PropertyName = "lotSize")]
+    public Double LotSize { get; set; }
     [JsonProperty(PropertyName = "exchange")]
     public string Exchange { get; set; }
 
@@ -101,6 +103,8 @@ namespace TigerOpenAPI.Trade.Response
     public Boolean IsEtf { get; set; }
     [JsonProperty(PropertyName = "etfLeverage")]
     public Int32 EtfLeverage { get; set; }
+    [JsonProperty(PropertyName = "supportOvernightTrading")]
+    public Boolean SupportOvernightTrading { get; set; }
 
     public ContractItem()
     {

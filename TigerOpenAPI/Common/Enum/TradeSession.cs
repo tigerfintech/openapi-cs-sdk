@@ -3,7 +3,9 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum TradeSession
   {
-    Regular, PreMarket, AfterHours, All
+    Regular, PreMarket, AfterHours,
+    OverNight, // place overnight order in the US market
+    All
   }
 }
 

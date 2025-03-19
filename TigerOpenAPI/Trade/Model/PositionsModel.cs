@@ -30,6 +30,9 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "expiry")]
     public string Expiry { get; set; }
 
+    [JsonProperty(PropertyName = "asset_quote_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public AssetQuoteType AssetQuoteType { get; set; }
+
     public PositionsModel() : base()
     {
     }

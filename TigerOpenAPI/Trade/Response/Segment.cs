@@ -34,6 +34,7 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "unrealizedPL")]
     public Double UnrealizedPL { get; set; }
 
+    // today's profit and loss(only Futures)
     [JsonProperty(PropertyName = "realizedPL")]
     public Double RealizedPL { get; set; }
     [JsonProperty(PropertyName = "excessLiquidation")]
@@ -46,20 +47,23 @@ namespace TigerOpenAPI.Trade.Response
     public Double Leverage { get; set; }
 
     // Unrealized profit and loss, calculated according to the A-share model
-    //[JsonProperty(PropertyName = "unrealizedPLByCostOfCarry")]
-    //public Double UnrealizedPLByCostOfCarry { get; set; }
-    // today's profit and loss
+    [JsonProperty(PropertyName = "unrealizedPLByCostOfCarry")]
+    public Double UnrealizedPLByCostOfCarry { get; set; }
+    // today's total profit and loss
     [JsonProperty(PropertyName = "totalTodayPL")]
     public Double TotalTodayPL { get; set; }
     // locked excess equity
     [JsonProperty(PropertyName = "lockedFunds")]
     public Double LockedFunds { get; set; }
+    // assets in-transit
+    [JsonProperty(PropertyName = "uncollected")]
+    public Double Uncollected { get; set; }
 
     [JsonProperty(PropertyName = "currencyAssets")]
-    private List<CurrencyAssets> CurrencyAssets { get; set; }
+    public List<CurrencyAssets> CurrencyAssets { get; set; }
 
     [JsonProperty(PropertyName = "consolidatedSegTypes")]
-    private List<string> ConsolidatedSegTypes { get; set; }
+    public List<string> ConsolidatedSegTypes { get; set; }
 
     public Segment()
     {
