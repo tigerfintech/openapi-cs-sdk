@@ -24,6 +24,10 @@ namespace TigerOpenAPI.Trade
 
     protected override void RefreshServerUri(TigerConfig config)
     {
+      if (this.IsCustomServerUrl)
+      {
+        return;
+      }
       // get serverAddress by Env and license
       Dictionary<UriType, string> uriDict = NetworkUtil.GetServerAddress(Protocol.HTTP, config.License, config.Environment);
       ServerUrl = (uriDict.ContainsKey(UriType.TRADE) && !string.IsNullOrWhiteSpace(uriDict[UriType.TRADE]))
@@ -35,6 +39,13 @@ namespace TigerOpenAPI.Trade
     public override string GetServerUri<T>(TigerRequest<T> request)
     {
       return AccountUtil.IsVirtualAccount(request?.ModelValue?.Account) ? ServerUrlForPaper : ServerUrl;
+    }
+
+    public override void UseCustomServerUrl(string customServerUrl)
+    {
+      this.ServerUrl = customServerUrl;
+      this.ServerUrlForPaper = customServerUrl;
+      this.IsCustomServerUrl = true;
     }
 
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)

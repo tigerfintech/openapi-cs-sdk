@@ -18,9 +18,6 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "limit")]
     public Int32 Limit { get; set; } = 200;
 
-    [JsonProperty(PropertyName = "trade_session")]
-    public string TradeSession { get; set; }
-
     public QuoteTradeTickModel() : base()
     {
     }

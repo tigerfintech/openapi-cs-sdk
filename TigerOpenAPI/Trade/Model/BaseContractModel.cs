@@ -6,7 +6,7 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Trade.Model
 {
-  public class BaseContractModel : ApiModel
+  public class BaseContractModel : TradeModel
   {
     [JsonProperty(PropertyName = "sec_type")]
     public string SecType { get; set; } = TigerOpenAPI.Common.Enum.SecType.STK.ToString();

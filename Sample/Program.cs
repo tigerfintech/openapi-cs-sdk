@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using Sample;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
@@ -27,6 +28,10 @@ class Program
     ApiLogger.DebugEnabled = true;
     ApiLogger.Info("start");
 
+    //StockPriceTests stockPriceTests = new StockPriceTests();
+    //stockPriceTests.TestStockPrice();
+    //TestStockPrice();
+
     // tiger config
     TigerConfig config = new TigerConfig()
     {
@@ -42,7 +47,7 @@ class Program
     //{
     //  ConfigFilePath = "/data0/tiger_config/test",
     //  FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
-    //  AutoGrabPermission = true,   // (optional) default is true
+    //  AutoGrabPermission = false,   // (optional) default is true
     //  AutoRefreshToken = false,
     //  Language = Language.en_US,   // (optional) default is en_US
     //  TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
@@ -65,6 +70,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetOvernightQuoteAsync(quoteClient);
     //TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
@@ -76,8 +82,12 @@ class Program
     //TigerResponse? response = await GetOptionExpirationAsync(quoteClient);
     //TigerResponse? response = await GetOptionChainAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
+    //TigerResponse? response = await GetOptionBriefV2Async(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
+    //TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
+    //TigerResponse? response = await GetOptionDepthAsync(quoteClient);
+    //TigerResponse? response = await GetHKOptionSymbolsAsync(quoteClient);
 
     //TigerResponse? response = await GetFutureExchangeAsync(quoteClient);
     //TigerResponse? response = await GetFutureContractByExchangeCodeAsync(quoteClient);
@@ -116,6 +126,10 @@ class Program
     //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
     //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
+    //QuoteStockFundamentalResponse? fundamentalResponse = await GetStockFundamentalAsync(quoteClient);
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(fundamentalResponse?.GetStockFundamentalItems()));
+
+    //TigerResponse? response = await GetStockTradeRankAsync(quoteClient);
 
     //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
@@ -126,7 +140,7 @@ class Program
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
     //TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
-    TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
+    //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
 
     // =================================================palace order
@@ -143,6 +157,8 @@ class Program
     //TigerResponse? response = await PlaceLimitOrderAsync(tradeClient);
     // result:{"code":0,"message":"success","timestamp":1672900550991,"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","identifier":"AAPL","id":29360305075913728,"orderId":1457,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"totalQuantity":1,"filledQuantity":0,"avgFillPrice":0.0,"timeInForce":"DAY","outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","algoStrategy":"LMT","status":"Initial","discount":0.0,"canModify":true,"canCancel":true}]},"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
     // response:{"data":{"id":29360305075913728,"subIds":[],"orders":[{"symbol":"AAPL","market":"US","secType":"STK","currency":"USD","expiry":null,"strike":null,"right":null,"multiplier":0.0,"identifier":"AAPL","id":29360305075913728,"orderId":1457,"parentId":0,"account":"20200821144442583","action":"BUY","orderType":"LMT","limitPrice":120.0,"auxPrice":0.0,"trailingPercent":0.0,"totalQuantity":1,"filledQuantity":0,"cashQuantity":0.0,"lastFillPrice":0.0,"avgFillPrice":0.0,"timeInForce":"DAY","expireTime":0,"goodTillDate":null,"outsideRth":true,"commission":0.0,"realizedPnl":0.0,"remark":"You order[BUY 1 AAPL] will not be placed until 2023-01-05 04:00:00, local time of the exchange","liquidation":false,"openTime":1672900550000,"updateTime":1672900550000,"latestTime":1672900551000,"name":"Apple","latestPrice":126.625,"attrDesc":"","userMark":"","ocaGroupId":0,"comboLegs":null,"allocAccounts":null,"allocShares":null,"algoStrategy":"LMT","algoParameters":null,"status":"Initial","source":null,"discount":0.0,"canModify":true,"canCancel":true}]},"code":0,"message":"success","timestamp":1672900550991,"sign":"vgRX7Z8v2dYNqtzI1RoqD2A7GTOPckQLrN4dOv29l0bcF4GUzNLIRfQd5PPb6o3coV91PfqSPGSlzdRYfUCgMbeZaUPkOtd9v+5KZD6wwyjzT6gviZIYjbPSdboTe64cZ/g8uL3MO/SMLh4SrwLaHbmu9yGf0QgXoL83wjDDgIU="} 
+
+    //TigerResponse? response = await PlaceOddLotOrderAsync(tradeClient);
 
     //TigerResponse? response = await PlaceAuctionOrderAsync(tradeClient);
 
@@ -219,7 +235,9 @@ class Program
     //TigerResponse? response = await GetMaxTradableQuantityAsync(tradeClient);
     // response:{"data":{"tradableQuantity":15987.0,"financingQuantity":51481.0,"positionQuantity":4.0,"tradablePositionQuantity":4.0},"code":0,"message":"success","timestamp":1681372230837,"sign":"ZwrIOjOZCrpJIoW1FEbTTR1sqq+9CxxSZupMhUOedCC79telTq0jRN2NnaHw74UdXKI+gid/JGd8wMo6xJU8l3dUzmyGjVuPLhN36zEA3B0aB9L6l4pX5aRrhtcAd7x9xlWm7KL6CqRX+dZFibqknHvC+y9u+rkFCoQNqUErZMU="} 
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    //TigerResponse? response = await QueryDepositWithdrawFundsAsync(tradeClient);
+
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
     //QueryOrderUsePageTokenAsync(tradeClient);
     Thread.Sleep(1000);
 
@@ -228,7 +246,7 @@ class Program
     //GetOptionFundamentals(quoteClient);
 
     // =================================================Push
-    //SubscribePush();
+    await SubscribePushAsync();
 
     ApiLogger.Info("end");
   }
@@ -247,18 +265,19 @@ class Program
     }
   }
 
-  static void SubscribePush()
+  static async Task SubscribePushAsync()
   {
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      ConfigFilePath = "/data0/tiger_config/test",
+      ConfigFilePath = "/data0/tiger_config/prod",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = true,   // (optional) default is true
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
-      IsSslSocket = false
+      UseFullTick = false,
+      IsSslSocket = true
     };
     ApiLogger.DebugEnabled = false;
 
@@ -266,13 +285,29 @@ class Program
     PushClient client = PushClient.GetInstance().Config(config)
       .ApiComposeCallback(callback);
     ApiLogger.Info($"======================{client.GetUrl()}");
-    client.Connect();
+    await client.ConnectAsync();
 
-    //SubscribeAsset();
+    SubscribeAsset();
     //SubscribeQuote();
     //SubscribeTradeTick();
     //SubscribeStockTop();
-    SubscribeOptionTop();
+    //SubscribeOptionTop();
+    //SubscribeKline();
+  }
+
+  public static void SubscribeKline()
+  {
+    PushClient client = PushClient.GetInstance();
+
+    ISet<string> symbols = new HashSet<string>();
+    symbols.Add("AAPL");
+    ApiLogger.Info($"SubscribeKline:{client.SubscribeKline(symbols)}");
+    Sleep(90);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    ApiLogger.Info($"CancelSubscribeKline:{client.CancelSubscribeKline(symbols)}");
+    Sleep(2);
+    ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
+    Sleep(2);
   }
 
   public static void SubscribeAsset()
@@ -308,7 +343,7 @@ class Program
     PushClient client = PushClient.GetInstance();
 
     ISet<string> symbols = new HashSet<string>();
-    symbols.Add("00700");
+    symbols.Add("AAPL");
     ApiLogger.Info($"SubscribeTradeTick:{client.SubscribeTradeTick(symbols)}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
@@ -358,6 +393,33 @@ class Program
   static void Sleep(int seconds)
   {
     Thread.Sleep(TimeSpan.FromSeconds(seconds));
+  }
+
+  static async Task<QuoteTradeRankResponse?> GetStockTradeRankAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<QuoteTradeRankResponse> request = new TigerRequest<QuoteTradeRankResponse>()
+    {
+      ApiMethodName = QuoteApiService.TRADE_RANK,
+      ModelValue = new QuoteTradeRankModel()
+      {
+        Market = Market.US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<QuoteStockFundamentalResponse?> GetStockFundamentalAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<QuoteStockFundamentalResponse> request = new TigerRequest<QuoteStockFundamentalResponse>()
+    {
+      ApiMethodName = QuoteApiService.STOCK_FUNDAMENTAL,
+      ModelValue = new QuoteStockFundamentalModel()
+      {
+        Symbols = new List<string> { "AAPL", "MSFT" },
+        Market = Market.US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
   }
 
   static async Task<FinancialExchangeRateResponse?> GetFinancialExchangeRateAsync(QuoteClient quoteClient)
@@ -427,6 +489,20 @@ class Program
       ModelValue = new KlineQuotaModel() { WithDetails = true }
     };
     return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<DepositWithdrawResponse?> QueryDepositWithdrawFundsAsync(TradeClient tradeClient)
+  {
+    TigerRequest<DepositWithdrawResponse> request = new TigerRequest<DepositWithdrawResponse>()
+    {
+      ApiMethodName = TradeApiService.TRANSFER_FUND,
+      ModelValue = new DepositWithdrawModel()
+      {
+        Account = tradeClient.GetDefaultAccount,// "20200821144442583",
+        SegType = SegmentType.SEC,
+      }
+    };
+    return await tradeClient.ExecuteAsync(request);
   }
 
   static async Task<EstimateTradableQuantityResponse?> GetMaxTradableQuantityAsync(TradeClient tradeClient)
@@ -652,8 +728,9 @@ class Program
       ApiMethodName = TradeApiService.ORDERS,
       ModelValue = new QueryOrderModel()
       {
-        Account = "20200821144442583",// tradeClient.GetDefaultAccount,
-        Id = 29360305075913728
+        Account = "13810712",// tradeClient.GetDefaultAccount,
+        Id = 35070272121733120,
+        IsShowCharges = true
       }
     };
     return await tradeClient.ExecuteAsync(request);
@@ -950,6 +1027,24 @@ class Program
     return await tradeClient.ExecuteAsync(request);
   }
 
+  static async Task<PlaceOrderResponse?> PlaceOddLotOrderAsync(TradeClient tradeClient)
+  {
+    ContractItem contract = ContractItem.BuildStockContract("AAPL", Currency.USD.ToString());
+
+    TigerRequest<PlaceOrderResponse> request = new TigerRequest<PlaceOrderResponse>()
+    {
+      ApiMethodName = TradeApiService.PLACE_ORDER,
+      ModelValue = PlaceOrderModel.BuildLimitOrder(
+        "20200821144442583", // tradeClient.GetDefaultAccount,
+        contract,
+        ActionType.BUY,
+        1234, 110.0, 0.002,
+        3 // totalQuantityScale is 3, actual quantity is 1.234
+      )
+    };
+    return await tradeClient.ExecuteAsync(request);
+  }
+
   static async Task<PlaceOrderResponse?> PlaceLimitOrderAsync(TradeClient tradeClient)
   {
     ContractItem contract = ContractItem.BuildStockContract("AAPL", Currency.USD.ToString());
@@ -961,7 +1056,7 @@ class Program
         "20200821144442583", // tradeClient.GetDefaultAccount,
         contract,
         ActionType.BUY,
-        1, 120.0
+        1, 120.0, 0.002
       )
     };
     // set other parameter
@@ -969,6 +1064,7 @@ class Program
     // ((PlaceOrderModel)request.ModelValue).TimeInForce = TimeInForce.GTD;
     // ((PlaceOrderModel)request.ModelValue).ExpireTime = DateUtil.ConvertTimestamp(
     //  "2023-01-20 23:59:59", SymbolUtil.getZoneIdBySymbol("AAPL", tradeClient.GetConfigTimeZone));
+    ((PlaceOrderModel)request.ModelValue).TradingSessionType = TradingSessionType.FULL;
     return await tradeClient.ExecuteAsync(request);
   }
 
@@ -1094,7 +1190,7 @@ class Program
       ApiMethodName = TradeApiService.POSITIONS,
       ModelValue = new PositionsModel()
       {
-        Account = "20200821144442583",
+        Account = "13810712",
         SecType = SecType.STK,
         Market = Market.US
       }
@@ -1508,6 +1604,43 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
+  static async Task<OptionKlineResponse?> GetOptionKLineV2Async(QuoteClient quoteClient)
+  {
+    TigerRequest<OptionKlineResponse> request = new TigerRequest<OptionKlineResponse>()
+    {
+      ApiMethodName = QuoteApiService.OPTION_KLINE,
+      ModelValue = new OptionKlineV2Model()
+      {
+        Market = Market.US,
+        OptionQuery = new List<OptionKlineModel>()
+        {
+          new OptionKlineModel() {
+            Symbol = "AAPL", Right = "CALL", Strike = "170.0",
+            Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2024-06-24", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2024-06-26", CustomTimeZone.NY_ZONE),
+            Period = OptionKType.min60.Value,
+            SortDir = SortDir.SortDir_Descend,
+            Limit = 10
+          }
+        }
+        //Market = Market.HK,
+        //OptionQuery = new List<OptionKlineModel>()
+        //{
+        //  new OptionKlineModel() {
+        //    Symbol = "TCH.HK", Right = "CALL", Strike = "370.0",
+        //    Expiry = DateUtil.ConvertTimestamp("2024-06-27", CustomTimeZone.HK_ZONE),
+        //    BeginTime = DateUtil.ConvertTimestamp("2024-05-22", CustomTimeZone.HK_ZONE),
+        //    EndTime = DateUtil.ConvertTimestamp("2024-05-24", CustomTimeZone.HK_ZONE),
+        //    Period = OptionKType.min60.Value,
+        //    Limit = 300
+        //  }
+        //}
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
   static async Task<OptionKlineResponse?> GetOptionKLineAsync(QuoteClient quoteClient)
   {
     TigerRequest<OptionKlineResponse> request = new TigerRequest<OptionKlineResponse>()
@@ -1518,14 +1651,46 @@ class Program
         Items = new List<OptionKlineModel>()
         {
           new OptionKlineModel() {
-            Symbol = "AAPL", Right = "PUT", Strike = "150.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-04-14", CustomTimeZone.NY_ZONE),
-            BeginTime = DateUtil.ConvertTimestamp("2023-03-22", CustomTimeZone.NY_ZONE),
-            EndTime = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE),
+            Symbol = "AAPL", Right = "CALL", Strike = "170.0",
+            Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE),
+            BeginTime = DateUtil.ConvertTimestamp("2024-05-22", CustomTimeZone.NY_ZONE),
+            EndTime = DateUtil.ConvertTimestamp("2024-05-24", CustomTimeZone.NY_ZONE),
             Period = OptionKType.min60.Value,
             Limit = 300
           }
         }
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<OptionBriefResponse?> GetOptionBriefV2Async(QuoteClient quoteClient)
+  {
+    TigerRequest<OptionBriefResponse> request = new TigerRequest<OptionBriefResponse>()
+    {
+      ApiMethodName = QuoteApiService.OPTION_BRIEF,
+      ModelValue = new OptionBasicModel()
+      {
+        Market = Market.US,
+        OptionBasic = new List<OptionCommonModel>()
+          {
+            new OptionCommonModel() {
+              Symbol = "AAPL",
+              Right = "CALL",
+              Strike = "160.0",
+              Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE)
+            }
+          }
+        //Market = Market.HK,
+        //OptionBasic = new List<OptionCommonModel>()
+        //{
+        //  new OptionCommonModel() {
+        //    Symbol = "TCH.HK",
+        //    Right = "CALL",
+        //    Strike = "370.0",
+        //    Expiry = DateUtil.ConvertTimestamp("2024-06-27", CustomTimeZone.HK_ZONE)
+        //  }
+        //}
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1541,7 +1706,43 @@ class Program
         Items = new List<OptionCommonModel>()
         {
           new OptionCommonModel() { Symbol = "AAPL", Right = "PUT", Strike = "150.0",
-            Expiry = DateUtil.ConvertTimestamp("2023-03-24", CustomTimeZone.NY_ZONE)}
+            Expiry = DateUtil.ConvertTimestamp("2024-06-07", CustomTimeZone.NY_ZONE)}
+        }
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<OptionSymbolResponse?> GetHKOptionSymbolsAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<OptionSymbolResponse> request = new TigerRequest<OptionSymbolResponse>()
+    {
+      ApiMethodName = QuoteApiService.ALL_HK_OPTION_SYMBOLS,
+      ModelValue = new OptionModel()
+      {
+        Market = Market.HK,
+        Lang = Language.en_US
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<OptionDepthResponse?> GetOptionDepthAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<OptionDepthResponse> request = new TigerRequest<OptionDepthResponse>()
+    {
+      ApiMethodName = QuoteApiService.OPTION_DEPTH,
+      ModelValue = new OptionBasicModel()
+      {
+        Market = Market.US,
+        OptionBasic = new List<OptionCommonModel>()
+        {
+          new OptionCommonModel() {
+            Symbol = "AAPL",
+            Right = "PUT",
+            Strike = "210.0",
+            Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE)
+          }
         }
       }
     };
@@ -1555,11 +1756,12 @@ class Program
       ApiMethodName = QuoteApiService.OPTION_CHAIN,
       ModelValue = new OptionChainV3Model()
       {
+        Market = Market.US,
         OptionBasic = new List<OptionChainModel>()
         {
           new OptionChainModel() {
             Symbol = "AAPL",
-            Expiry = DateUtil.ConvertTimestamp("2023-06-30", CustomTimeZone.NY_ZONE)
+            Expiry = DateUtil.ConvertTimestamp("2024-07-26", CustomTimeZone.NY_ZONE)
           }
         },
         OptionFilter = new OptionChainFilterModel()
@@ -1576,6 +1778,15 @@ class Program
             Rho = new Range<double>(-0.096, 0.101)
           }
         }
+
+        //Market = Market.HK,
+        //OptionBasic = new List<OptionChainModel>()
+        //{
+        //  new OptionChainModel() {
+        //    Symbol = "PAI.HK",
+        //    Expiry = DateUtil.ConvertTimestamp("2024-06-27", CustomTimeZone.NY_ZONE)
+        //  }
+        //},
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1588,7 +1799,10 @@ class Program
       ApiMethodName = QuoteApiService.OPTION_EXPIRATION,
       ModelValue = new OptionExpirationModel()
       {
-        Symbols = new List<string> { "AAPL" }
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US
+        //Symbols = new List<string> { "PAI.HK" },
+        //Market = Market.HK
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1660,6 +1874,7 @@ class Program
       ModelValue = new QuoteTradeTickModel()
       {
         Symbols = new List<string> { "00700" },
+        // TradeSession = TradeSession.Regular.ToString(), //only for US market stock
         BeginIndex = 0,
         EndIndex = 10
       }
@@ -1689,10 +1904,24 @@ class Program
       ModelValue = new QuoteKlineModel()
       {
         Symbols = new List<string> { "AAPL" },
-        Period = KLineType.day.Value,
-        BeginTime = DateUtil.ConvertTimestamp("2023-03-01", CustomTimeZone.NY_ZONE),
+        Period = KLineType.min3.Value,
+        BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
+        // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
         Rigth = RightOption.br
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<QuoteOvernightResponse?> GetOvernightQuoteAsync(QuoteClient quoteClient)
+  {
+    TigerRequest<QuoteOvernightResponse> request = new TigerRequest<QuoteOvernightResponse>()
+    {
+      ApiMethodName = QuoteApiService.QUOTE_OVERNIGHT,
+      ModelValue = new QuoteSymbolModel()
+      {
+        Symbols = new List<string> { "AAPL" }
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1823,5 +2052,35 @@ class Program
       ApiMethodName = QuoteApiService.USER_LICENSE
     };
     return await quoteClient.ExecuteAsync(request);
+  }
+
+  public static void TestStockPrice()
+  {
+    string content = "[{\"begin\":\"0\",\"end\":\"0.25\",\"type\":\"CLOSED\",\"tickSize\":0.001},"
+        + "{\"begin\":\"0.25\",\"end\":\"0.5\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.005},"
+        + "{\"begin\":\"0.5\",\"end\":\"10\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.01},"
+        + "{\"begin\":\"10\",\"end\":\"20\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.02},"
+        + "{\"begin\":\"20\",\"end\":\"100\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.05},"
+        + "{\"begin\":\"100\",\"end\":\"200\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.1},"
+        + "{\"begin\":\"200\",\"end\":\"500\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.2},"
+        + "{\"begin\":\"500\",\"end\":\"1000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":0.5},"
+        + "{\"begin\":\"1000\",\"end\":\"2000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":1.0},"
+        + "{\"begin\":\"2000\",\"end\":\"5000\",\"type\":\"OPEN_CLOSED\",\"tickSize\":2.0},"
+        + "{\"begin\":\"5000\",\"end\":\"Infinity\",\"type\":\"OPEN\",\"tickSize\":5.0}]";
+
+    List<TickSizeItem>? tickSizeItemList = JsonConvert.DeserializeObject<List<TickSizeItem>>(content);
+
+    ApiLogger.Info("input: 0.34m output expect: 10.34m, result: " + (10.34m == StockPriceUtil.FixPriceByTickSize(10.34m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.35m output expect: 10.34m, result: " + (10.34m == StockPriceUtil.FixPriceByTickSize(10.35m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.36m output expect: 10.36m, result: " + (10.36m == StockPriceUtil.FixPriceByTickSize(10.36m, tickSizeItemList)));
+    ApiLogger.Info("input: 0.35m output expect: 10.36m, result: " + (10.36m == StockPriceUtil.FixPriceByTickSize(10.35m, tickSizeItemList, true)));
+
+    ApiLogger.Info("input: 0.34m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.34m, tickSizeItemList));
+    ApiLogger.Info("input: 0.35m output expect: false, result: " + StockPriceUtil.MatchTickSize(10.35m, tickSizeItemList));
+    ApiLogger.Info("input: 0.36m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.36m, tickSizeItemList));
+
+    ApiLogger.Info("input: 0.360m output expect: true, result: " + StockPriceUtil.MatchTickSize(10.360m, tickSizeItemList));
+    ApiLogger.Info("input: 0.361m output expect: fasle, result: " + StockPriceUtil.MatchTickSize(10.361m, tickSizeItemList));
+
   }
 }

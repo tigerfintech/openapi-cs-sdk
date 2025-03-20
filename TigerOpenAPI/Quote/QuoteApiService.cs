@@ -25,6 +25,7 @@ namespace TigerOpenAPI.Quote
     public const string QUOTE_STOCK_TRADE = "quote_stock_trade";
     public const string QUOTE_DEPTH = "quote_depth";
     public const string QUOTE_DELAY = "quote_delay";
+    public const string QUOTE_OVERNIGHT = "quote_overnight";
     /** trading calendar */
     public const string TRADING_CALENDAR = "trading_calendar";
     public const string STOCK_BROKER = "stock_broker";
@@ -41,6 +42,8 @@ namespace TigerOpenAPI.Quote
     public const string OPTION_BRIEF = "option_brief";
     public const string OPTION_KLINE = "option_kline";
     public const string OPTION_TRADE_TICK = "option_trade_tick";
+    public const string OPTION_DEPTH = "option_depth";
+    public const string ALL_HK_OPTION_SYMBOLS = "all_hk_option_symbols";
 
     /**
      * warrant/cbbc quote
@@ -72,7 +75,7 @@ namespace TigerOpenAPI.Quote
     public const string FUND_HISTORY_QUOTE = "fund_history_quote";
 
     /**
-     * fundmental data
+     * fundamental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
     public const string FINANCIAL_REPORT = "financial_report";
@@ -82,6 +85,8 @@ namespace TigerOpenAPI.Quote
     public const string STOCK_INDUSTRY = "stock_industry";
     public const string FINANCIAL_CURRENCY = "financial_currency";
     public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
+    public const string STOCK_FUNDAMENTAL = "stock_fundamental";
+    public const string TRADE_RANK = "trade_rank";
 
     /**
      * grab quote
@@ -112,6 +117,7 @@ namespace TigerOpenAPI.Quote
       QUOTE_STOCK_TRADE,
       QUOTE_DEPTH,
       QUOTE_DELAY,
+      QUOTE_OVERNIGHT,
       /** trading calendar */
       TRADING_CALENDAR,
       STOCK_BROKER,
@@ -128,6 +134,8 @@ namespace TigerOpenAPI.Quote
       OPTION_BRIEF,
       OPTION_KLINE,
       OPTION_TRADE_TICK,
+      OPTION_DEPTH,
+      ALL_HK_OPTION_SYMBOLS,
 
       /**
        * warrant/cbbc quote
@@ -169,6 +177,8 @@ namespace TigerOpenAPI.Quote
       STOCK_INDUSTRY,
       FINANCIAL_CURRENCY,
       FINANCIAL_EXCHANGE_RATE,
+      STOCK_FUNDAMENTAL,
+      TRADE_RANK,
 
       /**
        * grab quote

@@ -50,6 +50,8 @@ namespace TigerOpenAPI.Trade.Model
 
     [JsonProperty(PropertyName = "total_quantity")]
     public Int64? TotalQuantity { get; set; }
+    [JsonProperty(PropertyName = "total_quantity_scale")]
+    public Int32? TotalQuantityScale { get; set; }
 
     [JsonProperty(PropertyName = "limit_price")]
     public Double? LimitPrice { get; set; }
@@ -100,6 +102,12 @@ namespace TigerOpenAPI.Trade.Model
      */
     [JsonProperty(PropertyName = "outside_rth")]
     public Boolean OutsideRth { get; set; } = true;
+
+    /**
+     * set place overnight order in the US market. value: OverNight
+     */
+    [JsonProperty(PropertyName = "trading_session_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public TradingSessionType TradingSessionType { get; set; }
 
     [JsonProperty(PropertyName = "exchange")]
     public string Exchange { get; set; }
@@ -178,13 +186,13 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "combo_type")]
     public string ComboType { get; set; }
     [JsonProperty(PropertyName = "contract_legs")]
-    private List<ContractLeg> ContractLegs { get; set; }
+    public List<ContractLeg> ContractLegs { get; set; }
 
     /**
      * OCA BRACKETS order
      */
     [JsonProperty(PropertyName = "oca_orders")]
-    private List<PlaceOrderModel> OcaOrders { get; set; }
+    public List<PlaceOrderModel> OcaOrders { get; set; }
 
     public PlaceOrderModel() : base()
     {
@@ -204,9 +212,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildMarketOrder(string account, ContractItem contract,
-        ActionType action, Int64 quantity)
+        ActionType action, Int64 quantity, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = OrderType.MKT;
       return tradeOrderModel;
     }
@@ -221,9 +229,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildLimitOrder(string account, ContractItem contract,
-        ActionType action, Int64 quantity, Double limitPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double limitPrice, Double adjustLimit = 0, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = OrderType.LMT;
       tradeOrderModel.LimitPrice = limitPrice;
       tradeOrderModel.AdjustLimit = adjustLimit;
@@ -233,9 +241,9 @@ namespace TigerOpenAPI.Trade.Model
     public static PlaceOrderModel BuildAuctionOrder(string account, ContractItem contract,
         ActionType action, Int64 quantity, Double limitPrice,
         OrderType orderType = OrderType.AL,
-        TimeInForce timeInForce = TimeInForce.OPG, Double adjustLimit = 0)
+        TimeInForce timeInForce = TimeInForce.OPG, Double adjustLimit = 0, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = orderType;
       tradeOrderModel.TimeInForce = timeInForce;
       tradeOrderModel.LimitPrice = limitPrice;
@@ -244,9 +252,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildStopOrder(string account, ContractItem contract,
-        ActionType action, Int64 quantity, Double auxPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double auxPrice, Double adjustLimit = 0, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = OrderType.STP;
       tradeOrderModel.AuxPrice = auxPrice;
       tradeOrderModel.AdjustLimit = adjustLimit;
@@ -254,9 +262,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildStopLimitOrder(string account, ContractItem contract,
-        ActionType action, Int64 quantity, Double limitPrice, Double auxPrice, Double adjustLimit = 0)
+        ActionType action, Int64 quantity, Double limitPrice, Double auxPrice, Double adjustLimit = 0, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = OrderType.STP_LMT;
       tradeOrderModel.LimitPrice = limitPrice;
       tradeOrderModel.AuxPrice = auxPrice;
@@ -265,9 +273,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildTrailOrder(string account, ContractItem contract,
-        ActionType action, Int64 quantity, Double trailingPercent, Double auxPrice)
+        ActionType action, Int64 quantity, Double trailingPercent, Double auxPrice, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel tradeOrderModel = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       tradeOrderModel.OrderType = OrderType.TRAIL;
       tradeOrderModel.TrailingPercent = trailingPercent;
       tradeOrderModel.AuxPrice = auxPrice;
@@ -275,7 +283,7 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public static PlaceOrderModel BuildTradeOrderModel(string account, ContractItem contract,
-      ActionType action, Int64? quantity)
+      ActionType action, Int64? quantity, Int32 totalQuantityScale = 0)
     {
       if (contract == null)
       {
@@ -286,6 +294,7 @@ namespace TigerOpenAPI.Trade.Model
       model.Account = account;
       model.Action = action;
       model.TotalQuantity = quantity;
+      model.TotalQuantityScale = totalQuantityScale;
       model.Symbol = contract.Symbol;
       model.Currency = contract.Currency == null
         ? Currency.NONE : (Currency)Enum.Parse(typeof(Currency), contract.Currency, true);
@@ -324,7 +333,7 @@ namespace TigerOpenAPI.Trade.Model
 
     public static PlaceOrderModel BuildMultiLegOrder(string account,
         List<ContractLeg> contractLegs, ComboType comboType, ActionType action, Int32 quantity,
-        OrderType orderType, Double? limitPrice, Double? auxPrice, Double? trailingPercent)
+        OrderType orderType, Double? limitPrice, Double? auxPrice, Double? trailingPercent, Int32 totalQuantityScale = 0)
     {
       if (contractLegs is null)
       {
@@ -340,6 +349,7 @@ namespace TigerOpenAPI.Trade.Model
       model.Account = account;
       model.Action = action;
       model.TotalQuantity = quantity;
+      model.TotalQuantityScale = totalQuantityScale;
       model.ContractLegs = contractLegs;
 
       model.OrderType = orderType;
@@ -402,15 +412,15 @@ namespace TigerOpenAPI.Trade.Model
     public static PlaceOrderModel BuildOCABracketsOrder(
       string account, ContractItem contract, ActionType action, Int64 quantity,
       Double profitTakerPrice, TimeInForce profitTakerTif, Boolean profitTakerRth,
-      Double stopLossPrice, TimeInForce stopLossTif, Boolean stopLossRth, Double? stopLossLimitPrice = null)
+      Double stopLossPrice, TimeInForce stopLossTif, Boolean stopLossRth, Double? stopLossLimitPrice = null, Int32 totalQuantityScale = 0)
     {
-      PlaceOrderModel profitTakerOrder = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel profitTakerOrder = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       profitTakerOrder.OrderType = OrderType.LMT;
       profitTakerOrder.LimitPrice = profitTakerPrice;
       profitTakerOrder.TimeInForce = profitTakerTif;
       profitTakerOrder.OutsideRth = profitTakerRth;
 
-      PlaceOrderModel stopLossOrder = BuildTradeOrderModel(account, contract, action, quantity);
+      PlaceOrderModel stopLossOrder = BuildTradeOrderModel(account, contract, action, quantity, totalQuantityScale);
       if (stopLossLimitPrice == null)
       {
         stopLossOrder.OrderType = OrderType.STP;

@@ -60,7 +60,7 @@ namespace TigerOpenAPI.Config
     /**
      * (optional)automatically refresh token
      */
-    public bool AutoRefreshToken { get; set; } = true;
+    public bool AutoRefreshToken { get; set; } = false;
 
     /**
      * (optional)whether to automatically grab quote permission when the initialization instance is completed
@@ -92,5 +92,9 @@ namespace TigerOpenAPI.Config
      */
     public bool IsSslSocket { get; set; } = true;
 
+    /**
+     * subscribed tradetick data, Whether to use the full version of the stock tick
+     */
+    public bool UseFullTick { get; set; } = false;
   }
 }

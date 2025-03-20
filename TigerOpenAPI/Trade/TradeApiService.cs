@@ -32,6 +32,7 @@ namespace TigerOpenAPI.Trade
     public const string SEGMENT_FUND_HISTORY = "segment_fund_history";
     public const string SEGMENT_FUND_AVAILABLE = "segment_fund_available";
     public const string ESTIMATE_TRADABLE_QUANTITY = "estimate_tradable_quantity";
+    public const string TRANSFER_FUND = "transfer_fund";
 
     /**
      * contract
@@ -69,6 +70,7 @@ namespace TigerOpenAPI.Trade
       SEGMENT_FUND_HISTORY,
       SEGMENT_FUND_AVAILABLE,
       ESTIMATE_TRADABLE_QUANTITY,
+      TRANSFER_FUND,
 
       /**
        * contract
