@@ -96,7 +96,14 @@ namespace TigerOpenAPI.Push
           }
           break;
         case DataType.TradeTick:
-          callback.TradeTickChange(TradeTickUtil.Convert(pushData.TradeTickData));
+          if (null != pushData.TickData)
+          {
+            callback.FullTickChange(pushData.TickData);
+          }
+          else if (null != pushData.TradeTickData)
+          {
+            callback.TradeTickChange(TradeTickUtil.Convert(pushData.TradeTickData));
+          }
           break;
         case DataType.QuoteDepth:
           callback.DepthQuoteChange(pushData.QuoteDepthData);
@@ -118,6 +125,9 @@ namespace TigerOpenAPI.Push
           break;
         case DataType.OptionTop:
           callback.OptionTopPush(pushData.OptionTopData);
+          break;
+        case DataType.Kline:
+          callback.KlineChange(pushData.KlineData);
           break;
         default:
           ApiLogger.Info("push data cannot be processed. {}", msg);

@@ -14,13 +14,15 @@ namespace TigerOpenAPI.Push
     private ApiAuthentication authentication;
     private ApiCallbackDecoder decoder;
     private HeartBeatData heartBeatData;
+    private bool useFullTick = false;
     public const int HEART_BEAT_SPAN = 1000;
 
     public ProtoSocketHandler(ApiAuthentication authentication,
-      IApiComposeCallback callback, HeartBeatData heartBeatData)
+      IApiComposeCallback callback, HeartBeatData heartBeatData, bool useFullTick = false)
     {
       this.authentication = authentication;
       this.heartBeatData = heartBeatData;
+      this.useFullTick = useFullTick;
       decoder = new ApiCallbackDecoder(callback);
     }
 
@@ -28,7 +30,7 @@ namespace TigerOpenAPI.Push
     {
       Request connect = ProtoMessageUtil.BuildConnectMessage(authentication.TigerId, authentication.Sign,
         authentication.Version, this.heartBeatData.SendInterval + HEART_BEAT_SPAN,
-        this.heartBeatData.ReceiveInterval - HEART_BEAT_SPAN);
+        this.heartBeatData.ReceiveInterval - HEART_BEAT_SPAN, this.useFullTick);
       ApiLogger.Info($"netty channel active. channel:{context.Channel.Id.AsShortText()}" +
         $", preparing to send connect token:{connect.Connect}");
 

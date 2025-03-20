@@ -25,7 +25,7 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJQb3NpdGlvbkRhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3RvY2su",
-            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIijgMKDFBvc2l0aW9uRGF0",
+            "b3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIitwMKDFBvc2l0aW9uRGF0",
             "YRIPCgdhY2NvdW50GAEgASgJEg4KBnN5bWJvbBgCIAEoCRIOCgZleHBpcnkY",
             "AyABKAkSDgoGc3RyaWtlGAQgASgJEg0KBXJpZ2h0GAUgASgJEhIKCmlkZW50",
             "aWZpZXIYBiABKAkSEgoKbXVsdGlwbGllchgHIAEoDRIOCgZtYXJrZXQYCCAB",
@@ -34,12 +34,13 @@ namespace TigerOpenAPI.Quote.Pb {
             "DSABKBESEwoLYXZlcmFnZUNvc3QYDiABKAESEwoLbGF0ZXN0UHJpY2UYDyAB",
             "KAESEwoLbWFya2V0VmFsdWUYECABKAESFQoNdW5yZWFsaXplZFBubBgRIAEo",
             "ARIMCgRuYW1lGBIgASgJEhEKCXRpbWVzdGFtcBgTIAEoBBIVCghzYWxlYWJs",
-            "ZRgUIAEoEkgAiAEBQgsKCV9zYWxlYWJsZUIYqgIVVGlnZXJPcGVuQVBJLlF1",
-            "b3RlLlBiYgZwcm90bzM="));
+            "ZRgUIAEoEkgAiAEBEhMKC3Bvc2l0aW9uUXR5GBUgASgBEhIKCnNhbGFibGVR",
+            "dHkYFiABKAFCCwoJX3NhbGVhYmxlQhiqAhVUaWdlck9wZW5BUEkuUXVvdGUu",
+            "UGJiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PositionData), global::TigerOpenAPI.Quote.Pb.PositionData.Parser, new[]{ "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Market", "Currency", "SegType", "SecType", "Position", "PositionScale", "AverageCost", "LatestPrice", "MarketValue", "UnrealizedPnl", "Name", "Timestamp", "Saleable" }, new[]{ "Saleable" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.PositionData), global::TigerOpenAPI.Quote.Pb.PositionData.Parser, new[]{ "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Market", "Currency", "SegType", "SecType", "Position", "PositionScale", "AverageCost", "LatestPrice", "MarketValue", "UnrealizedPnl", "Name", "Timestamp", "Saleable", "PositionQty", "SalableQty" }, new[]{ "Saleable" }, null, null, null)
           }));
     }
     #endregion
@@ -102,6 +103,8 @@ namespace TigerOpenAPI.Quote.Pb {
       name_ = other.name_;
       timestamp_ = other.timestamp_;
       saleable_ = other.saleable_;
+      positionQty_ = other.positionQty_;
+      salableQty_ = other.salableQty_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -415,6 +418,36 @@ namespace TigerOpenAPI.Quote.Pb {
       _hasBits0 &= ~1;
     }
 
+    /// <summary>Field number for the "positionQty" field.</summary>
+    public const int PositionQtyFieldNumber = 21;
+    private double positionQty_;
+    /// <summary>
+    /// total position quantity
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double PositionQty {
+      get { return positionQty_; }
+      set {
+        positionQty_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "salableQty" field.</summary>
+    public const int SalableQtyFieldNumber = 22;
+    private double salableQty_;
+    /// <summary>
+    /// saleable quantity
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double SalableQty {
+      get { return salableQty_; }
+      set {
+        salableQty_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -450,6 +483,8 @@ namespace TigerOpenAPI.Quote.Pb {
       if (Name != other.Name) return false;
       if (Timestamp != other.Timestamp) return false;
       if (Saleable != other.Saleable) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(PositionQty, other.PositionQty)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SalableQty, other.SalableQty)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -477,6 +512,8 @@ namespace TigerOpenAPI.Quote.Pb {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Timestamp != 0UL) hash ^= Timestamp.GetHashCode();
       if (HasSaleable) hash ^= Saleable.GetHashCode();
+      if (PositionQty != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(PositionQty);
+      if (SalableQty != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SalableQty);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -575,6 +612,14 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(160, 1);
         output.WriteSInt64(Saleable);
       }
+      if (PositionQty != 0D) {
+        output.WriteRawTag(169, 1);
+        output.WriteDouble(PositionQty);
+      }
+      if (SalableQty != 0D) {
+        output.WriteRawTag(177, 1);
+        output.WriteDouble(SalableQty);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -665,6 +710,14 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(160, 1);
         output.WriteSInt64(Saleable);
       }
+      if (PositionQty != 0D) {
+        output.WriteRawTag(169, 1);
+        output.WriteDouble(PositionQty);
+      }
+      if (SalableQty != 0D) {
+        output.WriteRawTag(177, 1);
+        output.WriteDouble(SalableQty);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -734,6 +787,12 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (HasSaleable) {
         size += 2 + pb::CodedOutputStream.ComputeSInt64Size(Saleable);
+      }
+      if (PositionQty != 0D) {
+        size += 2 + 8;
+      }
+      if (SalableQty != 0D) {
+        size += 2 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -806,6 +865,12 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.HasSaleable) {
         Saleable = other.Saleable;
+      }
+      if (other.PositionQty != 0D) {
+        PositionQty = other.PositionQty;
+      }
+      if (other.SalableQty != 0D) {
+        SalableQty = other.SalableQty;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -902,6 +967,14 @@ namespace TigerOpenAPI.Quote.Pb {
             Saleable = input.ReadSInt64();
             break;
           }
+          case 169: {
+            PositionQty = input.ReadDouble();
+            break;
+          }
+          case 177: {
+            SalableQty = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -995,6 +1068,14 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           case 160: {
             Saleable = input.ReadSInt64();
+            break;
+          }
+          case 169: {
+            PositionQty = input.ReadDouble();
+            break;
+          }
+          case 177: {
+            SalableQty = input.ReadDouble();
             break;
           }
         }

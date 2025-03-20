@@ -6,7 +6,7 @@ using TigerOpenAPI.Model;
 
 namespace TigerOpenAPI.Quote.Model
 {
-  public class OptionChainV3Model : ApiModel
+  public class OptionChainV3Model : OptionModel
   {
 
     [JsonProperty(PropertyName = "option_basic")]
@@ -14,6 +14,9 @@ namespace TigerOpenAPI.Quote.Model
 
     [JsonProperty(PropertyName = "option_filter")]
     public OptionChainFilterModel OptionFilter { get; set; }
+
+    [JsonProperty(PropertyName = "return_greek_value")]
+    public Boolean ReturnGreekValue { get; set; }
 
     public OptionChainV3Model() : base()
     {

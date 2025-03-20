@@ -164,7 +164,7 @@ namespace TigerOpenAPI.Common.Util
           return (TigerApiConstants.DEFAULT_SANDBOX_DOMAIN_URL, "openapi-sandbox",
             protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_SANDBOX_SOCKET_PORT : TigerApiConstants.DEFAULT_SANDBOX_SOCKET_SSL_PORT);
         case Env.TEST:
-          return (TigerApiConstants.DEFAULT_TEST_DOMAIN_URL, "openapi-test",
+          return (Protocol.HTTP == protocol ? TigerApiConstants.DEFAULT_TEST_DOMAIN_URL : TigerApiConstants.API_TEST_SOCKET_DOMAIN_URL, "openapi-test",
             protocol == Protocol.WEB_SOCKET ? TigerApiConstants.DEFAULT_SANDBOX_SOCKET_PORT : TigerApiConstants.DEFAULT_SANDBOX_SOCKET_SSL_PORT);
         default:
           return (TigerApiConstants.DEFAULT_PROD_DOMAIN_URL, "openapi",

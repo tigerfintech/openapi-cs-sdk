@@ -113,6 +113,22 @@ namespace TigerOpenAPI.Push
     uint CancelSubscribeDepthQuote(ISet<string> symbols);
 
     /**
+     * subscribe bar data
+     *
+     * @param symbols symbol list
+     * @return request id
+     */
+    uint SubscribeKline(ISet<string> symbols);
+
+    /**
+     * cancel subscribe bar data
+     *
+     * @param symbols symbol list
+     * @return request id
+     */
+    uint CancelSubscribeKline(ISet<string> symbols);
+
+    /**
      * subscribe quote-data of the specified market
      * @param market Market
      * @param subject QuoteSubject
