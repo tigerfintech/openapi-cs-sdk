@@ -75,14 +75,6 @@ namespace TigerOpenAPI.Quote
     public const string FUND_HISTORY_QUOTE = "fund_history_quote";
 
     /**
-     * fund quote
-     */
-    public const string FUND_ALL_SYMBOLS = "fund_all_symbols";
-    public const string FUND_CONTRACTS = "fund_contracts";
-    public const string FUND_QUOTE = "fund_quote";
-    public const string FUND_HISTORY_QUOTE = "fund_history_quote";
-
-    /**
      * fundamental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
@@ -94,11 +86,6 @@ namespace TigerOpenAPI.Quote
     public const string FINANCIAL_CURRENCY = "financial_currency";
     public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
     public const string STOCK_FUNDAMENTAL = "stock_fundamental";
-
-    /**
-     * overnight quote
-     */
-    public const string QUOTE_OVERNIGHT = "quote_overnight";
 
     /**
      * broker hold
@@ -210,7 +197,6 @@ namespace TigerOpenAPI.Quote
       FINANCIAL_CURRENCY,
       FINANCIAL_EXCHANGE_RATE,
       STOCK_FUNDAMENTAL,
-      QUOTE_OVERNIGHT,
       BROKER_HOLD,
       FUTURE_DEPTH,
       OPTION_ANALYSIS,
