@@ -25,6 +25,7 @@ namespace TigerOpenAPI.Quote
     public const string QUOTE_STOCK_TRADE = "quote_stock_trade";
     public const string QUOTE_DEPTH = "quote_depth";
     public const string QUOTE_DELAY = "quote_delay";
+    public const string QUOTE_OVERNIGHT = "quote_overnight";
     /** trading calendar */
     public const string TRADING_CALENDAR = "trading_calendar";
     public const string STOCK_BROKER = "stock_broker";
@@ -74,7 +75,15 @@ namespace TigerOpenAPI.Quote
     public const string FUND_HISTORY_QUOTE = "fund_history_quote";
 
     /**
-     * fundmental data
+     * fund quote
+     */
+    public const string FUND_ALL_SYMBOLS = "fund_all_symbols";
+    public const string FUND_CONTRACTS = "fund_contracts";
+    public const string FUND_QUOTE = "fund_quote";
+    public const string FUND_HISTORY_QUOTE = "fund_history_quote";
+
+    /**
+     * fundamental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
     public const string FINANCIAL_REPORT = "financial_report";
@@ -140,6 +149,7 @@ namespace TigerOpenAPI.Quote
       QUOTE_STOCK_TRADE,
       QUOTE_DEPTH,
       QUOTE_DELAY,
+      QUOTE_OVERNIGHT,
       /** trading calendar */
       TRADING_CALENDAR,
       STOCK_BROKER,

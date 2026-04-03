@@ -8,6 +8,10 @@ namespace TigerOpenAPI.Trade.Response
   {
     [JsonProperty(PropertyName = "account")]
     public string Account { get; set; }
+    [JsonProperty(PropertyName = "positionQty")]
+    public Double PositionQty { get; set; }
+    [JsonProperty(PropertyName = "salableQty")]
+    public Double SalableQty { get; set; }
     [JsonProperty(PropertyName = "position")]
     public long Position { get; set; }
     [JsonProperty(PropertyName = "positionScale")]
@@ -34,8 +38,6 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "unrealizedPnlPercentByAverage")]
     public Double UnrealizedPnlPercentByAverage { get; set; } = Double.NaN;
 
-    [JsonProperty(PropertyName = "salable")]
-    public Int32 Salable { get; set; }
     [JsonProperty(PropertyName = "secType")]
     public string SecType { get; set; }
     [JsonProperty(PropertyName = "market")]

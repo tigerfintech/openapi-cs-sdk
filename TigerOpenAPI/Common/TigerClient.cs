@@ -31,6 +31,7 @@ namespace TigerOpenAPI.Common
     protected ApiModel EmptyModel { get; private set; }
     // default retry count : 2, total 3
     protected int RetryCount { get; set; } = TigerApiConstants.DefaultRetryCount;
+    protected bool IsCustomServerUrl { get; set; } = false;
 
     private const string ONLINE_PUBLIC_KEY =
       "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNF3G8SoEcCZh2rshUbayDgLLrj6rKgzNMxDL2HSnKcB0+GPOsndqSv+a4IBu9+I3fyBp5hkyMMG2+AXugd9pMpy6VxJxlNjhX1MYbNTZJUT4nudki4uh+LMOkIBHOceGNXjgB+cXqmlUnjlqha/HgboeHSnSgpM3dKSJQlIOsDwIDAQAB";
@@ -92,6 +93,7 @@ namespace TigerOpenAPI.Common
     protected virtual void RefreshServerUri(TigerConfig config) { }
     // should be override by sub class
     public virtual string GetServerUri<T>(TigerRequest<T> request) where T : TigerResponse { return string.Empty; }
+    public virtual void UseCustomServerUrl(string customServerUrl) { }
 
     // should be override by sub class
     public virtual bool Validate<T>(TigerRequest<T> request, out string errorMsg) where T : TigerResponse

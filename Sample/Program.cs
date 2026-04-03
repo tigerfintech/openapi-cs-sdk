@@ -70,6 +70,7 @@ class Program
     //TigerResponse? response = await GetTimelineAsync(quoteClient);
     //TigerResponse? response = await GetHistoryTimelineAsync(quoteClient);
     //TigerResponse? response = await GetRealTimeQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetOvernightQuoteAsync(quoteClient);
     //TigerResponse? response = await GetKLineAsync(quoteClient);
     //TigerResponse? response = await GetDepthQuoteAsync(quoteClient);
 
@@ -126,7 +127,23 @@ class Program
     //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
     //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
 
-    ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
+    // fund quote
+    //TigerResponse? response = await GetAllFundSymbolsAsync(quoteClient);
+    //TigerResponse? response = await GetFundContractsAsync(quoteClient);
+    //TigerResponse? response = await GetFundQuoteAsync(quoteClient);
+    //TigerResponse? response = await GetFundHistoryQuoteAsync(quoteClient);
+
+    // fundamental data
+    //TigerResponse? response = await GetCorporateDividendAsync(quoteClient);
+    //TigerResponse? response = await GetKlineQuotaAsync(quoteClient);
+    //TigerResponse? response = await GetFinancialCurrencyAsync(quoteClient);
+    //TigerResponse? response = await GetFinancialExchangeRateAsync(quoteClient);
+    //QuoteStockFundamentalResponse? fundamentalResponse = await GetStockFundamentalAsync(quoteClient);
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(fundamentalResponse?.GetStockFundamentalItems()));
+
+    //TigerResponse? response = await GetStockTradeRankAsync(quoteClient);
+
+    //ApiLogger.Info("response:" + JsonConvert.SerializeObject(response));
 
     // =================================================trade
     TradeClient tradeClient = new TradeClient(config);
@@ -239,7 +256,7 @@ class Program
     //GetOptionFundamentals(quoteClient);
 
     // =================================================Push
-    //SubscribePush();
+    await SubscribePushAsync();
 
     ApiLogger.Info("end");
   }
@@ -263,7 +280,7 @@ class Program
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      ConfigFilePath = "/data0/tiger_config/test",
+      ConfigFilePath = "/data0/tiger_config/prod",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = true,   // (optional) default is true
       AutoRefreshToken = false,
@@ -278,9 +295,9 @@ class Program
     PushClient client = PushClient.GetInstance().Config(config)
       .ApiComposeCallback(callback);
     ApiLogger.Info($"======================{client.GetUrl()}");
-    client.Connect();
+    await client.ConnectAsync();
 
-    //SubscribeAsset();
+    SubscribeAsset();
     //SubscribeQuote();
     //SubscribeTradeTick();
     //SubscribeStockTop();
@@ -1857,6 +1874,7 @@ class Program
         Period = KLineType.min3.Value,
         BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
+        // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
         Rigth = RightOption.br
       }
     };

@@ -10,6 +10,10 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "id")]
     public Int64 Id { get; set; }
 
+    // Only valid for order query by id
+    [JsonProperty(PropertyName = "show_charges")]
+    public Boolean IsShowCharges { get; set; }
+
     [JsonProperty(PropertyName = "seg_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public SegmentType SegType { get; set; }
 
