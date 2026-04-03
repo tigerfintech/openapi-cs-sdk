@@ -41,6 +41,12 @@ namespace TigerOpenAPI.Quote
       return ServerUrl;
     }
 
+    public override void UseCustomServerUrl(string customServerUrl)
+    {
+      this.ServerUrl = customServerUrl;
+      this.IsCustomServerUrl = true;
+    }
+
     public override bool Validate<T>(TigerRequest<T> request, out string errorMsg)
     {
       errorMsg = string.Empty;
