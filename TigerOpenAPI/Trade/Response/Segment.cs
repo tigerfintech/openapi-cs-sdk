@@ -65,9 +65,6 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "consolidatedSegTypes")]
     public List<string> ConsolidatedSegTypes { get; set; }
 
-    [JsonProperty(PropertyName = "consolidatedSegTypes")]
-    private List<string> ConsolidatedSegTypes { get; set; }
-
     public Segment()
     {
     }

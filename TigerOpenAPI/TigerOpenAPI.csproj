@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>TigerBrokers.OpenAPI</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>tiger</Authors>
     <Company>TIGER BROKERS</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
