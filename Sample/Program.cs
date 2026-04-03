@@ -35,7 +35,7 @@ class Program
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      ConfigFilePath = "/data0/tiger_config/prod",
+      ConfigFilePath = "/path/to/your/tiger_config",
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
       AutoRefreshToken = false,

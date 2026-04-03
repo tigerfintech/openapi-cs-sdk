@@ -1,41 +1,273 @@
-## openapi-cs-sdk
+# openapi-cs-sdk
 
-老虎开放平台可以为个人开发者和机构客户提供接口服务，投资者可以充分的利用老虎的交易服务、行情服务、账户服务等实现自己的投资应用程序。
+[![NuGet](https://img.shields.io/nuget/v/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
+[![License](https://img.shields.io/github/license/tigerfintech/openapi-cs-sdk.svg)](LICENSE)
 
-#### 主要功能
+[English](#english) | [中文](#中文)
 
-* 直接管理交易：创建订单，修改或取消订单，以及检查订单状态
-* 查看帐户信息：例如余额和当前头寸
-* 查询行情变化：股票或期权的价格和其他信息
-* 接收实时变动：获取订单变动，持仓变动以及行情变动等
+---
 
-#### 交易类型
+## English
 
-* 交易支持：股票(美港股／A股)、美股期权、港股窝轮、港股牛熊证、外汇
-* 行情支持：美股、港股、A股
-* 订单类型：市价单、限价单、止损单、止损限价单、跟踪止损单、算法订单
+Tiger Open Platform C# SDK — provides API services for individual developers and institutional clients. Investors can fully utilize Tiger's trading, market data, and account services to build their own investment applications.
 
-#### 系统要求
+### Features
 
-* .NET Framework 6.0,     C#8
+- **Trading**: Create, modify, and cancel orders; check order status
+- **Account**: Query balances, positions, assets, and transaction records
+- **Market Data**: Real-time and historical quotes for stocks, options, and futures
+- **Push Service**: Real-time WebSocket notifications for orders, positions, and market changes
 
-* 推荐使用 [Visual Studio](https://visualstudio.microsoft.com/) 作为 C# IDE（集成开发环境）
+#### Supported Instruments
 
-  
+| Category | Details |
+|----------|---------|
+| Trading  | US/HK/A stocks, US options, HK warrants, HK bull/bear certificates, Forex |
+| Market Data | US stocks, HK stocks, A shares |
+| Order Types | Market, Limit, Stop, Stop-Limit, Trailing Stop, Algorithmic |
 
-#### 下载升级C# API
+### Requirements
 
- 1.  在 cmd 中直接使用 nuget 下载或升级 `$ dotnet add package tiger-openapi
+- .NET 10.0
+- C# 13.0
 
-2. Maven地址下载源码示例地址：
+### Installation
 
+```bash
+dotnet add package TigerBrokers.OpenAPI
+```
 
+Or via NuGet Package Manager:
 
+```
+Install-Package TigerBrokers.OpenAPI
+```
 
-#### API官网
+### Quick Start
 
-https://developer.itigerup.com/
+#### 1. Configuration
 
-#### 文档地址
+```csharp
+using TigerOpenAPI.Common;
+using TigerOpenAPI.Config;
 
-https://quant.itigerup.com/openapi/zh/java/overview/introduction.html
+var config = new TigerConfig
+{
+    TigerId  = "your_tiger_id",
+    Account  = "your_account_id",
+    PrivateKey = "your_rsa_private_key",    // RSA private key
+    Language = Language.en_US
+};
+```
+
+#### 2. Query Quotes
+
+```csharp
+using TigerOpenAPI.Quote;
+using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Response;
+
+var quoteClient = new QuoteClient(config);
+
+// Real-time quote
+var model = new QuoteRealTimeQuoteModel(new List<string> { "AAPL", "TSLA" });
+var request = new TigerRequest<QuoteRealTimeQuoteResponse>
+{
+    ApiMethodName = QuoteApiService.REAL_TIME_QUOTE,
+    ModelValue    = model
+};
+var response = quoteClient.Execute(request);
+```
+
+#### 3. Place an Order
+
+```csharp
+using TigerOpenAPI.Trade;
+using TigerOpenAPI.Trade.Model;
+using TigerOpenAPI.Trade.Response;
+
+var tradeClient = new TradeClient(config);
+
+// Place a limit buy order
+var model = new PlaceOrderModel("AAPL", OrderType.LMT, ActionType.BUY, 100, limitPrice: 150.0m);
+var request = new TigerRequest<PlaceOrderResponse>
+{
+    ApiMethodName = TradeApiService.PLACE_ORDER,
+    ModelValue    = model
+};
+var response = tradeClient.Execute(request);
+```
+
+#### 4. Subscribe to Push (WebSocket)
+
+```csharp
+using TigerOpenAPI.Push;
+
+var pushClient = PushClientFactory.CreateSocketClient(config);
+pushClient.OrderAssetChange += (sender, e) => Console.WriteLine($"Order update: {e.Data}");
+pushClient.Connect();
+pushClient.SubscribeOrder();
+```
+
+### API Reference
+
+| Class | Description |
+|-------|-------------|
+| `QuoteClient` | Market data — quotes, K-lines, order book, fundamentals |
+| `TradeClient` | Trading — orders, positions, assets, transfers |
+| `PushClient`  | WebSocket push — orders, positions, market ticker |
+
+Full documentation: [https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+
+### Links
+
+- **Developer Portal**: [https://developer.itigerup.com/](https://developer.itigerup.com/)
+- **Documentation**: [https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+- **GitHub**: [https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
+- **NuGet**: [https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'feat: add your feature'`
+4. Push the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
+
+### License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 中文
+
+老虎开放平台 C# SDK — 为个人开发者和机构客户提供接口服务，投资者可以充分利用老虎的交易服务、行情服务、账户服务等实现自己的投资应用程序。
+
+### 功能特性
+
+- **交易管理**：创建、修改、取消订单；查询订单状态
+- **账户查询**：查询余额、持仓、资产及资金流水
+- **行情服务**：实时行情与历史数据（股票、期权、期货）
+- **推送服务**：WebSocket 实时推送订单变动、持仓变动、行情变动
+
+#### 支持品种
+
+| 类别 | 详情 |
+|------|------|
+| 交易支持 | 美港股／A股、美股期权、港股窝轮、港股牛熊证、外汇 |
+| 行情支持 | 美股、港股、A股 |
+| 订单类型 | 市价单、限价单、止损单、止损限价单、跟踪止损单、算法订单 |
+
+### 环境要求
+
+- .NET 10.0
+- C# 13.0
+
+### 安装
+
+```bash
+dotnet add package TigerBrokers.OpenAPI
+```
+
+或通过 NuGet 包管理器：
+
+```
+Install-Package TigerBrokers.OpenAPI
+```
+
+### 快速开始
+
+#### 1. 配置
+
+```csharp
+using TigerOpenAPI.Common;
+using TigerOpenAPI.Config;
+
+var config = new TigerConfig
+{
+    TigerId    = "your_tiger_id",
+    Account    = "your_account_id",
+    PrivateKey = "your_rsa_private_key",    // RSA 私钥
+    Language   = Language.zh_CN
+};
+```
+
+#### 2. 查询行情
+
+```csharp
+using TigerOpenAPI.Quote;
+using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Response;
+
+var quoteClient = new QuoteClient(config);
+
+// 实时行情
+var model = new QuoteRealTimeQuoteModel(new List<string> { "AAPL", "TSLA" });
+var request = new TigerRequest<QuoteRealTimeQuoteResponse>
+{
+    ApiMethodName = QuoteApiService.REAL_TIME_QUOTE,
+    ModelValue    = model
+};
+var response = quoteClient.Execute(request);
+```
+
+#### 3. 下单
+
+```csharp
+using TigerOpenAPI.Trade;
+using TigerOpenAPI.Trade.Model;
+using TigerOpenAPI.Trade.Response;
+
+var tradeClient = new TradeClient(config);
+
+// 限价买入
+var model = new PlaceOrderModel("AAPL", OrderType.LMT, ActionType.BUY, 100, limitPrice: 150.0m);
+var request = new TigerRequest<PlaceOrderResponse>
+{
+    ApiMethodName = TradeApiService.PLACE_ORDER,
+    ModelValue    = model
+};
+var response = tradeClient.Execute(request);
+```
+
+#### 4. 订阅推送（WebSocket）
+
+```csharp
+using TigerOpenAPI.Push;
+
+var pushClient = PushClientFactory.CreateSocketClient(config);
+pushClient.OrderAssetChange += (sender, e) => Console.WriteLine($"订单更新: {e.Data}");
+pushClient.Connect();
+pushClient.SubscribeOrder();
+```
+
+### API 参考
+
+| 类名 | 说明 |
+|------|------|
+| `QuoteClient` | 行情 — 实时报价、K 线、深度、基本面 |
+| `TradeClient` | 交易 — 下单、持仓、资产、资金划转 |
+| `PushClient`  | 推送 — 订单变动、持仓变动、行情推送 |
+
+完整文档：[https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+
+### 相关链接
+
+- **开发者平台**：[https://developer.itigerup.com/](https://developer.itigerup.com/)
+- **开发文档**：[https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+- **GitHub**：[https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
+- **NuGet**：[https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
+
+### 参与贡献
+
+1. Fork 本仓库
+2. 创建特性分支：`git checkout -b feature/your-feature`
+3. 提交改动：`git commit -m 'feat: add your feature'`
+4. 推送分支：`git push origin feature/your-feature`
+5. 发起 Pull Request
+
+### 开源协议
+
+本项目使用 [MIT License](LICENSE) 协议。

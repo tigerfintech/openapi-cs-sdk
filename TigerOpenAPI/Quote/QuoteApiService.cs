@@ -84,6 +84,32 @@ namespace TigerOpenAPI.Quote
     public const string STOCK_INDUSTRY = "stock_industry";
     public const string FINANCIAL_CURRENCY = "financial_currency";
     public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
+    public const string STOCK_FUNDAMENTAL = "stock_fundamental";
+
+    /**
+     * overnight quote
+     */
+    public const string QUOTE_OVERNIGHT = "quote_overnight";
+
+    /**
+     * broker hold
+     */
+    public const string BROKER_HOLD = "broker_hold";
+
+    /**
+     * future depth
+     */
+    public const string FUTURE_DEPTH = "future_depth";
+
+    /**
+     * option analysis
+     */
+    public const string OPTION_ANALYSIS = "option_analysis";
+
+    /**
+     * option timeline
+     */
+    public const string OPTION_TIMELINE = "option_timeline";
 
     /**
      * grab quote
@@ -173,6 +199,12 @@ namespace TigerOpenAPI.Quote
       STOCK_INDUSTRY,
       FINANCIAL_CURRENCY,
       FINANCIAL_EXCHANGE_RATE,
+      STOCK_FUNDAMENTAL,
+      QUOTE_OVERNIGHT,
+      BROKER_HOLD,
+      FUTURE_DEPTH,
+      OPTION_ANALYSIS,
+      OPTION_TIMELINE,
 
       /**
        * grab quote
