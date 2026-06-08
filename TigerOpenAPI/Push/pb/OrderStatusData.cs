@@ -25,7 +25,7 @@ namespace TigerOpenAPI.Quote.Pb {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChVPcmRlclN0YXR1c0RhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3Rv",
-            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIipQYKD09yZGVyU3Rh",
+            "Y2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIi9AYKD09yZGVyU3Rh",
             "dHVzRGF0YRIKCgJpZBgBIAEoEhIPCgdhY2NvdW50GAIgASgJEg4KBnN5bWJv",
             "bBgDIAEoCRIOCgZleHBpcnkYBCABKAkSDgoGc3RyaWtlGAUgASgJEg0KBXJp",
             "Z2h0GAYgASgJEhIKCmlkZW50aWZpZXIYByABKAkSEgoKbXVsdGlwbGllchgI",
@@ -43,12 +43,14 @@ namespace TigerOpenAPI.Quote.Pb {
             "KAkSEAoIYXR0ckRlc2MYIiABKAkSGAoQY29tbWlzc2lvbkFuZEZlZRgjIAEo",
             "AhIQCghvcGVuVGltZRgkIAEoBBIRCgl0aW1lc3RhbXAYJSABKAQSEAoIdXNl",
             "ck1hcmsYJiABKAkSFwoPdG90YWxDYXNoQW1vdW50GCcgASgBEhgKEGZpbGxl",
-            "ZENhc2hBbW91bnQYKCABKAESCwoDZ3N0GCkgASgBQhiqAhVUaWdlck9wZW5B",
-            "UEkuUXVvdGUuUGJiBnByb3RvMw=="));
+            "ZENhc2hBbW91bnQYKCABKAESCwoDZ3N0GCkgASgBEhAKCGF0dHJMaXN0GCog",
+            "AygJEhMKC3RpbWVJbkZvcmNlGCsgASgJEhIKCnVwZGF0ZVRpbWUYLCABKAQS",
+            "EgoKbGF0ZXN0VGltZRgtIAEoBEIYqgIVVGlnZXJPcGVuQVBJLlF1b3RlLlBi",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "StopPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Liquidation", "Name", "Source", "ErrorMsg", "AttrDesc", "CommissionAndFee", "OpenTime", "Timestamp", "UserMark", "TotalCashAmount", "FilledCashAmount", "Gst" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.OrderStatusData), global::TigerOpenAPI.Quote.Pb.OrderStatusData.Parser, new[]{ "Id", "Account", "Symbol", "Expiry", "Strike", "Right", "Identifier", "Multiplier", "Action", "Market", "Currency", "SegType", "SecType", "OrderType", "IsLong", "TotalQuantity", "TotalQuantityScale", "FilledQuantity", "FilledQuantityScale", "AvgFillPrice", "LimitPrice", "StopPrice", "RealizedPnl", "Status", "ReplaceStatus", "CancelStatus", "OutsideRth", "CanModify", "CanCancel", "Liquidation", "Name", "Source", "ErrorMsg", "AttrDesc", "CommissionAndFee", "OpenTime", "Timestamp", "UserMark", "TotalCashAmount", "FilledCashAmount", "Gst", "AttrList", "TimeInForce", "UpdateTime", "LatestTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -130,6 +132,10 @@ namespace TigerOpenAPI.Quote.Pb {
       totalCashAmount_ = other.totalCashAmount_;
       filledCashAmount_ = other.filledCashAmount_;
       gst_ = other.gst_;
+      attrList_ = other.attrList_.Clone();
+      timeInForce_ = other.timeInForce_;
+      updateTime_ = other.updateTime_;
+      latestTime_ = other.latestTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -724,6 +730,59 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "attrList" field.</summary>
+    public const int AttrListFieldNumber = 42;
+    private static readonly pb::FieldCodec<string> _repeated_attrList_codec
+        = pb::FieldCodec.ForString(338);
+    private readonly pbc::RepeatedField<string> attrList_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> AttrList {
+      get { return attrList_; }
+    }
+
+    /// <summary>Field number for the "timeInForce" field.</summary>
+    public const int TimeInForceFieldNumber = 43;
+    private string timeInForce_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TimeInForce {
+      get { return timeInForce_; }
+      set {
+        timeInForce_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "updateTime" field.</summary>
+    public const int UpdateTimeFieldNumber = 44;
+    private ulong updateTime_;
+    /// <summary>
+    /// timestamp (ms) of order info update
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong UpdateTime {
+      get { return updateTime_; }
+      set {
+        updateTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "latestTime" field.</summary>
+    public const int LatestTimeFieldNumber = 45;
+    private ulong latestTime_;
+    /// <summary>
+    /// timestamp (ms) of order status update
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ulong LatestTime {
+      get { return latestTime_; }
+      set {
+        latestTime_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -780,6 +839,10 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TotalCashAmount, other.TotalCashAmount)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(FilledCashAmount, other.FilledCashAmount)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Gst, other.Gst)) return false;
+      if(!attrList_.Equals(other.attrList_)) return false;
+      if (TimeInForce != other.TimeInForce) return false;
+      if (UpdateTime != other.UpdateTime) return false;
+      if (LatestTime != other.LatestTime) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -828,6 +891,10 @@ namespace TigerOpenAPI.Quote.Pb {
       if (TotalCashAmount != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TotalCashAmount);
       if (FilledCashAmount != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(FilledCashAmount);
       if (Gst != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Gst);
+      hash ^= attrList_.GetHashCode();
+      if (TimeInForce.Length != 0) hash ^= TimeInForce.GetHashCode();
+      if (UpdateTime != 0UL) hash ^= UpdateTime.GetHashCode();
+      if (LatestTime != 0UL) hash ^= LatestTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1010,6 +1077,19 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(201, 2);
         output.WriteDouble(Gst);
       }
+      attrList_.WriteTo(output, _repeated_attrList_codec);
+      if (TimeInForce.Length != 0) {
+        output.WriteRawTag(218, 2);
+        output.WriteString(TimeInForce);
+      }
+      if (UpdateTime != 0UL) {
+        output.WriteRawTag(224, 2);
+        output.WriteUInt64(UpdateTime);
+      }
+      if (LatestTime != 0UL) {
+        output.WriteRawTag(232, 2);
+        output.WriteUInt64(LatestTime);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1184,6 +1264,19 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(201, 2);
         output.WriteDouble(Gst);
       }
+      attrList_.WriteTo(ref output, _repeated_attrList_codec);
+      if (TimeInForce.Length != 0) {
+        output.WriteRawTag(218, 2);
+        output.WriteString(TimeInForce);
+      }
+      if (UpdateTime != 0UL) {
+        output.WriteRawTag(224, 2);
+        output.WriteUInt64(UpdateTime);
+      }
+      if (LatestTime != 0UL) {
+        output.WriteRawTag(232, 2);
+        output.WriteUInt64(LatestTime);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1316,6 +1409,16 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (Gst != 0D) {
         size += 2 + 8;
+      }
+      size += attrList_.CalculateSize(_repeated_attrList_codec);
+      if (TimeInForce.Length != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(TimeInForce);
+      }
+      if (UpdateTime != 0UL) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt64Size(UpdateTime);
+      }
+      if (LatestTime != 0UL) {
+        size += 2 + pb::CodedOutputStream.ComputeUInt64Size(LatestTime);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1451,6 +1554,16 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (other.Gst != 0D) {
         Gst = other.Gst;
+      }
+      attrList_.Add(other.attrList_);
+      if (other.TimeInForce.Length != 0) {
+        TimeInForce = other.TimeInForce;
+      }
+      if (other.UpdateTime != 0UL) {
+        UpdateTime = other.UpdateTime;
+      }
+      if (other.LatestTime != 0UL) {
+        LatestTime = other.LatestTime;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1631,6 +1744,22 @@ namespace TigerOpenAPI.Quote.Pb {
             Gst = input.ReadDouble();
             break;
           }
+          case 338: {
+            attrList_.AddEntriesFrom(input, _repeated_attrList_codec);
+            break;
+          }
+          case 346: {
+            TimeInForce = input.ReadString();
+            break;
+          }
+          case 352: {
+            UpdateTime = input.ReadUInt64();
+            break;
+          }
+          case 360: {
+            LatestTime = input.ReadUInt64();
+            break;
+          }
         }
       }
     #endif
@@ -1808,6 +1937,22 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           case 329: {
             Gst = input.ReadDouble();
+            break;
+          }
+          case 338: {
+            attrList_.AddEntriesFrom(ref input, _repeated_attrList_codec);
+            break;
+          }
+          case 346: {
+            TimeInForce = input.ReadString();
+            break;
+          }
+          case 352: {
+            UpdateTime = input.ReadUInt64();
+            break;
+          }
+          case 360: {
+            LatestTime = input.ReadUInt64();
             break;
           }
         }
