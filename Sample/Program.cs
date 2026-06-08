@@ -35,7 +35,7 @@ class Program
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      ConfigFilePath = "/path/to/your/tiger_config",
+      ConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".tigeropen"),
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = false,   // (optional) default is true
       AutoRefreshToken = false,
@@ -275,19 +275,19 @@ class Program
     }
   }
 
-  static void SubscribePush()
+  static async Task SubscribePushAsync()
   {
     // tiger config
     TigerConfig config = new TigerConfig()
     {
-      ConfigFilePath = "/data0/tiger_config/prod",
+      ConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".tigeropen"),
       FailRetryCounts = 2, // (optional) range:[1, 5],  default is 2
       AutoGrabPermission = true,   // (optional) default is true
       AutoRefreshToken = false,
       Language = Language.en_US,   // (optional) default is en_US
       TimeZone = CustomTimeZone.HK_ZONE,  // (optional) default is HK_ZONE
       UseFullTick = true,
-      IsSslSocket = false
+      IsSslSocket = true
     };
     ApiLogger.DebugEnabled = false;
 
