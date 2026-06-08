@@ -39,6 +39,29 @@ namespace TigerOpenAPI.Trade
     public const string CONTRACT = "contract";
     public const string CONTRACTS = "contracts";
 
+    /**
+     * deposit/withdraw
+     */
+    public const string TRANSFER_FUND = "transfer_fund";
+
+    /**
+     * fund details
+     */
+    public const string FUND_DETAILS = "fund_details";
+
+    /**
+     * aggregate assets
+     */
+    public const string AGGREGATE_ASSETS = "aggregate_assets";
+
+    /**
+     * position transfer
+     */
+    public const string POSITION_TRANSFER = "position_transfer";
+    public const string POSITION_TRANSFER_RECORDS = "position_transfer_records";
+    public const string POSITION_TRANSFER_DETAIL = "position_transfer_detail";
+    public const string POSITION_TRANSFER_EXTERNAL_RECORDS = "position_transfer_external_records";
+
     public static readonly HashSet<string> AllTradeApiSet = new HashSet<string>()
     {
       /**
@@ -75,6 +98,21 @@ namespace TigerOpenAPI.Trade
        */
       CONTRACT,
       CONTRACTS,
+
+      /**
+       * deposit/withdraw & fund details
+       */
+      TRANSFER_FUND,
+      FUND_DETAILS,
+      AGGREGATE_ASSETS,
+
+      /**
+       * position transfer
+       */
+      POSITION_TRANSFER,
+      POSITION_TRANSFER_RECORDS,
+      POSITION_TRANSFER_DETAIL,
+      POSITION_TRANSFER_EXTERNAL_RECORDS,
     };
 
     public static bool IsTradeApi(in string tradeApi) =>

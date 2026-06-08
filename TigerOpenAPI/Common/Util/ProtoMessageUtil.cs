@@ -28,6 +28,7 @@ namespace TigerOpenAPI.Common.Util
           AcceptVersion = version,
           TigerId = tigerId,
           Sign = sign,
+          SdkVersion = SdkVersionUtil.GetPushSdkVersion(),
           SendInterval = (uint)sendInterval,
           UseFullTick = useFullTick,
           ReceiveInterval = (uint)receiveInterval
