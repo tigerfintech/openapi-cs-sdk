@@ -25,6 +25,7 @@ namespace TigerOpenAPI.Quote
     public const string QUOTE_STOCK_TRADE = "quote_stock_trade";
     public const string QUOTE_DEPTH = "quote_depth";
     public const string QUOTE_DELAY = "quote_delay";
+    public const string QUOTE_OVERNIGHT = "quote_overnight";
     /** trading calendar */
     public const string TRADING_CALENDAR = "trading_calendar";
     public const string STOCK_BROKER = "stock_broker";
@@ -74,7 +75,7 @@ namespace TigerOpenAPI.Quote
     public const string FUND_HISTORY_QUOTE = "fund_history_quote";
 
     /**
-     * fundmental data
+     * fundamental data
      */
     public const string FINANCIAL_DAILY = "financial_daily";
     public const string FINANCIAL_REPORT = "financial_report";
@@ -84,6 +85,27 @@ namespace TigerOpenAPI.Quote
     public const string STOCK_INDUSTRY = "stock_industry";
     public const string FINANCIAL_CURRENCY = "financial_currency";
     public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
+    public const string STOCK_FUNDAMENTAL = "stock_fundamental";
+
+    /**
+     * broker hold
+     */
+    public const string BROKER_HOLD = "broker_hold";
+
+    /**
+     * future depth
+     */
+    public const string FUTURE_DEPTH = "future_depth";
+
+    /**
+     * option analysis
+     */
+    public const string OPTION_ANALYSIS = "option_analysis";
+
+    /**
+     * option timeline
+     */
+    public const string OPTION_TIMELINE = "option_timeline";
 
     /**
      * grab quote
@@ -114,6 +136,7 @@ namespace TigerOpenAPI.Quote
       QUOTE_STOCK_TRADE,
       QUOTE_DEPTH,
       QUOTE_DELAY,
+      QUOTE_OVERNIGHT,
       /** trading calendar */
       TRADING_CALENDAR,
       STOCK_BROKER,
@@ -173,6 +196,11 @@ namespace TigerOpenAPI.Quote
       STOCK_INDUSTRY,
       FINANCIAL_CURRENCY,
       FINANCIAL_EXCHANGE_RATE,
+      STOCK_FUNDAMENTAL,
+      BROKER_HOLD,
+      FUTURE_DEPTH,
+      OPTION_ANALYSIS,
+      OPTION_TIMELINE,
 
       /**
        * grab quote

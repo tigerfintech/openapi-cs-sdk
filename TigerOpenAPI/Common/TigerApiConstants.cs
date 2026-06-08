@@ -67,7 +67,8 @@ namespace TigerOpenAPI.Common
 
     public const string API_ONLINE_DOMAIN_URL = "openapi.tigerfintech.com";
     public const string API_SANDBOX_DOMAIN_URL = "openapi-sandbox.tigerfintech.com";
-    public const string API_TEST_DOMAIN_URL = "openapi-test.tigerfintech.com";
+    public const string API_TEST_DOMAIN_URL = "openapi-test.qa.tigerbrokers.net";
+    public const string API_TEST_SOCKET_DOMAIN_URL = "openapi-socket.platform-test.hy-test.dns-test.tiger";
 
     public const string DEFAULT_PROD_DOMAIN_URL = API_ONLINE_DOMAIN_URL;
     public const string DEFAULT_SANDBOX_DOMAIN_URL = API_SANDBOX_DOMAIN_URL;
