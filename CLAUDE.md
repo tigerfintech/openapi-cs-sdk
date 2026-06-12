@@ -54,5 +54,6 @@ dotnet build
 
 ## 文档
 
-- API 文档：https://quant.itigerup.com/openapi/zh/java/overview/introduction.html
+- API 文档（中文）：https://docs.itigerup.com/docs/
+- API 文档（英文）：https://docs-en.itigerup.com/docs/
 - 开发者平台：https://developer.itigerup.com/
