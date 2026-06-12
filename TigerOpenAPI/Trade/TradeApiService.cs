@@ -34,6 +34,15 @@ namespace TigerOpenAPI.Trade
     public const string ESTIMATE_TRADABLE_QUANTITY = "estimate_tradable_quantity";
 
     /**
+     * option exercise (early exercise / abandon)
+     */
+    public const string OPTION_EXERCISE_SUBMIT   = "option_exercise_submit";
+    public const string OPTION_EXERCISE_CHECK     = "option_exercise_check";
+    public const string OPTION_EXERCISE_RECORD    = "option_exercise_record";
+    public const string OPTION_EXERCISE_POSITION  = "option_exercise_position";
+    public const string OPTION_EXERCISE_CANCEL    = "option_exercise_cancel";
+
+    /**
      * contract
      */
     public const string CONTRACT = "contract";
@@ -92,6 +101,15 @@ namespace TigerOpenAPI.Trade
       SEGMENT_FUND_HISTORY,
       SEGMENT_FUND_AVAILABLE,
       ESTIMATE_TRADABLE_QUANTITY,
+
+      /**
+       * option exercise
+       */
+      OPTION_EXERCISE_SUBMIT,
+      OPTION_EXERCISE_CHECK,
+      OPTION_EXERCISE_RECORD,
+      OPTION_EXERCISE_POSITION,
+      OPTION_EXERCISE_CANCEL,
 
       /**
        * contract
