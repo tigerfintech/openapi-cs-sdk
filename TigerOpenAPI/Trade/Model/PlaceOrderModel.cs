@@ -131,6 +131,25 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "algo_params")]
     public List<TagValue> AlgoParams { get; set; }
 
+    /** 冰山单：展示数量 */
+    [JsonProperty(PropertyName = "display_size", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? DisplaySize { get; set; }
+    /** 冰山单：最小展示数量 */
+    [JsonProperty(PropertyName = "min_display_size", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? MinDisplaySize { get; set; }
+    /** 冰山单：价检间隔（秒） */
+    [JsonProperty(PropertyName = "check_intervals", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? CheckIntervals { get; set; }
+    /** 冰山单：价格类型（LIMIT_PRICE / OPPONENT_PRICE） */
+    [JsonProperty(PropertyName = "price_type", NullValueHandling = NullValueHandling.Ignore)]
+    public string PriceType { get; set; }
+    /** 冰山单：生效开始时间（epoch ms） */
+    [JsonProperty(PropertyName = "start_time", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? StartTime { get; set; }
+    /** 冰山单：生效结束时间（epoch ms） */
+    [JsonProperty(PropertyName = "end_time", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? EndTime { get; set; }
+
     /**
      * user remark info
      */
@@ -406,6 +425,35 @@ namespace TigerOpenAPI.Trade.Model
       {
         model.AddAlgoParam(TagValue.BuildTagValue(WAP_PARTICIPATION_RATE, participationRate));
       }
+      return model;
+    }
+
+    public const string ICEBERG_PRICE_TYPE_LIMIT = "LIMIT_PRICE";
+    public const string ICEBERG_PRICE_TYPE_OPPONENT = "OPPONENT_PRICE";
+
+    /// <summary>构造冰山单（最简参数），默认 LIMIT_PRICE</summary>
+    public static PlaceOrderModel BuildIcebergOrder(string account, ContractItem contract,
+        ActionType action, Int64 quantity, Double limitPrice, Int64 displaySize)
+    {
+      return BuildIcebergOrder(account, contract, action, quantity, limitPrice,
+          displaySize, null, null, ICEBERG_PRICE_TYPE_LIMIT, null, null);
+    }
+
+    /// <summary>构造冰山单（完整参数）</summary>
+    public static PlaceOrderModel BuildIcebergOrder(string account, ContractItem contract,
+        ActionType action, Int64 quantity, Double limitPrice,
+        Int64 displaySize, Int64? minDisplaySize, Int64? checkIntervals,
+        string priceType, Int64? startTime, Int64? endTime)
+    {
+      PlaceOrderModel model = BuildTradeOrderModel(account, contract, action, quantity);
+      model.OrderType = OrderType.ICEBERG;
+      model.LimitPrice = limitPrice;
+      model.DisplaySize = displaySize;
+      if (minDisplaySize.HasValue) model.MinDisplaySize = minDisplaySize;
+      if (checkIntervals.HasValue) model.CheckIntervals = checkIntervals;
+      if (!string.IsNullOrEmpty(priceType)) model.PriceType = priceType;
+      if (startTime.HasValue && startTime.Value > 0) model.StartTime = startTime;
+      if (endTime.HasValue && endTime.Value > 0) model.EndTime = endTime;
       return model;
     }
 
