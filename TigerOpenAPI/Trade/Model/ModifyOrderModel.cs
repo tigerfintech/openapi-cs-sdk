@@ -39,7 +39,7 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "min_display_size", NullValueHandling = NullValueHandling.Ignore)]
     public Int64? MinDisplaySize { get; set; }
 
-    /** 冰山单：价格类型（LIMIT_PRICE / OPPONENT_PRICE） */
+    /** 冰山单：价格类型（LIMIT_PRICE / ASK_PRICE / BID_PRICE / LATEST_PRICE） */
     [JsonProperty(PropertyName = "price_type", NullValueHandling = NullValueHandling.Ignore)]
     public string? PriceType { get; set; }
 
