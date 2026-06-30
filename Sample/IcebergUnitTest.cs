@@ -34,7 +34,7 @@ namespace Sample
         Assert("basic: Symbol == AAPL", o.Symbol == "AAPL");
         Assert("basic: MinDisplaySize is null", o.MinDisplaySize == null);
         Assert("basic: CheckIntervals is null", o.CheckIntervals == null);
-        Assert("basic: PriceType is null", o.PriceType == null);
+        Assert("basic: PriceType == LIMIT_PRICE", o.PriceType == PlaceOrderModel.ICEBERG_PRICE_TYPE_LIMIT);
         Assert("basic: StartTime is null", o.StartTime == null);
         Assert("basic: EndTime is null", o.EndTime == null);
       }
@@ -68,8 +68,10 @@ namespace Sample
       }
 
       // --- Test 4: price type constant values ---
-      Assert("const LIMIT_PRICE",    PlaceOrderModel.ICEBERG_PRICE_TYPE_LIMIT    == "LIMIT_PRICE");
-      Assert("const OPPONENT_PRICE", PlaceOrderModel.ICEBERG_PRICE_TYPE_OPPONENT == "OPPONENT_PRICE");
+      Assert("const LIMIT_PRICE",  PlaceOrderModel.ICEBERG_PRICE_TYPE_LIMIT  == "LIMIT_PRICE");
+      Assert("const ASK_PRICE",    PlaceOrderModel.ICEBERG_PRICE_TYPE_ASK    == "ASK_PRICE");
+      Assert("const BID_PRICE",    PlaceOrderModel.ICEBERG_PRICE_TYPE_BID    == "BID_PRICE");
+      Assert("const LATEST_PRICE", PlaceOrderModel.ICEBERG_PRICE_TYPE_LATEST == "LATEST_PRICE");
 
       Console.WriteLine();
       Console.WriteLine($"=== Result: {pass} passed, {fail} failed ===");

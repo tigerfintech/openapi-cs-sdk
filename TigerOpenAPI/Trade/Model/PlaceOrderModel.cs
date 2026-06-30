@@ -140,7 +140,7 @@ namespace TigerOpenAPI.Trade.Model
     /** 冰山单：价检间隔（秒） */
     [JsonProperty(PropertyName = "check_intervals", NullValueHandling = NullValueHandling.Ignore)]
     public Int64? CheckIntervals { get; set; }
-    /** 冰山单：价格类型（LIMIT_PRICE / OPPONENT_PRICE） */
+    /** 冰山单：价格类型（LIMIT_PRICE / ASK_PRICE / BID_PRICE / LATEST_PRICE） */
     [JsonProperty(PropertyName = "price_type", NullValueHandling = NullValueHandling.Ignore)]
     public string PriceType { get; set; }
     /** 冰山单：生效开始时间（epoch ms） */
@@ -429,7 +429,9 @@ namespace TigerOpenAPI.Trade.Model
     }
 
     public const string ICEBERG_PRICE_TYPE_LIMIT = "LIMIT_PRICE";
-    public const string ICEBERG_PRICE_TYPE_OPPONENT = "OPPONENT_PRICE";
+    public const string ICEBERG_PRICE_TYPE_ASK = "ASK_PRICE";
+    public const string ICEBERG_PRICE_TYPE_BID = "BID_PRICE";
+    public const string ICEBERG_PRICE_TYPE_LATEST = "LATEST_PRICE";
 
     /// <summary>构造冰山单（最简参数），默认 LIMIT_PRICE</summary>
     public static PlaceOrderModel BuildIcebergOrder(string account, ContractItem contract,
