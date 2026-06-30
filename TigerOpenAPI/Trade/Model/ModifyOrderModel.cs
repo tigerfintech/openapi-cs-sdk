@@ -43,6 +43,18 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "price_type", NullValueHandling = NullValueHandling.Ignore)]
     public string? PriceType { get; set; }
 
+    /** 冰山单：价检间隔（秒） */
+    [JsonProperty(PropertyName = "check_intervals", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? CheckIntervals { get; set; }
+
+    /** 冰山单：生效开始时间（epoch ms） */
+    [JsonProperty(PropertyName = "start_time", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? StartTime { get; set; }
+
+    /** 冰山单：生效结束时间（epoch ms） */
+    [JsonProperty(PropertyName = "end_time", NullValueHandling = NullValueHandling.Ignore)]
+    public Int64? EndTime { get; set; }
+
     public ModifyOrderModel() : base()
     {
     }

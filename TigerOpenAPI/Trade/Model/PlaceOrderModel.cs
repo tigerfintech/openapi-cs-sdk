@@ -142,7 +142,7 @@ namespace TigerOpenAPI.Trade.Model
     public Int64? CheckIntervals { get; set; }
     /** 冰山单：价格类型（LIMIT_PRICE / ASK_PRICE / BID_PRICE / LATEST_PRICE） */
     [JsonProperty(PropertyName = "price_type", NullValueHandling = NullValueHandling.Ignore)]
-    public string PriceType { get; set; }
+    public string? PriceType { get; set; }
     /** 冰山单：生效开始时间（epoch ms） */
     [JsonProperty(PropertyName = "start_time", NullValueHandling = NullValueHandling.Ignore)]
     public Int64? StartTime { get; set; }
@@ -447,6 +447,19 @@ namespace TigerOpenAPI.Trade.Model
         Int64 displaySize, Int64? minDisplaySize, Int64? checkIntervals,
         string priceType, Int64? startTime, Int64? endTime)
     {
+      if (displaySize <= 0)
+        throw new ArgumentException("displaySize must be positive", nameof(displaySize));
+      if (minDisplaySize.HasValue && minDisplaySize.Value > displaySize)
+        throw new ArgumentException("minDisplaySize cannot exceed displaySize", nameof(minDisplaySize));
+      if (!string.IsNullOrEmpty(priceType) &&
+          priceType != ICEBERG_PRICE_TYPE_LIMIT &&
+          priceType != ICEBERG_PRICE_TYPE_ASK &&
+          priceType != ICEBERG_PRICE_TYPE_BID &&
+          priceType != ICEBERG_PRICE_TYPE_LATEST)
+        throw new ArgumentException($"Invalid priceType: {priceType}", nameof(priceType));
+      if (startTime.HasValue && endTime.HasValue && startTime.Value >= endTime.Value)
+        throw new ArgumentException("startTime must be less than endTime", nameof(startTime));
+
       PlaceOrderModel model = BuildTradeOrderModel(account, contract, action, quantity);
       model.OrderType = OrderType.ICEBERG;
       model.LimitPrice = limitPrice;
