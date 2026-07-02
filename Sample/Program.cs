@@ -28,6 +28,16 @@ class Program
     ApiLogger.DebugEnabled = true;
     ApiLogger.Info("start");
 
+    if (args.Length > 0 && args[0] == "iceberg-unit")
+    {
+      int failures = Sample.IcebergUnitTest.Run();
+      Environment.Exit(failures > 0 ? 1 : 0);
+      return;
+    }
+
+    await DocTest.RunAsync();
+    return;
+
     //StockPriceTests stockPriceTests = new StockPriceTests();
     //stockPriceTests.TestStockPrice();
     //TestStockPrice();
