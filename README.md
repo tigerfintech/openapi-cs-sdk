@@ -118,12 +118,12 @@ pushClient.SubscribeOrder();
 | `TradeClient` | Trading — orders, positions, assets, transfers |
 | `PushClient`  | WebSocket push — orders, positions, market ticker |
 
-Full documentation: [https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+Full documentation: [https://docs-en.itigerup.com/docs/](https://docs-en.itigerup.com/docs/)
 
 ### Links
 
 - **Developer Portal**: [https://developer.itigerup.com/](https://developer.itigerup.com/)
-- **Documentation**: [https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+- **Documentation**: [https://docs-en.itigerup.com/docs/](https://docs-en.itigerup.com/docs/)
 - **GitHub**: [https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
 - **NuGet**: [https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
 
@@ -251,12 +251,12 @@ pushClient.SubscribeOrder();
 | `TradeClient` | 交易 — 下单、持仓、资产、资金划转 |
 | `PushClient`  | 推送 — 订单变动、持仓变动、行情推送 |
 
-完整文档：[https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+完整文档：[https://docs.itigerup.com/docs/](https://docs.itigerup.com/docs/)
 
 ### 相关链接
 
 - **开发者平台**：[https://developer.itigerup.com/](https://developer.itigerup.com/)
-- **开发文档**：[https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html](https://quant.itigerup.com/openapi/zh/csharp/overview/introduction.html)
+- **开发文档**：[https://docs.itigerup.com/docs/](https://docs.itigerup.com/docs/)
 - **GitHub**：[https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
 - **NuGet**：[https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
 
