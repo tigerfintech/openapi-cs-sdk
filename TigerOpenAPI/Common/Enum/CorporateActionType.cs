@@ -3,7 +3,7 @@ namespace TigerOpenAPI.Common.Enum
 {
   public enum CorporateActionType
   {
-    NONE, SPLIT, DIVIDEND, EARNING
+    NONE, SPLIT, DIVIDEND, EARNING, SYMBOL_CHANGE, DELISTING, IPO
   }
 }
 
