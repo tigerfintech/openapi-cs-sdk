@@ -474,6 +474,69 @@ class Program
     return await quoteClient.ExecuteAsync(request);
   }
 
+  static async Task<CorporateSymbolChangeResponse?> GetCorporateSymbolChangeAsync(QuoteClient quoteClient)
+  {
+    List<string> symbols = new List<string>();
+    symbols.Add("META");
+    Int64 begin = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE);
+    Int64 end = DateUtil.ConvertTimestamp("2023-01-01", CustomTimeZone.HK_ZONE);
+    TigerRequest<CorporateSymbolChangeResponse> request = new TigerRequest<CorporateSymbolChangeResponse>()
+    {
+      ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+      ModelValue = new CorporateActionModel()
+      {
+        ActionType = CorporateActionType.SYMBOL_CHANGE,
+        Symbols = symbols,
+        Market = Market.US,
+        BeginDate = begin,
+        EndDate = end
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<CorporateDelistingResponse?> GetCorporateDelistingAsync(QuoteClient quoteClient)
+  {
+    List<string> symbols = new List<string>();
+    symbols.Add("TWTR");
+    Int64 begin = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE);
+    Int64 end = DateUtil.ConvertTimestamp("2023-01-01", CustomTimeZone.HK_ZONE);
+    TigerRequest<CorporateDelistingResponse> request = new TigerRequest<CorporateDelistingResponse>()
+    {
+      ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+      ModelValue = new CorporateActionModel()
+      {
+        ActionType = CorporateActionType.DELISTING,
+        Symbols = symbols,
+        Market = Market.US,
+        BeginDate = begin,
+        EndDate = end
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
+  static async Task<CorporateIpoResponse?> GetCorporateIpoAsync(QuoteClient quoteClient)
+  {
+    List<string> symbols = new List<string>();
+    symbols.Add("RIVN");
+    Int64 begin = DateUtil.ConvertTimestamp("2021-01-01", CustomTimeZone.HK_ZONE);
+    Int64 end = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE);
+    TigerRequest<CorporateIpoResponse> request = new TigerRequest<CorporateIpoResponse>()
+    {
+      ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+      ModelValue = new CorporateActionModel()
+      {
+        ActionType = CorporateActionType.IPO,
+        Symbols = symbols,
+        Market = Market.US,
+        BeginDate = begin,
+        EndDate = end
+      }
+    };
+    return await quoteClient.ExecuteAsync(request);
+  }
+
   static async Task<KlineQuotaResponse?> GetKlineQuotaAsync(QuoteClient quoteClient)
   {
     TigerRequest<KlineQuotaResponse> request = new TigerRequest<KlineQuotaResponse>()
