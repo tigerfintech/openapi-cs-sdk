@@ -1,3 +1,10 @@
+## 1.2.3 (2026-07-23)
+### New
+- `CorporateActionType` 枚举新增：`SYMBOL_CHANGE`、`DELISTING`、`IPO`
+- 新增响应模型类：`CorporateSymbolChangeItem`（含 `OldSymbol`/`NewSymbol`）、`CorporateDelistingItem`（含 `AnnouncedDate`/`Reason`）、`CorporateIpoItem`（含 `ListingDate`/`ListingPrice`/`PriceRange`/`SharesOutstanding`/`SharesFloat`/`OfferAmount`/`Currency`/`MinPurchaseQuantity`/`LeverageRatio`/`IpoName`）
+- 新增响应包装类：`CorporateSymbolChangeResponse`、`CorporateDelistingResponse`、`CorporateIpoResponse`（`Dictionary<string, List<T>>` 结构与服务端 grouped-map 格式对应）
+- `DocTest.cs` 新增三个测试方法；配置路径改为读 `TIGER_CONFIG_PATH` 环境变量（fallback `~/.tigeropen`）
+
 ## 1.2.2 (2026-06-24)
 ### New
 - **冰山单支持**：新增 `PlaceOrderModel.BuildIcebergOrder()` 两个重载（基础参数 / 完整参数），支持 `DisplaySize`、`MinDisplaySize`、`CheckIntervals`、`PriceType`（`LIMIT_PRICE` / `OPPONENT_PRICE`）、`StartTime`、`EndTime` 字段。
