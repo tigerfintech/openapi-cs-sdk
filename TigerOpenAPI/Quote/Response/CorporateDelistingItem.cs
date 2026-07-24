@@ -12,5 +12,8 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "reason")]
     public string Reason { get; set; }
+
+    public override string ToString() =>
+      $"CorporateDelistingItem{{symbol='{Symbol}', announcedDate={AnnouncedDate:yyyy-MM-dd}, reason='{Reason}', market='{Market}', executeDate={ExecuteDate}, actionType={ActionType}}}";
   }
 }
