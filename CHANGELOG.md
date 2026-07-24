@@ -1,3 +1,8 @@
+## 1.2.3 (2026-07-23)
+### New
+- `CorporateActionType` 新增：`SYMBOL_CHANGE`、`DELISTING`、`IPO`
+- 新增 `CorporateSymbolChangeItem`、`CorporateDelistingItem`、`CorporateIpoItem` 及对应 Response 包装类
+
 ## 1.2.2 (2026-06-24)
 ### New
 - **冰山单支持**：新增 `PlaceOrderModel.BuildIcebergOrder()` 两个重载（基础参数 / 完整参数），支持 `DisplaySize`、`MinDisplaySize`、`CheckIntervals`、`PriceType`（`LIMIT_PRICE` / `OPPONENT_PRICE`）、`StartTime`、`EndTime` 字段。

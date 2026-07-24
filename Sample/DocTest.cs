@@ -42,8 +42,9 @@ class DocTest
   public static async Task RunAsync()
   {
     Console.WriteLine("=== C# SDK Doc Verification ===");
-    string configPath = Path.Combine(
-      Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".tigeropen");
+    string configPath =
+      Environment.GetEnvironmentVariable("TIGER_CONFIG_PATH")
+      ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".tigeropen");
 
     TigerConfig config = new TigerConfig()
     {
@@ -404,6 +405,51 @@ class DocTest
           Market = Market.US,
           BeginDate = DateUtil.ConvertTimestamp("2024-01-01", CustomTimeZone.HK_ZONE),
           EndDate = DateUtil.ConvertTimestamp("2025-01-01", CustomTimeZone.HK_ZONE)
+        }
+      };
+      return await qc.ExecuteAsync(req);
+    });
+
+    // corporateSymbolChange
+    await Run("quote/corporateSymbolChange", async () => {
+      var req = new TigerRequest<CorporateSymbolChangeResponse>() {
+        ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+        ModelValue = new CorporateActionModel() {
+          ActionType = CorporateActionType.SYMBOL_CHANGE,
+          Symbols = new List<string> { "META" },
+          Market = Market.US,
+          BeginDate = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE),
+          EndDate = DateUtil.ConvertTimestamp("2023-01-01", CustomTimeZone.HK_ZONE)
+        }
+      };
+      return await qc.ExecuteAsync(req);
+    });
+
+    // corporateDelisting
+    await Run("quote/corporateDelisting", async () => {
+      var req = new TigerRequest<CorporateDelistingResponse>() {
+        ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+        ModelValue = new CorporateActionModel() {
+          ActionType = CorporateActionType.DELISTING,
+          Symbols = new List<string> { "TWTR" },
+          Market = Market.US,
+          BeginDate = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE),
+          EndDate = DateUtil.ConvertTimestamp("2023-01-01", CustomTimeZone.HK_ZONE)
+        }
+      };
+      return await qc.ExecuteAsync(req);
+    });
+
+    // corporateIpo
+    await Run("quote/corporateIpo", async () => {
+      var req = new TigerRequest<CorporateIpoResponse>() {
+        ApiMethodName = QuoteApiService.CORPORATE_ACTION,
+        ModelValue = new CorporateActionModel() {
+          ActionType = CorporateActionType.IPO,
+          Symbols = new List<string> { "RIVN" },
+          Market = Market.US,
+          BeginDate = DateUtil.ConvertTimestamp("2021-01-01", CustomTimeZone.HK_ZONE),
+          EndDate = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.HK_ZONE)
         }
       };
       return await qc.ExecuteAsync(req);
