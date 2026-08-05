@@ -1,0 +1,61 @@
+# C# SDK CI — mirrors Python/Java/Go SDK pipeline layout
+# unit:  zero-credential, zero-network, always runs
+# integ: real-credential, allow_failure, skipped without env vars
+
+stages:
+  - unit
+  - integ
+
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  NUGET_PACKAGES: $CI_PROJECT_DIR/.nuget/packages
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .nuget/packages/
+
+unit:
+  stage: unit
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  variables:
+    # Explicitly unset all credential variables so unit tests cannot
+    # accidentally reach a live endpoint.
+    TIGER_ID: ""
+    TIGER_PRIVATE_KEY: ""
+    TIGER_LICENSE: ""
+  script:
+    - dotnet restore
+    - dotnet build --no-restore -c Release
+    - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+        --no-build -c Release
+        --filter "Category!=Integration"
+        --logger "junit;LogFilePath=test-results/unit.xml"
+        --collect:"XPlat Code Coverage"
+  artifacts:
+    reports:
+      junit: test-results/unit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: "**/coverage.cobertura.xml"
+    expire_in: 7 days
+  coverage: '/Total.*?([0-9]{1,3}%)$/'
+
+integ:
+  stage: integ
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  allow_failure: true
+  script:
+    - dotnet restore
+    - dotnet build --no-restore -c Release
+    - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+        --no-build -c Release
+        --filter "Category=Integration"
+        --logger "junit;LogFilePath=test-results/integ.xml"
+  artifacts:
+    reports:
+      junit: test-results/integ.xml
+    expire_in: 7 days
+  rules:
+    - if: $TIGER_ID != "" && $TIGER_PRIVATE_KEY != ""
