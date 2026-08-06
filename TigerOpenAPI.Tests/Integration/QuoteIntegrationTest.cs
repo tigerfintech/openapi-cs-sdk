@@ -280,5 +280,1219 @@ namespace TigerOpenAPI.Tests.Integration
             "capital flow point timestamp must be non-zero");
       }
     }
+
+    // =====================================================================
+    // Helpers for dependent APIs (option spec, future contract, fund symbol)
+    // =====================================================================
+    private OptionCommonModel? _aaplOption;
+    private OptionCommonModel GetAaplOption()
+    {
+      if (_aaplOption != null) return _aaplOption;
+      var expModel = new OptionExpirationModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US
+      };
+      var expResp = Execute<OptionExpirationResponse>(QuoteApiService.OPTION_EXPIRATION, expModel);
+      Assert.That(expResp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "need option expiration data for AAPL");
+      long expiry = expResp.Data[0].Timestamps[0];
+
+      var chainModel = new OptionChainV3Model
+      {
+        Market = Market.US,
+        OptionBasic = new List<OptionChainModel>
+        {
+          new OptionChainModel { Symbol = "AAPL", Expiry = expiry }
+        }
+      };
+      var chainResp = Execute<OptionChainResponse>(QuoteApiService.OPTION_CHAIN, chainModel);
+      Assert.That(chainResp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "need option chain data for AAPL");
+      Assert.That(chainResp.Data[0].Items, Is.Not.Null.And.Count.GreaterThan(0));
+
+      var group = chainResp.Data[0].Items[0];
+      string strike, right;
+      if (group.Call != null)
+      {
+        strike = group.Call.Strike;
+        right = group.Call.Right;
+      }
+      else if (group.Put != null)
+      {
+        strike = group.Put.Strike;
+        right = group.Put.Right;
+      }
+      else
+      {
+        Assert.Fail("option chain row has neither call nor put leg");
+        return null!; // unreachable
+      }
+      _aaplOption = new OptionCommonModel
+      {
+        Symbol = "AAPL",
+        Strike = strike,
+        Right = right,
+        Expiry = expiry
+      };
+      return _aaplOption;
+    }
+
+    private string? _futureExchangeCode;
+    private string GetFutureExchangeCode()
+    {
+      if (_futureExchangeCode != null) return _futureExchangeCode;
+      var model = new FutureExchangeModel { SecType = SecType.FUT.ToString() };
+      var resp = Execute<FutureExchangeResponse>(QuoteApiService.FUTURE_EXCHANGE, model);
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "need at least 1 future exchange");
+      _futureExchangeCode = resp.Data[0].Code;
+      return _futureExchangeCode;
+    }
+
+    private string? _futureContractCode;
+    private string? _futureType;
+    private void EnsureFutureContract()
+    {
+      if (_futureContractCode != null) return;
+      string exchCode = GetFutureExchangeCode();
+      var model = new FutureContractByExchCodeModel { ExchangeCode = exchCode };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTRACT_BY_EXCHANGE_CODE, model);
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "need at least 1 future contract for exchange " + exchCode);
+      _futureContractCode = resp.Data[0].ContractCode;
+      _futureType = resp.Data[0].Type;
+    }
+    private string GetFutureContractCode() { EnsureFutureContract(); return _futureContractCode!; }
+    private string GetFutureType() { EnsureFutureContract(); return _futureType!; }
+
+    private string? _fundSymbol;
+    private string GetFundSymbol()
+    {
+      if (_fundSymbol != null) return _fundSymbol;
+      var resp = Execute<FundContractsResponse>(QuoteApiService.FUND_ALL_SYMBOLS, new ApiModel());
+      if (resp.Data == null || resp.Data.Count == 0)
+        Assert.Ignore("no fund symbols available from fund_all_symbols");
+      _fundSymbol = resp.Data[0].Symbol;
+      return _fundSymbol;
+    }
+
+    // =====================================================================
+    // All Symbols (US market)
+    // =====================================================================
+    [Test]
+    public void GetAllSymbols_US_ReturnsSymbolList()
+    {
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<TigerListResponse>(QuoteApiService.ALL_SYMBOLS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "all_symbols should return a non-empty list for US market");
+      var first = resp.Data[0];
+      Assert.That(first.Count, Is.GreaterThan(0),
+          "each symbol entry should have at least 1 field");
+    }
+
+    // =====================================================================
+    // All Symbol Names (US market)
+    // =====================================================================
+    [Test]
+    public void GetAllSymbolNames_US_ReturnsNameFields()
+    {
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<SymbolNameResponse>(QuoteApiService.ALL_SYMBOL_NAMES, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "all_symbol_names should return a non-empty list");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.Not.Null.And.Not.Empty, "symbol name wire field");
+      Assert.That(item.Name, Is.Not.Null.And.Not.Empty, "name wire field");
+    }
+
+    // =====================================================================
+    // Stock Detail (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetStockDetail_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<QuoteRealTimeQuoteResponse>(QuoteApiService.STOCK_DETAIL, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.EqualTo(1),
+          "stock_detail should return 1 item for AAPL");
+      var q = resp.Data[0];
+      Assert.That(q.Symbol, Is.EqualTo("AAPL"), "stock_detail symbol wire name");
+      Assert.That(q.LatestPrice, Is.GreaterThan(0), "stock_detail latestPrice wire name");
+    }
+
+    // =====================================================================
+    // Hour Trading Timeline (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetHourTradingTimeline_AAPL_Succeeds()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        IncludeHourTrading = true
+      };
+      var resp = Execute<QuoteTimelineResponse>(QuoteApiService.HOUR_TRADING_TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "hour_trading_timeline should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "hour trading timeline symbol wire name");
+    }
+
+    // =====================================================================
+    // Timeline (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetTimeline_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteTimelineModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Period = TimeLineType.day
+      };
+      var resp = Execute<QuoteTimelineResponse>(QuoteApiService.TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "timeline should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "timeline symbol wire name");
+      Assert.That(item.PreClose, Is.GreaterThan(0), "timeline preClose must be > 0");
+
+      // Timeline buckets may be empty outside trading hours.
+      if (item.Intraday != null && item.Intraday.Items != null && item.Intraday.Items.Count > 0)
+      {
+        var pt = item.Intraday.Items[0];
+        Assert.That(pt.Time, Is.GreaterThan(0), "timeline point time must be non-zero");
+        Assert.That(pt.Price, Is.GreaterThan(0), "timeline point price must be > 0");
+      }
+    }
+
+    // =====================================================================
+    // History Timeline (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetHistoryTimeline_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteHistoryTimelineModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Date = "2024-01-02",
+        Right = RightOption.nr
+      };
+      var resp = Execute<QuoteHistoryTimelineResponse>(QuoteApiService.HISTORY_TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "history_timeline should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "history timeline symbol wire name");
+      Assert.That(item.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "history timeline items must be non-empty");
+      var pt = item.Items[0];
+      Assert.That(pt.Time, Is.GreaterThan(0), "history timeline point time must be non-zero");
+      Assert.That(pt.Price, Is.GreaterThan(0), "history timeline point price must be > 0");
+    }
+
+    // =====================================================================
+    // Trade Tick (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetTradeTick_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteTradeTickModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Limit = 5
+      };
+      var resp = Execute<QuoteTradeTickResponse>(QuoteApiService.TRADE_TICK, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "trade_tick should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "trade tick symbol wire name");
+
+      if (item.Items != null && item.Items.Count > 0)
+      {
+        var tick = item.Items[0];
+        Assert.That(tick.Time, Is.GreaterThan(0), "trade tick time must be non-zero");
+        Assert.That(tick.Price, Is.GreaterThan(0), "trade tick price must be > 0");
+      }
+    }
+
+    // =====================================================================
+    // Quote Contract (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteContract_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteContractsModel
+      {
+        Symbol = "AAPL",
+        SecType = SecType.STK
+      };
+      var resp = Execute<QuoteContractResponse>(QuoteApiService.QUOTE_CONTRACT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "quote_contract data must not be null");
+      Assert.That(resp.Data.Symbol, Is.EqualTo("AAPL"), "quote contract symbol wire name");
+      Assert.That(resp.Data.SecType, Is.Not.Null.And.Not.Empty,
+          "quote contract secType must be non-empty");
+      Assert.That(resp.Data.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote contract items must be non-empty");
+      var c = resp.Data.Items[0];
+      Assert.That(c.Symbol, Is.EqualTo("AAPL"), "contract item symbol wire name");
+      Assert.That(c.Currency, Is.Not.Null.And.Not.Empty,
+          "contract item currency must be non-empty");
+    }
+
+    // =====================================================================
+    // Quote Real-Time (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteRealTime_AAPL_ReturnsPriceFields()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<QuoteRealTimeQuoteResponse>(QuoteApiService.QUOTE_REAL_TIME, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.EqualTo(1),
+          "quote_real_time should return 1 item for AAPL");
+      var q = resp.Data[0];
+      Assert.That(q.Symbol, Is.EqualTo("AAPL"), "quote_real_time symbol wire name");
+      Assert.That(q.LatestPrice, Is.GreaterThan(0), "quote_real_time latestPrice wire name");
+      Assert.That(q.LatestTime, Is.GreaterThan(1577836800000L),
+          "quote_real_time latestTime must be valid epoch millis");
+    }
+
+    // =====================================================================
+    // Quote Shortable Stocks (US)
+    // =====================================================================
+    [Test]
+    public void GetQuoteShortableStocks_US_Succeeds()
+    {
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<TigerListResponse>(QuoteApiService.QUOTE_SHORTABLE_STOCKS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "quote_shortable_stocks data must not be null");
+      // Shortable list may be large; just verify the call succeeds.
+    }
+
+    // =====================================================================
+    // Quote Stock Trade (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteStockTrade_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteStockTradeModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<QuoteStockTradeResponse>(QuoteApiService.QUOTE_STOCK_TRADE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_stock_trade should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "quote_stock_trade symbol wire name");
+      Assert.That(item.LotSize, Is.GreaterThan(0), "lotSize must be > 0");
+      Assert.That(item.MinTick, Is.GreaterThan(0), "minTick must be > 0");
+    }
+
+    // =====================================================================
+    // Quote Depth (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteDepth_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteDepthModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US
+      };
+      var resp = Execute<QuoteDepthResponse>(QuoteApiService.QUOTE_DEPTH, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_depth should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "quote_depth symbol wire name");
+      // Asks/bids may be empty outside market hours.
+      if (item.Asks != null && item.Asks.Count > 0)
+      {
+        Assert.That(item.Asks[0].Price, Is.GreaterThan(0), "ask price must be > 0");
+      }
+      if (item.Bids != null && item.Bids.Count > 0)
+      {
+        Assert.That(item.Bids[0].Price, Is.GreaterThan(0), "bid price must be > 0");
+      }
+    }
+
+    // =====================================================================
+    // Quote Delay (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteDelay_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<QuoteDelayResponse>(QuoteApiService.QUOTE_DELAY, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_delay should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "quote_delay symbol wire name");
+      Assert.That(item.Close, Is.GreaterThan(0), "quote_delay close must be > 0");
+      Assert.That(item.Time, Is.GreaterThan(1577836800000L),
+          "quote_delay time must be valid epoch millis");
+    }
+
+    // =====================================================================
+    // Quote Overnight (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetQuoteOvernight_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<QuoteOvernightResponse>(QuoteApiService.QUOTE_OVERNIGHT, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_overnight should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "quote_overnight symbol wire name");
+      Assert.That(item.Timestamp, Is.GreaterThan(1577836800000L),
+          "quote_overnight timestamp must be valid epoch millis");
+    }
+
+    // =====================================================================
+    // Trading Calendar (US, 1-month range)
+    // =====================================================================
+    [Test]
+    public void GetTradingCalendar_US_ReturnsValidFields()
+    {
+      var model = new TradeCalendarModel
+      {
+        Market = Market.US,
+        BeginDate = "2025-01-01",
+        EndDate = "2025-01-31"
+      };
+      var resp = Execute<TradeCalendarResponse>(QuoteApiService.TRADING_CALENDAR, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "trading_calendar should return data for US in Jan 2025");
+      var cal = resp.Data[0];
+      Assert.That(cal.Date, Is.Not.Null.And.Not.Empty, "calendar date must be non-empty");
+      Assert.That(cal.Type, Is.Not.Null.And.Not.Empty, "calendar type must be non-empty");
+    }
+
+    // =====================================================================
+    // Stock Broker (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetStockBroker_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteStockBrokerModel
+      {
+        Symbol = "AAPL",
+        Limit = 5
+      };
+      var resp = Execute<QuoteStockBrokerResponse>(QuoteApiService.STOCK_BROKER, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "stock_broker data must not be null");
+      Assert.That(resp.Data.Symbol, Is.EqualTo("AAPL"), "stock broker symbol wire name");
+      // Broker data may be empty outside market hours.
+    }
+
+    // =====================================================================
+    // Capital Distribution (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetCapitalDistribution_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteCapitalModel
+      {
+        Symbol = "AAPL",
+        Market = Market.US
+      };
+      var resp = Execute<QuoteCapitalDistributionResponse>(QuoteApiService.CAPITAL_DISTRIBUTION, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "capital_distribution data must not be null");
+      Assert.That(resp.Data.Symbol, Is.EqualTo("AAPL"),
+          "capital distribution symbol wire name");
+    }
+
+    // =====================================================================
+    // Market Scanner Tags (US)
+    // =====================================================================
+    [Test]
+    public void GetMarketScannerTags_US_ReturnsValidFields()
+    {
+      var model = new MarketScannerTagsModel
+      {
+        Market = Market.US
+      };
+      var resp = Execute<MarketScannerTagsResponse>(QuoteApiService.MARKET_SCANNER_TAGS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "market_scanner_tags data must not be null");
+      // Tags may be empty depending on permissions.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Market, Is.Not.Null.And.Not.Empty,
+            "scanner tag market must be non-empty");
+        Assert.That(resp.Data[0].MultiTagField, Is.Not.Null.And.Not.Empty,
+            "scanner tag multiTagField must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Option Brief (AAPL, V2 with OptionBasicModel)
+    // =====================================================================
+    [Test]
+    public void GetOptionBrief_AAPL_ReturnsValidFields()
+    {
+      var opt = GetAaplOption();
+      var model = new OptionBasicModel
+      {
+        Market = Market.US,
+        OptionBasic = new List<OptionCommonModel> { opt }
+      };
+      var resp = Execute<OptionBriefResponse>(QuoteApiService.OPTION_BRIEF, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_brief should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Identifier, Is.Not.Null.And.Not.Empty,
+          "option brief identifier wire name");
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"),
+          "option brief symbol wire name");
+      Assert.That(item.Strike, Is.Not.Null.And.Not.Empty,
+          "option brief strike wire name");
+      Assert.That(item.Right, Is.Not.Null.And.Not.Empty,
+          "option brief right wire name");
+    }
+
+    // =====================================================================
+    // Option Kline (AAPL, V1 with OptionKlineModel)
+    // =====================================================================
+    [Test]
+    public void GetOptionKline_AAPL_ReturnsValidFields()
+    {
+      var opt = GetAaplOption();
+      var model = new OptionKlineModel
+      {
+        Symbol = opt.Symbol,
+        Right = opt.Right,
+        Strike = opt.Strike,
+        Expiry = opt.Expiry,
+        Period = "day",
+        Limit = 5
+      };
+      var resp = Execute<OptionKlineResponse>(QuoteApiService.OPTION_KLINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_kline should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option kline symbol wire name");
+      Assert.That(item.Strike, Is.Not.Null.And.Not.Empty, "option kline strike wire name");
+      Assert.That(item.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "option kline items must be non-empty");
+      var candle = item.Items[0];
+      Assert.That(candle.Time, Is.GreaterThan(0), "option kline time must be non-zero");
+      Assert.That(candle.Close, Is.GreaterThan(0), "option kline close must be > 0");
+    }
+
+    // =====================================================================
+    // Option Trade Tick (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetOptionTradeTick_AAPL_ReturnsValidFields()
+    {
+      var opt = GetAaplOption();
+      var model = new OptionCommonModel
+      {
+        Symbol = opt.Symbol,
+        Right = opt.Right,
+        Strike = opt.Strike,
+        Expiry = opt.Expiry
+      };
+      var resp = Execute<OptionTradeTickResponse>(QuoteApiService.OPTION_TRADE_TICK, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_trade_tick should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option trade tick symbol wire name");
+      Assert.That(item.Strike, Is.Not.Null.And.Not.Empty,
+          "option trade tick strike wire name");
+    }
+
+    // =====================================================================
+    // Option Depth (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetOptionDepth_AAPL_ReturnsValidFields()
+    {
+      var opt = GetAaplOption();
+      var model = new OptionCommonModel
+      {
+        Symbol = opt.Symbol,
+        Right = opt.Right,
+        Strike = opt.Strike,
+        Expiry = opt.Expiry
+      };
+      var resp = Execute<OptionDepthResponse>(QuoteApiService.OPTION_DEPTH, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_depth should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option depth symbol wire name");
+      Assert.That(item.Strike, Is.Not.Null.And.Not.Empty,
+          "option depth strike wire name");
+    }
+
+    // =====================================================================
+    // All HK Option Symbols
+    // =====================================================================
+    [Test]
+    public void GetAllHkOptionSymbols_ReturnsValidFields()
+    {
+      var model = new OptionModel { Market = Market.HK };
+      var resp = Execute<OptionSymbolResponse>(QuoteApiService.ALL_HK_OPTION_SYMBOLS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "all_hk_option_symbols data must not be null");
+      // HK option symbols may be empty depending on permissions.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+            "option symbol wire name");
+      }
+    }
+
+    // =====================================================================
+    // Option Analysis (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetOptionAnalysis_AAPL_ReturnsValidFields()
+    {
+      var model = new OptionAnalysisModel(
+          new List<OptionAnalysisSymbolModel>
+          {
+            new OptionAnalysisSymbolModel("AAPL", "daily")
+          },
+          Market.US);
+      var resp = Execute<OptionAnalysisResponse>(QuoteApiService.OPTION_ANALYSIS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_analysis should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option analysis symbol wire name");
+    }
+
+    // =====================================================================
+    // Warrant Filter (HK, underlying 00700)
+    // =====================================================================
+    [Test]
+    public void GetWarrantFilter_00700_Succeeds()
+    {
+      var model = new WarrantFilterModel
+      {
+        Symbol = "00700",
+        Page = 1,
+        PageSize = 5
+      };
+      var resp = Execute<WarrantFilterResponse>(QuoteApiService.WARRANT_FILTER, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "warrant_filter data must not be null");
+      // Warrant filter results may be empty depending on market conditions.
+      if (resp.Data.Items != null && resp.Data.Items.Count > 0)
+      {
+        Assert.That(resp.Data.Items[0].Symbol, Is.Not.Null.And.Not.Empty,
+            "warrant item symbol must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Future Exchange
+    // =====================================================================
+    [Test]
+    public void GetFutureExchange_ReturnsValidFields()
+    {
+      var model = new FutureExchangeModel { SecType = SecType.FUT.ToString() };
+      var resp = Execute<FutureExchangeResponse>(QuoteApiService.FUTURE_EXCHANGE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "future_exchange should return at least 1 exchange");
+      var exch = resp.Data[0];
+      Assert.That(exch.Code, Is.Not.Null.And.Not.Empty, "exchange code wire name");
+      Assert.That(exch.Name, Is.Not.Null.And.Not.Empty, "exchange name wire name");
+    }
+
+    // =====================================================================
+    // Future Contract By Exchange Code
+    // =====================================================================
+    [Test]
+    public void GetFutureContractByExchangeCode_Succeeds()
+    {
+      string exchCode = GetFutureExchangeCode();
+      var model = new FutureContractByExchCodeModel { ExchangeCode = exchCode };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTRACT_BY_EXCHANGE_CODE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "future_contract_by_exchange_code should return contracts");
+      var c = resp.Data[0];
+      Assert.That(c.ContractCode, Is.Not.Null.And.Not.Empty, "contract code wire name");
+      Assert.That(c.Type, Is.Not.Null.And.Not.Empty, "contract type wire name");
+    }
+
+    // =====================================================================
+    // Future Contract By Contract Code
+    // =====================================================================
+    [Test]
+    public void GetFutureContractByContractCode_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureContractByConCodeModel { ContractCode = conCode };
+      var resp = Execute<FutureContractResponse>(QuoteApiService.FUTURE_CONTRACT_BY_CONTRACT_CODE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_contract_by_contract_code data must not be null");
+      Assert.That(resp.Data.ContractCode, Is.Not.Null.And.Not.Empty,
+          "contract code wire name");
+      Assert.That(resp.Data.Type, Is.Not.Null.And.Not.Empty,
+          "contract type wire name");
+    }
+
+    // =====================================================================
+    // Future Continuous Contracts
+    // =====================================================================
+    [Test]
+    public void GetFutureContinuousContracts_Succeeds()
+    {
+      string ftype = GetFutureType();
+      var model = new FutureContractByTypeModel { FutureType = ftype };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTINUOUS_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_continuous_contracts data must not be null");
+      // Continuous contracts may be empty for some types.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "continuous contract code must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Future Current Contract
+    // =====================================================================
+    [Test]
+    public void GetFutureCurrentContract_Succeeds()
+    {
+      string exchCode = GetFutureExchangeCode();
+      var model = new FutureContractByExchCodeModel { ExchangeCode = exchCode };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CURRENT_CONTRACT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_current_contract data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "current contract code must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Future Contracts (by contract codes)
+    // =====================================================================
+    [Test]
+    public void GetFutureContracts_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureContractCodesModel
+      {
+        ContractCodes = new List<string> { conCode }
+      };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "future_contracts should return data");
+      Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+          "contract code wire name");
+    }
+
+    // =====================================================================
+    // Future Kline
+    // =====================================================================
+    [Test]
+    public void GetFutureKline_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureKlineModel
+      {
+        ContractCodes = new List<string> { conCode },
+        Period = "day",
+        Limit = 5
+      };
+      var resp = Execute<FutureKlineResponse>(QuoteApiService.FUTURE_KLINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "future_kline should return data");
+      var batch = resp.Data[0];
+      Assert.That(batch.ContractCode, Is.Not.Null.And.Not.Empty,
+          "future kline contractCode wire name");
+      if (batch.Items != null && batch.Items.Count > 0)
+      {
+        var candle = batch.Items[0];
+        Assert.That(candle.Time, Is.GreaterThan(0), "future kline time must be non-zero");
+        Assert.That(candle.Close, Is.GreaterThan(0), "future kline close must be > 0");
+      }
+    }
+
+    // =====================================================================
+    // Future Real-Time Quote
+    // =====================================================================
+    [Test]
+    public void GetFutureRealTimeQuote_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureContractCodesModel
+      {
+        ContractCodes = new List<string> { conCode }
+      };
+      var resp = Execute<FutureRealTimeQuoteResponse>(QuoteApiService.FUTURE_REAL_TIME_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "future_real_time_quote should return data");
+      var item = resp.Data[0];
+      Assert.That(item.ContractCode, Is.Not.Null.And.Not.Empty,
+          "future real-time contractCode wire name");
+    }
+
+    // =====================================================================
+    // Future Tick
+    // =====================================================================
+    [Test]
+    public void GetFutureTick_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureTickModel
+      {
+        ContractCode = conCode,
+        Limit = 5
+      };
+      var resp = Execute<FutureTickResponse>(QuoteApiService.FUTURE_TICK, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_tick data must not be null");
+      Assert.That(resp.Data.ContractCode, Is.Not.Null.And.Not.Empty,
+          "future tick contractCode wire name");
+    }
+
+    // =====================================================================
+    // Future Trading Date
+    // =====================================================================
+    [Test]
+    public void GetFutureTradingDate_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureTradingDateModel { ContractCode = conCode };
+      var resp = Execute<FutureTradingDateResponse>(QuoteApiService.FUTURE_TRADING_DATE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_trading_date data must not be null");
+    }
+
+    // =====================================================================
+    // Future History Main Contract
+    // =====================================================================
+    [Test]
+    public void GetFutureHistoryMainContract_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new FutureHistoryMainContractModel
+      {
+        ContractCodes = new List<string> { conCode },
+        BeginTime = now - 30L * 24 * 3600 * 1000,
+        EndTime = now
+      };
+      var resp = Execute<FutureHistoryMainContractResponse>(QuoteApiService.FUTURE_HISTORY_MAIN_CONTRACT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_history_main_contract data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "history main contract code must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Future Depth
+    // =====================================================================
+    [Test]
+    public void GetFutureDepth_Succeeds()
+    {
+      string conCode = GetFutureContractCode();
+      var model = new FutureDepthModel
+      {
+        ContractCodes = new List<string> { conCode }
+      };
+      var resp = Execute<FutureDepthResponse>(QuoteApiService.FUTURE_DEPTH, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_depth data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "future depth contractCode wire name");
+      }
+    }
+
+    // =====================================================================
+    // Fund All Symbols
+    // =====================================================================
+    [Test]
+    public void GetFundAllSymbols_Succeeds()
+    {
+      var resp = Execute<FundContractsResponse>(QuoteApiService.FUND_ALL_SYMBOLS, new ApiModel());
+
+      Assert.That(resp.Data, Is.Not.Null, "fund_all_symbols data must not be null");
+      // May be empty depending on permissions.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+            "fund symbol must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Fund Contracts
+    // =====================================================================
+    [Test]
+    public void GetFundContracts_Succeeds()
+    {
+      string symbol = GetFundSymbol();
+      var model = new FundSymbolModel
+      {
+        Symbols = new List<string> { symbol }
+      };
+      var resp = Execute<FundContractsResponse>(QuoteApiService.FUND_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "fund_contracts should return data");
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "fund contract symbol wire name");
+    }
+
+    // =====================================================================
+    // Fund Quote
+    // =====================================================================
+    [Test]
+    public void GetFundQuote_Succeeds()
+    {
+      string symbol = GetFundSymbol();
+      var model = new FundSymbolModel
+      {
+        Symbols = new List<string> { symbol }
+      };
+      var resp = Execute<FundQuoteResponse>(QuoteApiService.FUND_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "fund_quote should return data");
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "fund quote symbol wire name");
+    }
+
+    // =====================================================================
+    // Fund History Quote
+    // =====================================================================
+    [Test]
+    public void GetFundHistoryQuote_Succeeds()
+    {
+      string symbol = GetFundSymbol();
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new FundQuoteHistoryModel
+      {
+        Symbols = new List<string> { symbol },
+        BeginTime = now - 30L * 24 * 3600 * 1000,
+        EndTime = now,
+        Limit = 5
+      };
+      var resp = Execute<FundHistoryQuoteResponse>(QuoteApiService.FUND_HISTORY_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "fund_history_quote should return data");
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "fund history quote symbol wire name");
+    }
+
+    // =====================================================================
+    // Financial Currency (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetFinancialCurrency_AAPL_ReturnsValidFields()
+    {
+      var model = new FinancialCurrencyModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US
+      };
+      var resp = Execute<FinancialCurrencyResponse>(QuoteApiService.FINANCIAL_CURRENCY, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "financial_currency should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "financial currency symbol wire name");
+      Assert.That(item.Currency, Is.Not.Null.And.Not.Empty, "currency wire name");
+    }
+
+    // =====================================================================
+    // Financial Exchange Rate
+    // =====================================================================
+    [Test]
+    public void GetFinancialExchangeRate_Succeeds()
+    {
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new FinancialExchangeRateModel
+      {
+        CurrencyList = new List<string> { "USD/CNY" },
+        BeginDate = now - 30L * 24 * 3600 * 1000,
+        EndDate = now
+      };
+      var resp = Execute<FinancialExchangeRateResponse>(QuoteApiService.FINANCIAL_EXCHANGE_RATE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "financial_exchange_rate should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Currency, Is.Not.Null.And.Not.Empty, "exchange rate currency wire name");
+    }
+
+    // =====================================================================
+    // Stock Fundamental (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetStockFundamental_AAPL_ReturnsValidFields()
+    {
+      var model = new QuoteStockFundamentalModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US
+      };
+      var resp = Execute<QuoteStockFundamentalResponse>(QuoteApiService.STOCK_FUNDAMENTAL, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "stock_fundamental data must not be null");
+      Assert.That(resp.Data.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "stock fundamental items must be non-empty");
+      var item = resp.Data.Items[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "fundamental symbol wire name");
+      Assert.That(item.MarketCap, Is.GreaterThan(0), "marketCap must be > 0");
+    }
+
+    // =====================================================================
+    // Broker Hold (US)
+    // =====================================================================
+    [Test]
+    public void GetBrokerHold_US_Succeeds()
+    {
+      var model = new QuoteBrokerHoldModel(Market.US, 5);
+      var resp = Execute<QuoteBrokerHoldResponse>(QuoteApiService.BROKER_HOLD, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "broker_hold data must not be null");
+      // Hold data may be empty.
+      if (resp.Data.Items != null && resp.Data.Items.Count > 0)
+      {
+        Assert.That(resp.Data.Items[0].OrgName, Is.Not.Null.And.Not.Empty,
+            "broker hold orgName wire name");
+      }
+    }
+
+    // =====================================================================
+    // Get Quote Permission
+    // =====================================================================
+    [Test]
+    public void GetQuotePermission_ReturnsValidFields()
+    {
+      var resp = Execute<QuotePermissionResponse>(QuoteApiService.GET_QUOTE_PERMISSION, new ApiModel());
+
+      Assert.That(resp.Data, Is.Not.Null, "get_quote_permission data must not be null");
+      // Permissions may be empty if no active entitlements.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Name, Is.Not.Null.And.Not.Empty,
+            "quote permission name wire name");
+      }
+    }
+
+    // =====================================================================
+    // Kline Quota
+    // =====================================================================
+    [Test]
+    public void GetKlineQuota_ReturnsValidFields()
+    {
+      var model = new KlineQuotaModel { WithDetails = true };
+      var resp = Execute<KlineQuotaResponse>(QuoteApiService.KLINE_QUOTA, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "kline_quota should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Method, Is.Not.Null.And.Not.Empty, "quota method wire name");
+    }
+
+    // =====================================================================
+    // User License
+    // =====================================================================
+    [Test]
+    public void GetUserLicense_ReturnsValidFields()
+    {
+      var resp = Execute<UserLicenseResponse>(QuoteApiService.USER_LICENSE, new ApiModel());
+
+      Assert.That(resp.Data, Is.Not.Null, "user_license data must not be null");
+      Assert.That(resp.Data.License, Is.Not.Null.And.Not.Empty, "license wire name");
+    }
+
+    // =====================================================================
+    // Market Scanner (simple query, no filters)
+    // =====================================================================
+    [Test]
+    public void GetMarketScanner_US_Succeeds()
+    {
+      var model = new MarketScannerModel
+      {
+        Market = Market.US,
+        Page = 1,
+        PageSize = 5
+      };
+      var resp = Execute<MarketScannerResponse>(QuoteApiService.MARKET_SCANNER, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "market_scanner data must not be null");
+      // Scanner may return empty results without filters.
+    }
+
+    // =====================================================================
+    // Warrant Real-Time Quote (HK, needs warrant symbol from filter)
+    // =====================================================================
+    [Test]
+    public void GetWarrantRealTimeQuote_Succeeds()
+    {
+      // First get a warrant symbol from warrant_filter
+      var filterModel = new WarrantFilterModel
+      {
+        Symbol = "00700",
+        Page = 1,
+        PageSize = 1
+      };
+      var filterResp = Execute<WarrantFilterResponse>(QuoteApiService.WARRANT_FILTER, filterModel);
+
+      if (filterResp.Data?.Items == null || filterResp.Data.Items.Count == 0)
+        Assert.Ignore("no warrant symbols available from warrant_filter");
+
+      string warrantSymbol = filterResp.Data.Items[0].Symbol;
+      var model = new WarrantQuoteModel
+      {
+        Symbols = new List<string> { warrantSymbol }
+      };
+      var resp = Execute<WarrantQuoteResponse>(QuoteApiService.WARRANT_REAL_TIME_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "warrant_real_time_quote data must not be null");
+      if (resp.Data.Items != null && resp.Data.Items.Count > 0)
+      {
+        Assert.That(resp.Data.Items[0].Symbol, Is.Not.Null.And.Not.Empty,
+            "warrant quote symbol wire name");
+      }
+    }
+
+    // =====================================================================
+    // Financial Daily (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetFinancialDaily_AAPL_Succeeds()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<TigerDictResponse>(QuoteApiService.FINANCIAL_DAILY, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "financial_daily data must not be null");
+    }
+
+    // =====================================================================
+    // Financial Report (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetFinancialReport_AAPL_Succeeds()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<TigerDictResponse>(QuoteApiService.FINANCIAL_REPORT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "financial_report data must not be null");
+    }
+
+    // =====================================================================
+    // Industry List (US)
+    // =====================================================================
+    [Test]
+    public void GetIndustryList_US_Succeeds()
+    {
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<TigerListResponse>(QuoteApiService.INDUSTRY_LIST, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "industry_list data must not be null");
+    }
+
+    // =====================================================================
+    // Industry Stocks (US)
+    // =====================================================================
+    [Test]
+    public void GetIndustryStocks_US_Succeeds()
+    {
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<TigerListResponse>(QuoteApiService.INDUSTRY_STOCKS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "industry_stocks data must not be null");
+    }
+
+    // =====================================================================
+    // Stock Industry (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetStockIndustry_AAPL_Succeeds()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<TigerDictResponse>(QuoteApiService.STOCK_INDUSTRY, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "stock_industry data must not be null");
+    }
+
+    // =====================================================================
+    // Option Timeline (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetOptionTimeline_AAPL_ReturnsValidFields()
+    {
+      var opt = GetAaplOption();
+      var model = new OptionCommonModel
+      {
+        Symbol = opt.Symbol,
+        Right = opt.Right,
+        Strike = opt.Strike,
+        Expiry = opt.Expiry
+      };
+      var resp = Execute<QuoteTimelineResponse>(QuoteApiService.OPTION_TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_timeline should return data");
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "option timeline symbol wire name");
+    }
   }
 }
