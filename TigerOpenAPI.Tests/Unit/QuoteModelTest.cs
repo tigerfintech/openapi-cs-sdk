@@ -23,7 +23,7 @@ namespace TigerOpenAPI.Tests.Unit
       var model = new QuoteKlineModel();
       Assert.That(model.Period, Is.EqualTo("day"));
       Assert.That(model.Limit, Is.EqualTo(300));
-      Assert.That(model.Rigth, Is.EqualTo(RightOption.br));
+      Assert.That(model.Right, Is.EqualTo(RightOption.br));
     }
 
     [Test]
@@ -230,7 +230,7 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void QuoteHistoryTimelineModel_Serialization()
     {
-      var model = new QuoteHistoryTimelineModel { Date = "2024-01-19", Rigth = RightOption.br };
+      var model = new QuoteHistoryTimelineModel { Date = "2024-01-19", Right = RightOption.br };
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
       Assert.That(json, Does.Contain("\"date\":\"2024-01-19\""));
       Assert.That(json, Does.Contain("\"right\":\"br\""));

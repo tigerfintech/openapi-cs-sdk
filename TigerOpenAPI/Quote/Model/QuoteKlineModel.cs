@@ -14,7 +14,13 @@ namespace TigerOpenAPI.Quote.Model
     public string Period { get; set; } = KLineType.day.Value;
 
     [JsonProperty(PropertyName = "right"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
-    public RightOption Rigth { get; set; } = RightOption.br;
+    public RightOption Right { get; set; } = RightOption.br;
+
+    /// <summary>
+    /// Deprecated: use <see cref="Right"/> instead. This was a historical typo.
+    /// </summary>
+    [JsonIgnore, Obsolete("Use Right instead")]
+    public RightOption Rigth { get => Right; set => Right = value; }
 
     [JsonProperty(PropertyName = "begin_time")]
     public Int64 BeginTime { get; set; }

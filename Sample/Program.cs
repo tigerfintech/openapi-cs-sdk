@@ -1948,7 +1948,7 @@ class Program
         BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
         // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
-        Rigth = RightOption.br
+        Right = RightOption.br
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1977,7 +1977,7 @@ class Program
       {
         Symbols = new List<string> { "AAPL" },
         Date = "2023-03-03",
-        Rigth = RightOption.br
+        Right = RightOption.br
       }
     };
     return await quoteClient.ExecuteAsync(request);
