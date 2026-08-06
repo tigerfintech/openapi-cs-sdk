@@ -3,6 +3,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Asn1.Pkcs;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Config;
 
