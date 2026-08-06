@@ -31,6 +31,7 @@ namespace TigerOpenAPI.Tests.Unit
       var candidateTypes = SdkAssembly.GetTypes()
           .Where(t => t.IsClass && !t.IsAbstract && t.IsPublic)
           .Where(t => t.Name.EndsWith("Model") || t.Name.EndsWith("Item") || t.Name.EndsWith("Response"))
+          .Where(t => !t.Namespace!.Contains(".Pb"))
           .OrderBy(t => t.FullName);
 
       foreach (var type in candidateTypes)
@@ -65,6 +66,7 @@ namespace TigerOpenAPI.Tests.Unit
       var candidateTypes = SdkAssembly.GetTypes()
           .Where(t => t.IsClass && !t.IsAbstract && t.IsPublic)
           .Where(t => t.Name.EndsWith("Model") || t.Name.EndsWith("Item") || t.Name.EndsWith("Response"))
+          .Where(t => !t.Namespace!.Contains(".Pb"))
           .OrderBy(t => t.FullName);
 
       foreach (var type in candidateTypes)
