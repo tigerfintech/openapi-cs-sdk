@@ -894,7 +894,7 @@ namespace TigerOpenAPI.Tests.Integration
       var model = new OptionAnalysisModel(
           new List<OptionAnalysisSymbolModel>
           {
-            new OptionAnalysisSymbolModel("AAPL", "daily")
+            new OptionAnalysisSymbolModel("AAPL", "52week")
           },
           Market.US);
       var resp = Execute<OptionAnalysisResponse>(QuoteApiService.OPTION_ANALYSIS, model);
@@ -1266,7 +1266,7 @@ namespace TigerOpenAPI.Tests.Integration
       long now = DateUtil.CurrentTimeMillis();
       var model = new FinancialExchangeRateModel
       {
-        CurrencyList = new List<string> { "USD/CNY" },
+        CurrencyList = new List<string> { "HKD", "USD" },
         BeginDate = now - 30L * 24 * 3600 * 1000,
         EndDate = now
       };
