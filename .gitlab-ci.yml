@@ -112,6 +112,11 @@ notify:webhook:
           try:
               tree = ET.parse(path)
               root = tree.getroot()
+              print(f"XML root: {root.tag}, children: {[c.tag for c in root[:3]]}")
+              for suite in root.iter():
+                  if suite.tag in ('testsuite','test-suite'):
+                      print(f"  suite: {suite.tag} attrs: {dict(suite.attrib)}")
+              for suite in root.iter('testsuite'):
               for suite in root.iter("testsuite"):
                   t += int(suite.get("tests", 0))
                   f += int(suite.get("failures", 0)) + int(suite.get("errors", 0))
