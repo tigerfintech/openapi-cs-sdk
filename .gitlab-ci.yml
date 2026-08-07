@@ -109,10 +109,17 @@ notify:webhook:
           try:
               tree = ET.parse(path)
               root = tree.getroot()
+              # Try standard JUnit: <testsuites><testsuite tests=N ...>
               for suite in root.iter("testsuite"):
                   t += int(suite.get("tests", 0))
                   f += int(suite.get("failures", 0)) + int(suite.get("errors", 0))
                   s += int(suite.get("skipped", 0))
+              # Try JunitXml.TestLogger: <test-run testcasecount=N ...>
+              if t == 0:
+                  for run in root.iter("test-run"):
+                      t = int(run.get("testcasecount", 0))
+                      f = int(run.get("failures", 0)) + int(run.get("errors", 0))
+                      s = int(run.get("skipped", 0))
           except Exception as e:
               print(f"Failed to parse {path}: {e}")
           return t, t - f - s, f, s
