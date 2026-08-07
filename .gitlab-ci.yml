@@ -92,6 +92,8 @@ notify:webhook:
     - job: integ
       artifacts: true
       optional: true
+      artifacts: true
+      optional: true
   script:
     - |
       python3 << 'PYEOF'
