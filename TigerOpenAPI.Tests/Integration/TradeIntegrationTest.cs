@@ -31,6 +31,8 @@ namespace TigerOpenAPI.Tests.Integration
       IntegTestConfig.EnsureCredentials();
       _client = IntegTestConfig.TradeClient;
       _account = IntegTestConfig.Account;
+      Assert.That(_account, Is.Not.Null.And.Not.Empty,
+          "account must not be null or empty — set TIGEROPEN_ACCOUNT env var");
     }
 
     // ---- helper ----
@@ -321,6 +323,8 @@ namespace TigerOpenAPI.Tests.Integration
 
       Assert.That(resp.Data, Is.Not.Null, "inactive orders data wrapper must not be null");
       var items = resp.Data!.Items;
+      // Inactive orders may be empty if no cancelled/rejected orders exist.
+      // When orders exist, validate identifier and status fields.
       if (items != null && items.Count > 0)
       {
         foreach (var order in items)
@@ -352,6 +356,8 @@ namespace TigerOpenAPI.Tests.Integration
 
       Assert.That(resp.Data, Is.Not.Null, "filled orders data wrapper must not be null");
       var items = resp.Data!.Items;
+      // Filled orders may be empty if no fills in the last 30 days.
+      // When orders exist, validate identifier and status fields.
       if (items != null && items.Count > 0)
       {
         foreach (var order in items)
@@ -382,6 +388,8 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<OrderTransactionsResponse>(TradeApiService.ORDER_TRANSACTIONS, model);
 
       Assert.That(resp.Data, Is.Not.Null, "order_transactions data must not be null");
+      // Order transactions may be empty if no fills in the last 30 days.
+      // When transactions exist, validate key fields.
       if (resp.Data!.Items != null && resp.Data.Items.Count > 0)
       {
         var txn = resp.Data.Items[0];
@@ -409,6 +417,8 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<SegmentFundsResponse>(TradeApiService.SEGMENT_FUND_HISTORY, model);
 
       Assert.That(resp.Data, Is.Not.Null, "segment_fund_history data must not be null");
+      // Segment fund history may be empty if no fund transfers in the query range.
+      // When records exist, validate key fields.
       if (resp.Data.Count > 0)
       {
         Assert.That(resp.Data[0].Id, Is.Not.EqualTo(0),
@@ -433,6 +443,8 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<SegmentFundAvailableResponse>(TradeApiService.SEGMENT_FUND_AVAILABLE, model);
 
       Assert.That(resp.Data, Is.Not.Null, "segment_fund_available data must not be null");
+      // Available segment funds may be empty if no transferable balance exists.
+      // When records exist, validate key fields.
       if (resp.Data.Count > 0)
       {
         Assert.That(resp.Data[0].FromSegment, Is.Not.Null.And.Not.Empty,
@@ -517,6 +529,8 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<PositionTransferRecordsResponse>(TradeApiService.POSITION_TRANSFER_RECORDS, model);
 
       Assert.That(resp.Data, Is.Not.Null, "position_transfer_records data must not be null");
+      // Transfer records may be empty if no transfers in the query range.
+      // When records exist, validate key fields.
       if (resp.Data.Count > 0)
       {
         Assert.That(resp.Data[0].Id, Is.Not.EqualTo(0),
@@ -537,6 +551,8 @@ namespace TigerOpenAPI.Tests.Integration
 
       Assert.That(resp.Data, Is.Not.Null,
           "position_transfer_external_records data must not be null");
+      // External transfer records may be empty if no external transfers exist.
+      // When records exist, validate key fields.
       if (resp.Data.Count > 0)
       {
         Assert.That(resp.Data[0].Id, Is.Not.EqualTo(0),
@@ -550,11 +566,26 @@ namespace TigerOpenAPI.Tests.Integration
     // Option Exercise Check (preview only — no state change)
     // =====================================================================
     [Test]
-    public void CheckOptionExercise_Preview_Succeeds()
+    public async System.Threading.Tasks.Task CheckOptionExercise_Preview_Succeeds()
     {
-      // Preview does not place a real exercise request.
-      // Use a dummy contract ID; the preview should still return a response.
-      Assert.Ignore("option_exercise_check requires a valid open option position — skipped to avoid noise");
+      Assert.That(_client, Is.Not.Null, "TradeClient is null");
+      // Preview does not place a real exercise request. A dummy contract ID
+      // will likely return an error, but the call path is exercised.
+      var resp = await _client!.CheckOptionExerciseAsync(
+          contractId: 0, type: "exercise", quantity: 1, account: _account);
+
+      Assert.That(resp, Is.Not.Null, "option_exercise_check response must not be null");
+      // With a dummy contract ID the server is expected to return an error.
+      // That is acceptable — the point is to exercise the preview call path.
+      if (!resp.IsSuccess())
+      {
+        Assert.Pass(
+            $"option_exercise_check returned error (expected for dummy contract) " +
+            $"code={resp.Code} msg={resp.Message}");
+      }
+      // If the call succeeded, validate the data fields.
+      Assert.That(resp.Data, Is.Not.Null,
+          "option_exercise_check data must not be null on success");
     }
 
     // =====================================================================
