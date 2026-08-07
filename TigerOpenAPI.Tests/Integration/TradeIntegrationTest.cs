@@ -465,6 +465,7 @@ namespace TigerOpenAPI.Tests.Integration
         Account = _account,
         Symbol = "AAPL",
         SecType = SecType.STK,
+        SegType = SegmentType.SEC,
         Action = ActionType.BUY,
         OrderType = OrderType.MKT
       };
@@ -483,8 +484,10 @@ namespace TigerOpenAPI.Tests.Integration
     {
       var model = new FundDetailsModel(_account)
       {
-        StartDate = "2025-01-01",
-        EndDate = "2025-01-31"
+        SegTypes = new List<string> { SegmentType.SEC.ToString() },
+        Currency = Currency.USD.ToString(),
+        Start = 0,
+        Limit = 5
       };
       var resp = Execute<FundDetailsResponse>(TradeApiService.FUND_DETAILS, model);
 
@@ -572,7 +575,7 @@ namespace TigerOpenAPI.Tests.Integration
       // Preview does not place a real exercise request. A dummy contract ID
       // will likely return an error, but the call path is exercised.
       var resp = await _client!.CheckOptionExerciseAsync(
-          contractId: 0, type: "exercise", quantity: 1, account: _account);
+          contractId: 0, type: "Exercise", quantity: 1, account: _account);
 
       Assert.That(resp, Is.Not.Null, "option_exercise_check response must not be null");
       // With a dummy contract ID the server is expected to return an error.
@@ -610,7 +613,7 @@ namespace TigerOpenAPI.Tests.Integration
     public async System.Threading.Tasks.Task GetOptionExercisePositions_Succeeds()
     {
       Assert.That(_client, Is.Not.Null, "TradeClient is null");
-      var resp = await _client!.GetOptionExercisePositionsAsync("exercise", account: _account);
+      var resp = await _client!.GetOptionExercisePositionsAsync("Exercise", account: _account);
 
       Assert.That(resp, Is.Not.Null, "option_exercise_position response must not be null");
       Assert.That(resp.IsSuccess(), Is.True,
