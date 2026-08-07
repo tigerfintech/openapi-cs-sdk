@@ -110,6 +110,7 @@ notify:webhook:
           try:
               tree = ET.parse(path)
               root = tree.getroot()
+              print(f"DEBUG {path}: root={root.tag}")
               # Try standard JUnit: <testsuites><testsuite tests=N ...>
               for suite in root.iter("testsuite"):
                   t += int(suite.get("tests", 0))
