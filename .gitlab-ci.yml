@@ -17,6 +17,9 @@ cache:
     - .nuget/packages/
 
 unit:
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - openapi
   stage: unit
   image: mcr.microsoft.com/dotnet/sdk:10.0
   variables:
