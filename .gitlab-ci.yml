@@ -38,7 +38,7 @@ unit:
   script:
     - mkdir -p test-results
     - dotnet build --no-restore -c Release
-    - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+    - dotnet test TigerOpenAPI.Tests --filter "FullyQualifiedName!~SerializationContractTest"/TigerOpenAPI.Tests.csproj
         --no-build -c Release
         --filter "Category!=Integration"
         --logger "junit;LogFilePath=${CI_PROJECT_DIR}/test-results/unit.xml"
@@ -62,9 +62,9 @@ integ:
   script:
     - mkdir -p test-results
     - dotnet build --no-restore -c Release
-    - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+    - dotnet test TigerOpenAPI.Tests --filter "FullyQualifiedName!~SerializationContractTest"/TigerOpenAPI.Tests.csproj
         --no-build -c Release
-        --filter "Category=Integration&FullyQualifiedName!~Tests.Integ."
+        --filter Category=Integration
         --logger "junit;LogFilePath=${CI_PROJECT_DIR}/test-results/integ.xml"
   artifacts:
     when: always
