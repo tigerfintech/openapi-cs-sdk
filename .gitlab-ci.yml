@@ -75,8 +75,12 @@ integ:
     reports:
       junit: test-results/integ.xml
     expire_in: 7 days
+  variables:
+    TIGER_ID: $TIGEROPEN_TIGER_ID
+    TIGER_PRIVATE_KEY: $TIGEROPEN_PRIVATE_KEY
+    TIGER_ACCOUNT: $TIGEROPEN_ACCOUNT
   rules:
-    - if: $TIGER_ID != "" && $TIGER_PRIVATE_KEY != ""
+    - if: $TIGEROPEN_TIGER_ID != "" && $TIGEROPEN_PRIVATE_KEY != ""
 
 # Pipeline result notification via Feishu/Lark webhook.
 # Parses JUnit XML artifacts directly (no GitLab API dependency, no curl).
