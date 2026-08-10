@@ -156,6 +156,8 @@ notify:webhook:
           content += f"**Integration tests:** {integ_stats}\n"
       content += f"[View pipeline]({pipeline_url})"
 
+      print(f"===CONTENT===\n{content}\n===END===")
+
       payload = {
           "msg_type": "interactive",
           "card": {
