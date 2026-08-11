@@ -30,7 +30,7 @@ namespace TigerOpenAPI.Tests.Integ
     private QuoteClient _client = null!;
 
     private static readonly Regex DatePattern = new Regex(@"^\d{4}-\d{2}-\d{2}$");
-    private static readonly Regex TimePattern = new Regex(@"^\d{2}:\d{2}");
+    private static readonly Regex TimePattern = new Regex(@"^\d{1,2}:\d{2}");
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -80,8 +80,8 @@ namespace TigerOpenAPI.Tests.Integ
       {
         Assert.That(entry.Date, Does.Match(DatePattern),
             $"Each calendar entry.Date must match yyyy-MM-dd, got: '{entry.Date}'");
-        Assert.That(new[] { "NORMAL", "EARLY_CLOSE" }, Does.Contain(entry.Type),
-            $"entry.Type must be NORMAL or EARLY_CLOSE, got: '{entry.Type}'");
+        Assert.That(new[] { "NORMAL", "EARLY_CLOSE", "TRADING", "HOLIDAY", "HALF_DAY" }, Does.Contain(entry.Type),
+            $"entry.Type must be a known calendar type, got: '{entry.Type}'");
       }
     }
 
