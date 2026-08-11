@@ -286,7 +286,8 @@ namespace TigerOpenAPI.Tests.Unit
     {
       string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""impliedVol30Days"":0.25,
         ""hisVolatility"":0.20,""ivHisVRatio"":1.25,""callPutRatio"":1.5,
-        ""impliedVolMetric"":""metric_data"",""volatilityList"":[]}]}";
+        ""impliedVolMetric"":{""period"":""52week"",""percentile"":0.75,""rank"":0.80},
+        ""volatilityList"":[]}]}";
       var resp = JsonConvert.DeserializeObject<OptionAnalysisResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
       var a = resp.Data[0];
@@ -295,7 +296,9 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(a.HisVolatility, Is.EqualTo(0.20));
       Assert.That(a.IvHisVRatio, Is.EqualTo(1.25));
       Assert.That(a.CallPutRatio, Is.EqualTo(1.5));
-      Assert.That(a.ImpliedVolMetric, Is.EqualTo("metric_data"));
+      Assert.That(a.ImpliedVolMetric, Is.Not.Null);
+      Assert.That(a.ImpliedVolMetric.Period, Is.EqualTo("52week"));
+      Assert.That(a.ImpliedVolMetric.Percentile, Is.EqualTo(0.75));
       Assert.That(a.VolatilityList.Count, Is.EqualTo(0));
     }
 
