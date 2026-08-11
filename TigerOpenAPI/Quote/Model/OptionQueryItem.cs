@@ -8,16 +8,16 @@ namespace TigerOpenAPI.Quote.Model
   /// </summary>
   public class OptionQueryItem
   {
-    [JsonProperty(PropertyName = "symbol")]
+    [JsonProperty(PropertyName = "symbol", NullValueHandling = NullValueHandling.Ignore)]
     public string Symbol { get; set; }
 
     [JsonProperty(PropertyName = "expiry")]
     public long Expiry { get; set; }
 
-    [JsonProperty(PropertyName = "strike")]
+    [JsonProperty(PropertyName = "strike", NullValueHandling = NullValueHandling.Ignore)]
     public string Strike { get; set; }
 
-    [JsonProperty(PropertyName = "right")]
+    [JsonProperty(PropertyName = "right", NullValueHandling = NullValueHandling.Ignore)]
     public string Right { get; set; }
   }
 }
