@@ -63,7 +63,7 @@ namespace TigerOpenAPI.Config
     public bool AutoRefreshToken { get; set; } = false;
 
     /**
-     * (optional)whether to automatically grab quote permission when the initialization instance is completed
+     * (optional) whether to automatically claim market data device access after initialization
      */
     public bool AutoGrabPermission { get; set; } = true;
 

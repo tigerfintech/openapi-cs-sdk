@@ -350,7 +350,7 @@ class Program
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
-    // Cancel all quote subscriptions(Security, Options, Futures)
+    // Cancel all market data subscriptions (securities, options, futures)
     ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote()}");
     //ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote(symbols)}");
     Sleep(2);

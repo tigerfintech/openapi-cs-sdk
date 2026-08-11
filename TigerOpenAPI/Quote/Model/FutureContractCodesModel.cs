@@ -10,6 +10,9 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "contract_codes")]
     public List<string> ContractCodes { get; set; }
 
+    [JsonProperty(PropertyName = "type")]
+    public string Type { get; set; }
+
     public FutureContractCodesModel() : base()
     {
     }

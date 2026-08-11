@@ -10,6 +10,9 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "exchange_code")]
     public string ExchangeCode { get; set; }
 
+    [JsonProperty(PropertyName = "type")]
+    public string Type { get; set; }
+
     public FutureContractByExchCodeModel() : base()
     {
     }
