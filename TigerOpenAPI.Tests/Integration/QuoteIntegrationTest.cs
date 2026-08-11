@@ -82,7 +82,17 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetBrief_AAPL_ReturnsPriceFields()
     {
-      Assert.Ignore("brief SDK deserialization bug: Cannot deserialize JSON object into List<RealTimeQuoteItem>. Skip until SDK response type is fixed.");
+      var model = new QuoteSymbolModel { Symbols = new List<string> { "AAPL" } };
+      var resp = Execute<BriefResponse>(QuoteApiService.BRIEF, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "brief data wrapper must not be null");
+      Assert.That(resp.Data.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "brief items must be non-empty");
+      var q = resp.Data.Items[0];
+      Assert.That(q.Symbol, Is.EqualTo("AAPL"), "symbol wire name");
+      Assert.That(q.LatestPrice, Is.GreaterThan(0), "latestPrice wire name");
+      Assert.That(q.LatestTime, Is.GreaterThan(1577836800000L),
+          "latestTime must be a valid epoch millis (after 2020-01-01)");
     }
 
     // =====================================================================
@@ -720,7 +730,32 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionKline_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("option_kline biz_content parse error — OptionKlineModel field serialization mismatch. Skip until model is aligned with API expectations.");
+      var opt = GetAaplOption();
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new OptionKlineV2Model
+      {
+        OptionQuery = new List<OptionKlineModel>
+        {
+          new OptionKlineModel
+          {
+            Symbol = opt.Symbol,
+            Right = opt.Right,
+            Strike = opt.Strike,
+            Expiry = opt.Expiry,
+            Period = "day",
+            Limit = 5
+          }
+        }
+      };
+      var resp = Execute<OptionKlineResponse>(QuoteApiService.OPTION_KLINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_kline should return data");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option kline symbol wire name");
+      Assert.That(item.Strike, Is.Not.Null.And.Not.Empty, "option kline strike wire name");
+      Assert.That(item.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "option kline items must be non-empty");
     }
 
     // =====================================================================
@@ -729,7 +764,28 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionTradeTick_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("option_trade_tick biz_content parse error — OptionCommonModel field serialization mismatch. Skip until model is aligned with API expectations.");
+      var opt = GetAaplOption();
+      var model = new OptionTradeTickV2Model
+      {
+        Contracts = new List<OptionQueryItem>
+        {
+          new OptionQueryItem
+          {
+            Symbol = opt.Symbol,
+            Right = opt.Right,
+            Strike = opt.Strike,
+            Expiry = opt.Expiry
+          }
+        }
+      };
+      var resp = Execute<OptionTradeTickResponse>(QuoteApiService.OPTION_TRADE_TICK, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "option_trade_tick data must not be null");
+      // Trade ticks may be empty outside trading hours
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"), "option trade tick symbol wire name");
+      }
     }
 
     // =====================================================================
@@ -738,7 +794,28 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionDepth_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("option_depth requires non-empty symbols list but OptionCommonModel sends a single symbol without the required list format. Skip until model is fixed.");
+      var opt = GetAaplOption();
+      var model = new OptionDepthV2Model
+      {
+        OptionBasic = new List<OptionQueryItem>
+        {
+          new OptionQueryItem
+          {
+            Symbol = opt.Symbol,
+            Right = opt.Right,
+            Strike = opt.Strike,
+            Expiry = opt.Expiry
+          }
+        },
+        Market = "US"
+      };
+      var resp = Execute<OptionDepthResponse>(QuoteApiService.OPTION_DEPTH, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "option_depth data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"), "option depth symbol wire name");
+      }
     }
 
     // =====================================================================
@@ -765,7 +842,18 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionAnalysis_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("option_analysis SDK deserialization bug: Unexpected character while parsing JSON. Skip until SDK response type is fixed.");
+      var model = new OptionAnalysisModel(
+          new List<OptionAnalysisSymbolModel>
+          {
+            new OptionAnalysisSymbolModel("AAPL", "52week")
+          },
+          Market.US);
+      var resp = Execute<OptionAnalysisResponse>(QuoteApiService.OPTION_ANALYSIS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "option_analysis should return data for AAPL");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option analysis symbol wire name");
     }
 
     // =====================================================================
@@ -847,7 +935,16 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetFutureContinuousContracts_Succeeds()
     {
-      Assert.Ignore("future_continuous_contracts SDK deserialization bug: Cannot deserialize JSON object into list. Skip until SDK response type is fixed.");
+      string ftype = GetFutureType();
+      var model = new FutureContractByTypeModel { FutureType = ftype };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTINUOUS_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_continuous_contracts data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "continuous contract code must be non-empty");
+      }
     }
 
     // =====================================================================
@@ -1259,7 +1356,29 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionTimeline_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("option_timeline requires 'market' field but OptionCommonModel has no market property. Skip until SDK model is extended.");
+      var opt = GetAaplOption();
+      var model = new OptionTimelineV2Model
+      {
+        OptionQuery = new List<OptionQueryItem>
+        {
+          new OptionQueryItem
+          {
+            Symbol = opt.Symbol,
+            Right = opt.Right,
+            Strike = opt.Strike,
+            Expiry = opt.Expiry
+          }
+        },
+        Market = "US"
+      };
+      var resp = Execute<QuoteTimelineResponse>(QuoteApiService.OPTION_TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "option_timeline data must not be null");
+      // Option timeline is intraday; outside trading hours the data list may be empty
+      if (resp.Data.Count == 0)
+        Assert.Ignore("non-trading hours, option_timeline data may be empty");
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "option timeline symbol wire name");
     }
 
     // =====================================================================

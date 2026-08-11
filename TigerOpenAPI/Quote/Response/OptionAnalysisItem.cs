@@ -1,8 +1,32 @@
-using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace TigerOpenAPI.Quote.Response
 {
+  public class ImpliedVolMetricItem
+  {
+    [JsonProperty(PropertyName = "period")]
+    public string Period { get; set; }
+    [JsonProperty(PropertyName = "percentile")]
+    public double Percentile { get; set; }
+    [JsonProperty(PropertyName = "rank")]
+    public double Rank { get; set; }
+  }
+
+  public class OptionVolatilityPoint
+  {
+    [JsonProperty(PropertyName = "impliedVol")]
+    public double ImpliedVol { get; set; }
+    [JsonProperty(PropertyName = "percentile")]
+    public double Percentile { get; set; }
+    [JsonProperty(PropertyName = "rank")]
+    public double Rank { get; set; }
+    [JsonProperty(PropertyName = "hisVolatility")]
+    public double HisVolatility { get; set; }
+    [JsonProperty(PropertyName = "timestamp")]
+    public long Timestamp { get; set; }
+  }
+
   public class OptionAnalysisItem
   {
     [JsonProperty(PropertyName = "symbol")]
@@ -24,12 +48,12 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "callPutRatio")]
     public double CallPutRatio { get; set; }
 
-    /// <summary>Implied volatility metrics</summary>
+    /// <summary>Implied volatility metrics (JSON object, not a string)</summary>
     [JsonProperty(PropertyName = "impliedVolMetric")]
-    public string ImpliedVolMetric { get; set; }
+    public ImpliedVolMetricItem ImpliedVolMetric { get; set; }
 
-    /// <summary>Historical volatility list (optional)</summary>
+    /// <summary>Historical volatility list</summary>
     [JsonProperty(PropertyName = "volatilityList")]
-    public List<object> VolatilityList { get; set; }
+    public List<OptionVolatilityPoint> VolatilityList { get; set; }
   }
 }

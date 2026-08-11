@@ -21,6 +21,9 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "expiry")]
     public long Expiry { get; set; }
 
+    [JsonProperty(PropertyName = "market"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public Market? Market { get; set; }
+
     public OptionCommonModel() : base()
     {
     }
