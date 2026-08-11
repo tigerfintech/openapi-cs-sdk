@@ -1315,7 +1315,7 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Get Quote Permission
+    // Get market data access
     // =====================================================================
     [Test]
     public void GetQuotePermission_ReturnsValidFields()
@@ -1327,7 +1327,7 @@ namespace TigerOpenAPI.Tests.Integration
       if (resp.Data.Count > 0)
       {
         Assert.That(resp.Data[0].Name, Is.Not.Null.And.Not.Empty,
-            "quote permission name wire name");
+            "market data access entry name wire name");
       }
     }
 
@@ -1505,6 +1505,100 @@ namespace TigerOpenAPI.Tests.Integration
         Assert.Ignore("non-trading hours, option_timeline data may be empty");
       Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
           "option timeline symbol wire name");
+    }
+
+    // =====================================================================
+    // Grab Quote Permission
+    // QuoteApiService.GRAB_QUOTE_PERMISSION = "grab_quote_permission"
+    // =====================================================================
+    [Test]
+    public void GrabQuotePermission_Succeeds()
+    {
+      var resp = Execute<QuotePermissionResponse>(QuoteApiService.GRAB_QUOTE_PERMISSION, new ApiModel());
+
+      Assert.That(resp.Data, Is.Not.Null, "grab_quote_permission data must not be null");
+      // Permissions returned may be empty if account has no entitlements to grab.
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].Name, Is.Not.Null.And.Not.Empty,
+            "grabbed quote permission name wire name");
+      }
+    }
+
+    // =====================================================================
+    // Corporate Action — Split (AAPL + TSLA, 3-year range)
+    // The SDK has no dedicated CorporateSplitResponse; use TigerDictResponse
+    // (same approach as GetFinancialDaily/GetFinancialReport).
+    // =====================================================================
+    [Test]
+    public void GetCorporateAction_Split_ReturnsValidFields()
+    {
+      long begin = DateUtil.ConvertTimestamp("2022-01-01", CustomTimeZone.NY_ZONE);
+      long end = DateUtil.ConvertTimestamp("2025-12-31", CustomTimeZone.NY_ZONE);
+
+      var model = new CorporateActionModel
+      {
+        Symbols = new List<string> { "AAPL", "TSLA" },
+        Market = Market.US,
+        ActionType = CorporateActionType.SPLIT,
+        BeginDate = begin,
+        EndDate = end
+      };
+      var resp = Execute<TigerDictResponse>(QuoteApiService.CORPORATE_ACTION, model);
+
+      Assert.That(resp.Data, Is.Not.Null,
+          "corporate action (split) data must not be null");
+      // Split events may be absent in the range — the call succeeding is enough.
+    }
+
+    // =====================================================================
+    // Trade Rank (US market)
+    // NOTE: QuoteApiService does not yet expose a TRADE_RANK constant.
+    // The API method name "trade_rank" is used directly (matching the Python
+    // SDK's get_trade_rank endpoint). Add a constant once the SDK is updated.
+    // =====================================================================
+    [Test]
+    public void GetTradeRank_US_ReturnsValidFields()
+    {
+      var model = new QuoteTradeRankModel { Market = Market.US };
+      var req = new TigerRequest<QuoteTradeRankResponse>
+      {
+        ApiMethodName = "trade_rank",
+        ModelValue = model
+      };
+      var resp = _client!.Execute(req);
+      Assert.That(resp, Is.Not.Null, "trade_rank response must not be null");
+
+      // Some accounts may not have access to the trade rank endpoint.
+      if (resp != null && !resp.IsSuccess())
+      {
+        Assert.Ignore($"trade_rank not accessible for this account: code={resp.Code} msg={resp.Message}");
+      }
+
+      Assert.That(resp!.Data, Is.Not.Null, "trade_rank data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        var item = resp.Data[0];
+        Assert.That(item.Symbol, Is.Not.Null.And.Not.Empty, "trade rank symbol wire name");
+        Assert.That(item.Market, Is.Not.Null.And.Not.Empty, "trade rank market wire name");
+      }
+    }
+
+    // =====================================================================
+    // Short Interest (AAPL)
+    // NOTE: The short_interest API is not included in QuoteApiService and
+    // has no corresponding SDK model/response type. Python SDK explicitly
+    // skips this test: "Account does not support short interest API method".
+    // Skipped here until a dedicated C# SDK model and response are added.
+    // =====================================================================
+    [Test]
+    public void GetShortInterest_AAPL_Skipped()
+    {
+      Assert.Ignore(
+          "short_interest is not yet exposed in the C# SDK (no model/response/constant). " +
+          "The Python SDK also skips this: 'Account does not support short interest API method'. " +
+          "Add a QuoteShortInterestModel + QuoteShortInterestResponse and a " +
+          "QuoteApiService.SHORT_INTEREST constant before enabling this test.");
     }
   }
 }
