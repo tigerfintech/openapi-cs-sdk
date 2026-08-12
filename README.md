@@ -1,8 +1,8 @@
 # openapi-cs-sdk
 
-[![NuGet](https://img.shields.io/nuget/v/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
-[![License](https://img.shields.io/github/license/tigerfintech/openapi-cs-sdk.svg)](LICENSE)
+[![NuGet](https://img.shields.io/nuget/v/TigerBrokers.OpenAPI.svg)](https://www.nuget.org/packages/TigerBrokers.OpenAPI/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/TigerBrokers.OpenAPI.svg)](https://www.nuget.org/packages/TigerBrokers.OpenAPI/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 [English](#english) | [中文](#中文)
 
