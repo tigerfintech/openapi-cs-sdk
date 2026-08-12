@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using TigerOpenAPI.Quote.Model;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Quote.Response
 {

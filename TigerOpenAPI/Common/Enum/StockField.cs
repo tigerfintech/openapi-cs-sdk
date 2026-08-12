@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 namespace TigerOpenAPI.Common.Enum
 {
   // scanner base stock field

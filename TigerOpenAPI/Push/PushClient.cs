@@ -68,7 +68,7 @@ namespace TigerOpenAPI.Push
 
     public PushClient HeartBeatData(in HeartBeatData heartBeatData)
     {
-      if (heartBeatData is not null)
+      if (heartBeatData != null)
         this.heartBeatData = heartBeatData;
       return this;
     }
@@ -178,11 +178,7 @@ namespace TigerOpenAPI.Push
             Thread.Sleep(100);
           }
 
-#if NETCOREAPP2_0_OR_GREATER || NET5_0_OR_GREATER
-          if (task.IsCompletedSuccessfully)
-#else
           if (task.Status == TaskStatus.RanToCompletion)
-#endif
           {
             channel = task.Result;
             connected = true;

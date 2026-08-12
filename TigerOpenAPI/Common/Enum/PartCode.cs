@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 namespace TigerOpenAPI.Common.Enum
 {
   public enum PartCode

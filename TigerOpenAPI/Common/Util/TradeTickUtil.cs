@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using DotNetty.Common.Utilities;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Push.Model;
 using TigerOpenAPI.Quote.Pb;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Common.Util
 {

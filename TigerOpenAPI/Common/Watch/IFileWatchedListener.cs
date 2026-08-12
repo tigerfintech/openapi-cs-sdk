@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.IO;
 namespace TigerOpenAPI.Common.Watch
 {
   public interface IFileWatchedListener

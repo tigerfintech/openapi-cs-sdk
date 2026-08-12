@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Reflection;
 using Newtonsoft.Json;
 using TigerOpenAPI.Common.Enum;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Common
 {

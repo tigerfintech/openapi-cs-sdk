@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
 using DotNetty.Handlers.Timeout;
@@ -8,6 +8,7 @@ using TigerOpenAPI.Push;
 using TigerOpenAPI.Quote.Pb;
 using static TigerOpenAPI.Quote.Pb.SocketCommon.Types;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Common.Util
 {

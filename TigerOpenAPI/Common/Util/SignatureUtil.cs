@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using System.Text;
+using System.Collections.Generic;
+using System;
 namespace TigerOpenAPI.Common.Util
 {
   public class SignatureUtil

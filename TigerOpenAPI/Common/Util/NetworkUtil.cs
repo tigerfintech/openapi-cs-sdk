@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -9,6 +10,7 @@ using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Config;
 using static System.Net.WebRequestMethods;
+using System.IO;
 
 namespace TigerOpenAPI.Common.Util
 {

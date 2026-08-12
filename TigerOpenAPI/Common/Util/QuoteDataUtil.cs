@@ -128,7 +128,7 @@ namespace TigerOpenAPI.Common.Util
         quoteBasicData.MinTick = quoteData.MinTick;
       }
 
-      if (quoteData.Mi is not null)
+      if (quoteData.Mi != null)
       {
         quoteBasicData.Mi = quoteData.Mi;
       }

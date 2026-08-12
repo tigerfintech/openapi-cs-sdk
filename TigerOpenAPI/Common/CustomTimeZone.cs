@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using TigerOpenAPI.Config;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Common
 {

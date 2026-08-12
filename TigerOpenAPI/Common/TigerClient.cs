@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using Newtonsoft.Json;
@@ -12,6 +13,8 @@ using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Trade;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TigerOpenAPI.Common
 {
@@ -160,11 +163,7 @@ namespace TigerOpenAPI.Common
     protected string ExecuteWrap(string requestUri, string data)
     {
       // doc:https://github.com/App-vNext/Polly#retry
-#if NET5_0_OR_GREATER
-      var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
-#else
       var retryPolicy = Policy.Handle<HttpRequestException>()
-#endif
         .Or<Exception>()
         .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>// RetryAsync()
@@ -176,11 +175,7 @@ namespace TigerOpenAPI.Common
     }
     protected async Task<string> ExecuteAsyncWrap(string requestUri, string data)
     {
-#if NET5_0_OR_GREATER
-      var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
-#else
       var retryPolicy = Policy.Handle<HttpRequestException>()
-#endif
         .Or<Exception>()
         .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>
@@ -201,7 +196,7 @@ namespace TigerOpenAPI.Common
       ApiLogger.Debug($"{(isAsync ? "async " : string.Empty)}request param:{param}");
     }
 
-    public virtual T? Execute<T>(TigerRequest<T> request) where T : TigerResponse
+    public virtual T Execute<T>(TigerRequest<T> request) where T : TigerResponse
     {
       string param = string.Empty;
       string data = string.Empty;
@@ -234,7 +229,7 @@ namespace TigerOpenAPI.Common
       }
     }
 
-    public virtual async Task<T?> ExecuteAsync<T>(TigerRequest<T> request) where T : TigerResponse
+    public virtual async Task<T> ExecuteAsync<T>(TigerRequest<T> request) where T : TigerResponse
     {
       string param = string.Empty;
       string data = string.Empty;
@@ -266,14 +261,14 @@ namespace TigerOpenAPI.Common
       }
     }
 
-    protected virtual T? AfterExecute<T>(TigerRequest<T> request, in bool isAsync, in string data) where T : TigerResponse
+    protected virtual T AfterExecute<T>(TigerRequest<T> request, in bool isAsync, in string data) where T : TigerResponse
     {
       ApiLogger.Debug($"{(isAsync ? "async " : string.Empty)}response result:{data}");
       if (string.IsNullOrWhiteSpace(data))
       {
         throw new TigerApiException(TigerApiCode.EMPTY_DATA_ERROR);
       }
-      T? response = JsonConvert.DeserializeObject<T>(data, JsonSet);
+      T response = JsonConvert.DeserializeObject<T>(data, JsonSet);
       if (string.IsNullOrEmpty(TigerPublicKey) || string.IsNullOrEmpty(response?.Sign))
       {
         return response;
@@ -287,7 +282,7 @@ namespace TigerOpenAPI.Common
       return response;
     }
 
-    private T? ErrorResponse<T>(string tigerId, TigerRequest<T>? request, Exception e) where T : TigerResponse
+    private T ErrorResponse<T>(string tigerId, TigerRequest<T> request, Exception e) where T : TigerResponse
     {
       try
       {

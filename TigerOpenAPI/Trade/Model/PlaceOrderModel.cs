@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Principal;
 using System.Xml.Linq;
 using Newtonsoft.Json;
@@ -7,6 +7,7 @@ using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Trade.Response;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Trade.Model
 {

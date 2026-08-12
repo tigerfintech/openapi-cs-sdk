@@ -1,5 +1,4 @@
 // DictionaryExtensions.cs — polyfill for Dictionary.TryAdd (available in .NET Core 2.0+)
-#if !NETCOREAPP2_0_OR_GREATER && !NET5_0_OR_GREATER
 using System.Collections.Generic;
 
 namespace TigerOpenAPI.Common.Util
@@ -19,4 +18,3 @@ namespace TigerOpenAPI.Common.Util
     }
   }
 }
-#endif

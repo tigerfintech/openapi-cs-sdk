@@ -598,7 +598,7 @@ namespace TigerOpenAPI.Common.Util
         if (quoteRealTimeQuoteResponse != null && quoteRealTimeQuoteResponse.IsSuccess())
         {
           List<RealTimeQuoteItem> realTimeQuoteItems = quoteRealTimeQuoteResponse.Data;
-          if (realTimeQuoteItems != null && realTimeQuoteItems.Count > 0 && realTimeQuoteItems[0] is not null)
+          if (realTimeQuoteItems != null && realTimeQuoteItems.Count > 0 && realTimeQuoteItems[0] != null)
           {
             return realTimeQuoteItems[0].LatestPrice;
           }

@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace TigerOpenAPI.Common.Util
 {
@@ -26,12 +29,8 @@ namespace TigerOpenAPI.Common.Util
     static HttpUtil ()
     {
       var handler = new HttpClientHandler() { Proxy = null };
-#if NET5_0_OR_GREATER
-      handler.ServerCertificateCustomValidationCallback = delegate { return true; };
-#else
       // .NET Framework 4.7.2: use ServicePointManager for certificate validation bypass
       System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-#endif
       client = new HttpClient(handler);
       client.Timeout = DefaultTimeOutSpan;
       client.DefaultRequestHeaders.Add("ContentType", TigerApiConstants.CONTENT_TYPE_JSON);

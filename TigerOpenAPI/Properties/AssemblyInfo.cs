@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System;
 
 [assembly: AssemblyTitle("TigerOpenAPI")]
 [assembly: AssemblyDescription("")]

@@ -1,4 +1,5 @@
-﻿namespace TigerOpenAPI.Common.Enum
+using System;
+namespace TigerOpenAPI.Common.Enum
 {
   public enum Env
   {

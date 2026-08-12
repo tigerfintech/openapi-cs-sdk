@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
+using System.IO;
 
 namespace TigerOpenAPI.Common.Watch
 {

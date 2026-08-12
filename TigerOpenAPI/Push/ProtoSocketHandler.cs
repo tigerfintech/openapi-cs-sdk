@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNetty.Transport.Channels;
 using Polly;
 using TigerOpenAPI.Common;
@@ -6,6 +6,7 @@ using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Push.Model;
 using TigerOpenAPI.Quote.Pb;
 using static TigerOpenAPI.Quote.Pb.Request.Types;
+using System.Threading;
 
 namespace TigerOpenAPI.Push
 {
@@ -35,11 +36,7 @@ namespace TigerOpenAPI.Push
         $", preparing to send connect token:{connect.Connect}");
 
       var sendTask = context.WriteAndFlushAsync(connect);
-#if NET6_0_OR_GREATER
-      sendTask.WaitAsync(TimeSpan.FromMilliseconds(PushClient.CONNECT_TIMEOUT_MS));
-#else
       sendTask.Wait(PushClient.CONNECT_TIMEOUT_MS);
-#endif
       ApiLogger.Info($"send connect token successfully. channel:{context.Channel.Id.AsShortText()}");
       base.ChannelActive(context);
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNetty.Common.Utilities;
 using System.IO;
 using Newtonsoft.Json;
@@ -10,6 +10,8 @@ using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Pb;
 using TigerOpenAPI.Quote.Response;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace TigerOpenAPI.Common
 {

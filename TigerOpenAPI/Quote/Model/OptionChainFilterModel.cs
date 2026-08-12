@@ -35,7 +35,7 @@ namespace TigerOpenAPI.Quote.Model
     public Range<Double> Rho { get; set; }
   }
 
-  public class Range<T>
+  public class Range<T> where T : struct
   {
 
     [JsonProperty(PropertyName = "min")]

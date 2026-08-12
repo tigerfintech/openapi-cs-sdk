@@ -1,7 +1,9 @@
-﻿using NLog;
+using NLog;
 using NLog.Config;
 using NLog.Targets;
 using TigerOpenAPI.Config;
+using System.IO;
+using System;
 
 namespace TigerOpenAPI.Common
 {

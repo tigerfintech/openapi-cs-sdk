@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Config;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote.Model;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Quote
 {

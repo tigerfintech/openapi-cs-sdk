@@ -6,13 +6,6 @@ namespace TigerOpenAPI.Common.Enum
   public interface Indicator
   {
     string GetValue();
-
-#if NET5_0_OR_GREATER
-    public static ISet<string> GetValues(ISet<Indicator>? indicators)
-    {
-      return IndicatorHelper.GetValues(indicators);
-    }
-#endif
   }
 
   /// <summary>
@@ -24,7 +17,7 @@ namespace TigerOpenAPI.Common.Enum
     public static ISet<string> GetValues(ISet<Indicator>? indicators)
     {
       ISet<string> values = new HashSet<string>();
-      if (indicators is not null)
+      if (indicators != null)
       {
         foreach (Indicator indicator in indicators)
         {

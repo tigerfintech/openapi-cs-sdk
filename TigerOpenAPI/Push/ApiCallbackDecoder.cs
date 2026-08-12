@@ -138,7 +138,7 @@ namespace TigerOpenAPI.Push
     private void ProcessGetSubscribedSymbols(Response msg)
     {
       SubscribedSymbol? subscribedSymbol = JsonConvert.DeserializeObject<SubscribedSymbol>(msg.Msg);
-      if (subscribedSymbol is not null)
+      if (subscribedSymbol != null)
         callback.GetSubscribedSymbolEnd(subscribedSymbol);
     }
 

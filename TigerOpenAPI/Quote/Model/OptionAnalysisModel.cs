@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Quote.Model
 {

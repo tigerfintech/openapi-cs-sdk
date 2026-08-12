@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
@@ -7,6 +7,8 @@ using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Trade.Model;
 using TigerOpenAPI.Trade.Response;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TigerOpenAPI.Trade
 {

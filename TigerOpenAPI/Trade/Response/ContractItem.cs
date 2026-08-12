@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Math.EC.Multiplier;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote.Response;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Trade.Response
 {

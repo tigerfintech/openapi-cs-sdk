@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Security.Principal;
 using Org.BouncyCastle.Cms;
 using TigerOpenAPI.Common.Enum;

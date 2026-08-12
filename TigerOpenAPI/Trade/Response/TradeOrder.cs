@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Trade.Model;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Trade.Response
 {

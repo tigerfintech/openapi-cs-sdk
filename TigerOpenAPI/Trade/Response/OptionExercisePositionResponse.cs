@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using TigerOpenAPI.Model;
+using System.Collections.Generic;
 
 namespace TigerOpenAPI.Trade.Response
 {
