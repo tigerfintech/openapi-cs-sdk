@@ -26,7 +26,12 @@ namespace TigerOpenAPI.Common.Util
     static HttpUtil ()
     {
       var handler = new HttpClientHandler() { Proxy = null };
+#if NET5_0_OR_GREATER
       handler.ServerCertificateCustomValidationCallback = delegate { return true; };
+#else
+      // .NET Framework 4.7.2: use ServicePointManager for certificate validation bypass
+      System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+#endif
       client = new HttpClient(handler);
       client.Timeout = DefaultTimeOutSpan;
       client.DefaultRequestHeaders.Add("ContentType", TigerApiConstants.CONTENT_TYPE_JSON);

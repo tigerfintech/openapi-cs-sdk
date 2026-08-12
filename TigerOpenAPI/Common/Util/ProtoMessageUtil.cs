@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
 using System.Security.Principal;
 using Org.BouncyCastle.Cms;
 using TigerOpenAPI.Common.Enum;
@@ -97,7 +96,7 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(",", symbols)
         }
       };
       return request;
@@ -113,7 +112,7 @@ namespace TigerOpenAPI.Common.Util
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
           Market = market.ToString(),
-          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
+          Symbols = indicatorNames is null ? string.Empty : string.Join(",", indicatorNames)
         }
       };
       return request;
@@ -142,7 +141,7 @@ namespace TigerOpenAPI.Common.Util
         Subscribe = new Request.Types.Subscribe()
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
-          Symbols = symbols is null ? string.Empty : string.Join(',', symbols)
+          Symbols = symbols is null ? string.Empty : string.Join(",", symbols)
         }
       };
       return request;
@@ -158,7 +157,7 @@ namespace TigerOpenAPI.Common.Util
         {
           DataType = (DataType)System.Enum.Parse(typeof(DataType), subject.ToString()),
           Market = market.ToString(),
-          Symbols = indicatorNames is null ? string.Empty : string.Join(',', indicatorNames)
+          Symbols = indicatorNames is null ? string.Empty : string.Join(",", indicatorNames)
         }
       };
       return request;

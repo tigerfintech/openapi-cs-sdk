@@ -6,10 +6,9 @@
     <Authors>tiger</Authors>
     <Company>TIGER BROKERS</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <NoWarn>CS8618;</NoWarn>
+    <TargetFrameworks>net10.0;net472</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
+    <NoWarn>CS8618;CS8632</NoWarn>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -17,6 +16,17 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <!-- net10.0: 保留现有行为 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- net472: 禁用 nullable，不用 ImplicitUsings -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -59,6 +69,12 @@
     <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
     <PackageReference Include="DotNetty.Codecs.Protobuf" Version="0.7.6" />
     <PackageReference Include="DotNetty.Handlers" Version="0.7.6" />
+  </ItemGroup>
+  <!-- net472 额外需要的包 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\" />

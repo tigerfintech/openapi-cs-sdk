@@ -22,7 +22,7 @@ namespace TigerOpenAPI.Common.Util
         throw new TigerApiException("option identifier format error");
       }
 
-      string[] symbolKeys = identifier.Split(" +");
+      string[] symbolKeys = identifier.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
       if (symbolKeys != null && symbolKeys.Length != 1 && symbolKeys.Length != 2)
       {
         throw new TigerApiException("option identifier format error");

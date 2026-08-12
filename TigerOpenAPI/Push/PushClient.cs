@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Security;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using DotNetty.Codecs;
 using DotNetty.Codecs.Protobuf;
@@ -179,7 +178,11 @@ namespace TigerOpenAPI.Push
             Thread.Sleep(100);
           }
 
+#if NETCOREAPP2_0_OR_GREATER || NET5_0_OR_GREATER
           if (task.IsCompletedSuccessfully)
+#else
+          if (task.Status == TaskStatus.RanToCompletion)
+#endif
           {
             channel = task.Result;
             connected = true;
@@ -466,22 +469,22 @@ namespace TigerOpenAPI.Push
 
     public uint SubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
     {
-      return SubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+      return SubscribeMarketData(market, QuoteSubject.StockTop, IndicatorHelper.GetValues(indicators));
     }
 
     public uint CancelSubscribeStockTop(Market market, ISet<Indicator>? indicators = null)
     {
-      return CancelSubscribeMarketData(market, QuoteSubject.StockTop, Indicator.GetValues(indicators));
+      return CancelSubscribeMarketData(market, QuoteSubject.StockTop, IndicatorHelper.GetValues(indicators));
     }
 
     public uint SubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
     {
-      return SubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+      return SubscribeMarketData(market, QuoteSubject.OptionTop, IndicatorHelper.GetValues(indicators));
     }
 
     public uint CancelSubscribeOptionTop(Market market, ISet<Indicator>? indicators = null)
     {
-      return CancelSubscribeMarketData(market, QuoteSubject.OptionTop, Indicator.GetValues(indicators));
+      return CancelSubscribeMarketData(market, QuoteSubject.OptionTop, IndicatorHelper.GetValues(indicators));
     }
 
     private uint SubscribeMarketData(Market market, QuoteSubject subject, ISet<string>? indicatorNames = null)

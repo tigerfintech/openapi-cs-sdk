@@ -160,7 +160,11 @@ namespace TigerOpenAPI.Common
     protected string ExecuteWrap(string requestUri, string data)
     {
       // doc:https://github.com/App-vNext/Polly#retry
+#if NET5_0_OR_GREATER
       var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
+#else
+      var retryPolicy = Policy.Handle<HttpRequestException>()
+#endif
         .Or<Exception>()
         .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>// RetryAsync()
@@ -172,7 +176,11 @@ namespace TigerOpenAPI.Common
     }
     protected async Task<string> ExecuteAsyncWrap(string requestUri, string data)
     {
+#if NET5_0_OR_GREATER
       var retryPolicy = Policy.Handle<HttpRequestException>(ex => ex.StatusCode != null && HttpUtil.FailRetryStatusCodes.Contains((HttpStatusCode)ex.StatusCode))
+#else
+      var retryPolicy = Policy.Handle<HttpRequestException>()
+#endif
         .Or<Exception>()
         .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),// 200ms, 400ms, 800ms, 1600ms, 3200ms
         onRetry: (exception, timeSpan, retryCount, context) =>

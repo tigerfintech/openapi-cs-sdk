@@ -4,8 +4,6 @@ using DotNetty.Transport.Channels;
 using DotNetty.Handlers.Timeout;
 using Google.Protobuf;
 using static TigerOpenAPI.Quote.Pb.Request.Types;
-using System.Reflection.PortableExecutable;
-using System.Text.Json.Nodes;
 using TigerOpenAPI.Push;
 using TigerOpenAPI.Quote.Pb;
 using static TigerOpenAPI.Quote.Pb.SocketCommon.Types;
@@ -68,7 +66,7 @@ namespace TigerOpenAPI.Common.Util
         dict.TryGetValue(TigerApiConstants.HEART_BEAT, out string? value);
         if (!string.IsNullOrWhiteSpace(value))
         {
-          string[] arrayValue = value.Split(",");
+          string[] arrayValue = value.Split(',');
           if (null != arrayValue && arrayValue.Length >= 2)
           {
             int serverSendInterval = string.IsNullOrWhiteSpace(arrayValue[0]) ? 0 : Int32.Parse(arrayValue[0]);

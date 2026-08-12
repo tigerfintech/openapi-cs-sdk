@@ -34,7 +34,12 @@ namespace TigerOpenAPI.Push
       ApiLogger.Info($"netty channel active. channel:{context.Channel.Id.AsShortText()}" +
         $", preparing to send connect token:{connect.Connect}");
 
-      context.WriteAndFlushAsync(connect).WaitAsync(TimeSpan.FromMilliseconds(PushClient.CONNECT_TIMEOUT_MS));
+      var sendTask = context.WriteAndFlushAsync(connect);
+#if NET6_0_OR_GREATER
+      sendTask.WaitAsync(TimeSpan.FromMilliseconds(PushClient.CONNECT_TIMEOUT_MS));
+#else
+      sendTask.Wait(PushClient.CONNECT_TIMEOUT_MS);
+#endif
       ApiLogger.Info($"send connect token successfully. channel:{context.Channel.Id.AsShortText()}");
       base.ChannelActive(context);
     }
