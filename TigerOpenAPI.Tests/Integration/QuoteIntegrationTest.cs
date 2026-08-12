@@ -1460,5 +1460,162 @@ namespace TigerOpenAPI.Tests.Integration
           "Add a QuoteShortInterestModel + QuoteShortInterestResponse and a " +
           "QuoteApiService.SHORT_INTEREST constant before enabling this test.");
     }
+
+    // =====================================================================
+    // Kline 30-day time range (AAPL + HK 00700)
+    // =====================================================================
+    [Test]
+    public void GetKline_30Day_AAPL_And_00700_OhlcConstraints()
+    {
+      long now = DateUtil.CurrentTimeMillis();
+      long begin = now - 30L * 24 * 3600 * 1000;
+
+      foreach (string symbol in new[] { "AAPL", "00700" })
+      {
+        var model = new QuoteKlineModel
+        {
+          Symbols = new List<string> { symbol },
+          Period = KLineType.day.Value,
+          BeginTime = begin,
+          EndTime = now,
+          Limit = 60
+        };
+        var resp = Execute<QuoteKlineResponse>(QuoteApiService.KLINE, model);
+
+        Assert.That(resp.Data, Is.Not.Null, $"kline data must not be null for {symbol}");
+        if (resp.Data.Count == 0)
+          Assert.Ignore($"kline returned 0 items for {symbol} — may be outside data range");
+
+        var kline = resp.Data[0];
+        Assert.That(kline.Symbol, Is.EqualTo(symbol), $"kline symbol wire name for {symbol}");
+
+        if (kline.Items == null || kline.Items.Count == 0)
+          Assert.Ignore($"kline items empty for {symbol} — no data in 30-day range");
+
+        Assert.That(kline.Items.Count, Is.GreaterThanOrEqualTo(15),
+            $"30-day daily kline should have >= 15 points for {symbol}");
+
+        // Timestamps must be strictly ascending
+        for (int i = 1; i < kline.Items.Count; i++)
+        {
+          Assert.That(kline.Items[i].Time, Is.GreaterThan(kline.Items[i - 1].Time),
+              $"kline timestamps should be ascending at index {i} for {symbol}");
+        }
+
+        // OHLC constraints for every candle
+        foreach (var pt in kline.Items)
+        {
+          if (pt.High > 0 && pt.Low > 0)
+            Assert.That(pt.High, Is.GreaterThanOrEqualTo(pt.Low),
+                $"high >= low for {symbol}");
+          if (pt.High > 0 && pt.Open > 0)
+            Assert.That(pt.High, Is.GreaterThanOrEqualTo(pt.Open),
+                $"high >= open for {symbol}");
+          if (pt.High > 0 && pt.Close > 0)
+            Assert.That(pt.High, Is.GreaterThanOrEqualTo(pt.Close),
+                $"high >= close for {symbol}");
+          if (pt.Low > 0 && pt.Open > 0)
+            Assert.That(pt.Open, Is.GreaterThanOrEqualTo(pt.Low),
+                $"open >= low for {symbol}");
+          if (pt.Low > 0 && pt.Close > 0)
+            Assert.That(pt.Close, Is.GreaterThanOrEqualTo(pt.Low),
+                $"close >= low for {symbol}");
+          Assert.That(pt.Volume, Is.GreaterThanOrEqualTo(0),
+              $"volume >= 0 for {symbol}");
+        }
+      }
+    }
+
+    // =====================================================================
+    // Quote depth ordering (AAPL US + HK 00700)
+    // =====================================================================
+    [Test]
+    public void GetQuoteDepth_AAPL_And_00700_OrderingAndSpread()
+    {
+      var cases = new[] { ("AAPL", Market.US), ("00700", Market.HK) };
+
+      foreach (var (symbol, market) in cases)
+      {
+        var model = new QuoteDepthModel
+        {
+          Symbols = new List<string> { symbol },
+          Market = market
+        };
+        var resp = Execute<QuoteDepthResponse>(QuoteApiService.QUOTE_DEPTH, model);
+
+        Assert.That(resp.Data, Is.Not.Null, $"depth data must not be null for {symbol}");
+        if (resp.Data.Count == 0)
+          Assert.Ignore($"depth returned 0 items for {symbol} — non-trading hours");
+
+        var item = resp.Data[0];
+        Assert.That(item.Symbol, Is.EqualTo(symbol), $"depth symbol wire name for {symbol}");
+
+        // Asks must be ascending
+        if (item.Asks != null && item.Asks.Count >= 2)
+        {
+          for (int i = 1; i < item.Asks.Count; i++)
+          {
+            Assert.That(item.Asks[i].Price, Is.GreaterThanOrEqualTo(item.Asks[i - 1].Price),
+                $"asks must be ascending at index {i} for {symbol}");
+          }
+          foreach (var ask in item.Asks)
+            Assert.That(ask.Price, Is.GreaterThan(0), $"ask price > 0 for {symbol}");
+        }
+
+        // Bids must be descending
+        if (item.Bids != null && item.Bids.Count >= 2)
+        {
+          for (int i = 1; i < item.Bids.Count; i++)
+          {
+            Assert.That(item.Bids[i].Price, Is.LessThanOrEqualTo(item.Bids[i - 1].Price),
+                $"bids must be descending at index {i} for {symbol}");
+          }
+          foreach (var bid in item.Bids)
+            Assert.That(bid.Price, Is.GreaterThan(0), $"bid price > 0 for {symbol}");
+        }
+
+        // Spread >= 0: lowest ask >= highest bid
+        if (item.Asks != null && item.Asks.Count > 0
+            && item.Bids != null && item.Bids.Count > 0)
+        {
+          double lowestAsk = item.Asks[0].Price;
+          double highestBid = item.Bids[0].Price;
+          Assert.That(lowestAsk - highestBid, Is.GreaterThanOrEqualTo(0),
+              $"spread >= 0 (lowestAsk={lowestAsk}, highestBid={highestBid}) for {symbol}");
+        }
+      }
+    }
+
+    // =====================================================================
+    // Brief multi-market (AAPL US + 00700 HK + 09988 HK)
+    // =====================================================================
+    [Test]
+    public void GetBrief_MultiMarket_AAPL_00700_09988_PriceConstraints()
+    {
+      var symbols = new List<string> { "AAPL", "00700", "09988" };
+      var model = new QuoteSymbolModel { Symbols = symbols };
+      var resp = Execute<BriefResponse>(QuoteApiService.BRIEF, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "brief data wrapper must not be null");
+      Assert.That(resp.Data.Items, Is.Not.Null, "brief items must not be null");
+      if (resp.Data.Items.Count == 0)
+        Assert.Ignore("brief returned 0 items — non-trading hours");
+
+      foreach (var q in resp.Data.Items)
+      {
+        Assert.That(q.Symbol, Is.Not.Null.And.Not.Empty,
+            "brief item symbol must be non-empty");
+        Assert.That(q.LatestPrice, Is.GreaterThan(0),
+            $"latestPrice > 0 for {q.Symbol}");
+
+        if (q.High > 0 && q.Low > 0)
+          Assert.That(q.High, Is.GreaterThanOrEqualTo(q.Low),
+              $"high >= low for {q.Symbol}");
+
+        if (q.AskPrice > 0 && q.BidPrice > 0)
+          Assert.That(q.AskPrice, Is.GreaterThanOrEqualTo(q.BidPrice),
+              $"askPrice >= bidPrice for {q.Symbol}");
+      }
+    }
   }
 }
