@@ -1,7 +1,7 @@
 # openapi-cs-sdk
 
-[![NuGet](https://img.shields.io/nuget/v/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
+[![NuGet](https://img.shields.io/nuget/v/TigerBrokers.OpenAPI.svg)](https://www.nuget.org/packages/TigerBrokers.OpenAPI/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/TigerBrokers.OpenAPI.svg)](https://www.nuget.org/packages/TigerBrokers.OpenAPI/)
 [![License](https://img.shields.io/github/license/tigerfintech/openapi-cs-sdk.svg)](LICENSE)
 
 [English](#english) | [中文](#中文)
@@ -29,8 +29,8 @@ Tiger Open Platform C# SDK — provides API services for individual developers a
 
 ### Requirements
 
-- .NET 10.0
-- C# 13.0
+- .NET 6.0, 7.0, 8.0, 9.0, or 10.0
+- C# 10.0 or later, depending on the selected .NET SDK
 
 ### Installation
 
@@ -55,7 +55,7 @@ using TigerOpenAPI.Config;
 var config = new TigerConfig
 {
     TigerId  = "your_tiger_id",
-    Account  = "your_account_id",
+    DefaultAccount = "your_account_id",
     PrivateKey = "your_rsa_private_key",    // RSA private key
     Language = Language.en_US
 };
@@ -125,7 +125,7 @@ Full documentation: [https://docs-en.itigerup.com/docs/](https://docs-en.itigeru
 - **Developer Portal**: [https://developer.itigerup.com/](https://developer.itigerup.com/)
 - **Documentation**: [https://docs-en.itigerup.com/docs/](https://docs-en.itigerup.com/docs/)
 - **GitHub**: [https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
-- **NuGet**: [https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
+- **NuGet**: [https://www.nuget.org/packages/TigerBrokers.OpenAPI](https://www.nuget.org/packages/TigerBrokers.OpenAPI)
 
 ### Contributing
 
@@ -162,8 +162,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### 环境要求
 
-- .NET 10.0
-- C# 13.0
+- .NET 6.0、7.0、8.0、9.0 或 10.0
+- C# 10.0 或更高版本，取决于所使用的 .NET SDK
 
 ### 安装
 
@@ -188,7 +188,7 @@ using TigerOpenAPI.Config;
 var config = new TigerConfig
 {
     TigerId    = "your_tiger_id",
-    Account    = "your_account_id",
+    DefaultAccount = "your_account_id",
     PrivateKey = "your_rsa_private_key",    // RSA 私钥
     Language   = Language.zh_CN
 };
@@ -258,7 +258,7 @@ pushClient.SubscribeOrder();
 - **开发者平台**：[https://developer.itigerup.com/](https://developer.itigerup.com/)
 - **开发文档**：[https://docs.itigerup.com/docs/](https://docs.itigerup.com/docs/)
 - **GitHub**：[https://github.com/tigerfintech/openapi-cs-sdk](https://github.com/tigerfintech/openapi-cs-sdk)
-- **NuGet**：[https://www.nuget.org/packages/tiger-openapi](https://www.nuget.org/packages/tiger-openapi)
+- **NuGet**：[https://www.nuget.org/packages/TigerBrokers.OpenAPI](https://www.nuget.org/packages/TigerBrokers.OpenAPI)
 
 ### 参与贡献
 

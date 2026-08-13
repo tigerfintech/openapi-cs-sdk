@@ -6,9 +6,11 @@
     <Authors>tiger</Authors>
     <Company>TIGER BROKERS</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <TargetFramework>net472</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <NoWarn>CS8618;CS8632;CS8627</NoWarn>
+  <TargetFrameworks>net472;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+  <LangVersion Condition="'$(TargetFramework)' == 'net472'">8.0</LangVersion>
+  <ImplicitUsings Condition="'$(TargetFramework)' != 'net472'">enable</ImplicitUsings>
+  <Nullable Condition="'$(TargetFramework)' != 'net472'">enable</Nullable>
+  <NoWarn>CS8618;CS8632;CS8627</NoWarn>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>

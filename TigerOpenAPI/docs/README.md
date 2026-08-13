@@ -1,6 +1,6 @@
 # TigerOpenAPI
 
-[![NuGet](https://img.shields.io/nuget/v/tiger-openapi.svg)](https://www.nuget.org/packages/tiger-openapi/)
+[![NuGet](https://img.shields.io/nuget/v/TigerBrokers.OpenAPI.svg)](https://www.nuget.org/packages/TigerBrokers.OpenAPI/)
 [![License](https://img.shields.io/github/license/tigerfintech/openapi-cs-sdk.svg)](https://github.com/tigerfintech/openapi-cs-sdk/blob/master/LICENSE)
 
 [English](#english) | [中文](#中文)
@@ -11,7 +11,7 @@
 
 Tiger Open Platform C# SDK. Provides trading, market data, and account management APIs for individual developers and institutional clients.
 
-**Requirements**: .NET 10.0 · C# 13.0
+**Requirements**: .NET 6.0, 7.0, 8.0, 9.0, or 10.0 · C# 10.0 or later
 
 ### Installation
 
@@ -26,7 +26,7 @@ dotnet add package TigerBrokers.OpenAPI
 var config = new TigerConfig
 {
     TigerId    = "your_tiger_id",
-    Account    = "your_account_id",
+    DefaultAccount = "your_account_id",
     PrivateKey = "your_rsa_private_key",
     Language   = Language.en_US
 };
@@ -73,7 +73,7 @@ var orderResponse = tradeClient.Execute(orderRequest);
 
 老虎开放平台 C# SDK，为个人开发者和机构客户提供交易、行情、账户管理等接口服务。
 
-**环境要求**：.NET 10.0 · C# 13.0
+**环境要求**：.NET 6.0、7.0、8.0、9.0 或 10.0 · C# 10.0 或更高版本
 
 ### 安装
 
@@ -88,7 +88,7 @@ dotnet add package TigerBrokers.OpenAPI
 var config = new TigerConfig
 {
     TigerId    = "your_tiger_id",
-    Account    = "your_account_id",
+    DefaultAccount = "your_account_id",
     PrivateKey = "your_rsa_private_key",
     Language   = Language.zh_CN
 };
