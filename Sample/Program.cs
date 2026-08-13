@@ -94,7 +94,7 @@ class Program
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefV2Async(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
-    TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
+    //TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
     //TigerResponse? response = await GetOptionDepthAsync(quoteClient);
     //TigerResponse? response = await GetHKOptionSymbolsAsync(quoteClient);
@@ -160,7 +160,7 @@ class Program
     //TigerResponse? response = await GetContractAsync(tradeClient);
     //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
-    //TigerResponse? response = await GetPositionsAsync(tradeClient);
+    TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
     //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
@@ -350,7 +350,7 @@ class Program
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
     Sleep(30);
     ApiLogger.Info($"GetSubscribedSymbols:{client.GetSubscribedSymbols()}");
-    // Cancel all market data subscriptions (securities, options, futures)
+    // Cancel all quote subscriptions(Security, Options, Futures)
     ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote()}");
     //ApiLogger.Info($"CancelSubscribeQuote:{client.CancelSubscribeQuote(symbols)}");
     Sleep(2);
@@ -1231,7 +1231,7 @@ class Program
       ApiMethodName = TradeApiService.POSITIONS,
       ModelValue = new PositionsModel()
       {
-        Account = "20200821144442583",
+        Account = "13810712",
         SecType = SecType.STK,
         Market = Market.US
       }
@@ -1948,7 +1948,7 @@ class Program
         BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
         // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
-        Right = RightOption.br
+        Rigth = RightOption.br
       }
     };
     return await quoteClient.ExecuteAsync(request);
@@ -1977,7 +1977,7 @@ class Program
       {
         Symbols = new List<string> { "AAPL" },
         Date = "2023-03-03",
-        Right = RightOption.br
+        Rigth = RightOption.br
       }
     };
     return await quoteClient.ExecuteAsync(request);
