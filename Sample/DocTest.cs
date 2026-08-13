@@ -1,6 +1,9 @@
 // Doc verification test — runs all documented read-only API examples
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
