@@ -28,6 +28,8 @@ namespace TigerOpenAPI.Trade.Response
     public string Right { get; set; }
     [JsonProperty(PropertyName = "multiplier")]
     public Double Multiplier { get; set; }
+    [JsonProperty(PropertyName = "lotSize")]
+    public Double LotSize { get; set; }
     [JsonProperty(PropertyName = "exchange")]
     public string Exchange { get; set; }
 

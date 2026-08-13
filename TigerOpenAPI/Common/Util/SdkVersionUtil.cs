@@ -7,31 +7,40 @@ namespace TigerOpenAPI.Common.Util
   public class SdkVersionUtil
   {
     private static string Prefix = "openapi-cs-sdk-";
+    private static string PushPrefix = "csharp-";
     private static string UnknownVersion = "unknown";
     private static string SdkVersion;
+    private static string PushSdkVersion;
 
     private SdkVersionUtil()
     {
     }
 
+    private static string ResolveVersion()
+    {
+      Assembly assembly = Assembly.GetExecutingAssembly();
+      FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+      string? versionValue = fileVersionInfo.FileVersion;
+      if (string.IsNullOrWhiteSpace(versionValue))
+      {
+        Version? version = assembly.GetName().Version;
+        versionValue = version?.ToString();
+      }
+      return versionValue ?? UnknownVersion;
+    }
+
     public static string GetSdkVersion()
     {
       if (string.IsNullOrWhiteSpace(SdkVersion))
-      {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        // AssemblyInfo.cs [assembly: AssemblyFileVersion("1.0.0")]
-        FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-        string? versionValue = fileVersionInfo.FileVersion;
-        if (string.IsNullOrWhiteSpace(versionValue))
-        {
-          // [assembly: AssemblyVersion("1.0.0.0")]
-          Version? version = assembly.GetName().Version;
-          versionValue = version?.ToString();
-        }
-        SdkVersion = Prefix + versionValue ?? UnknownVersion;
-      }
-
+        SdkVersion = Prefix + ResolveVersion();
       return SdkVersion;
+    }
+
+    public static string GetPushSdkVersion()
+    {
+      if (string.IsNullOrWhiteSpace(PushSdkVersion))
+        PushSdkVersion = PushPrefix + ResolveVersion();
+      return PushSdkVersion;
     }
   }
 }

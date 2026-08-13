@@ -60,7 +60,7 @@ namespace TigerOpenAPI.Config
     /**
      * (optional)automatically refresh token
      */
-    public bool AutoRefreshToken { get; set; } = true;
+    public bool AutoRefreshToken { get; set; } = false;
 
     /**
      * (optional)whether to automatically grab quote permission when the initialization instance is completed
