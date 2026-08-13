@@ -34,10 +34,42 @@ namespace TigerOpenAPI.Trade
     public const string ESTIMATE_TRADABLE_QUANTITY = "estimate_tradable_quantity";
 
     /**
+     * option exercise (early exercise / abandon)
+     */
+    public const string OPTION_EXERCISE_SUBMIT   = "option_exercise_submit";
+    public const string OPTION_EXERCISE_CHECK     = "option_exercise_check";
+    public const string OPTION_EXERCISE_RECORD    = "option_exercise_record";
+    public const string OPTION_EXERCISE_POSITION  = "option_exercise_position";
+    public const string OPTION_EXERCISE_CANCEL    = "option_exercise_cancel";
+
+    /**
      * contract
      */
     public const string CONTRACT = "contract";
     public const string CONTRACTS = "contracts";
+
+    /**
+     * deposit/withdraw
+     */
+    public const string TRANSFER_FUND = "transfer_fund";
+
+    /**
+     * fund details
+     */
+    public const string FUND_DETAILS = "fund_details";
+
+    /**
+     * aggregate assets
+     */
+    public const string AGGREGATE_ASSETS = "aggregate_assets";
+
+    /**
+     * position transfer
+     */
+    public const string POSITION_TRANSFER = "position_transfer";
+    public const string POSITION_TRANSFER_RECORDS = "position_transfer_records";
+    public const string POSITION_TRANSFER_DETAIL = "position_transfer_detail";
+    public const string POSITION_TRANSFER_EXTERNAL_RECORDS = "position_transfer_external_records";
 
     public static readonly HashSet<string> AllTradeApiSet = new HashSet<string>()
     {
@@ -71,10 +103,34 @@ namespace TigerOpenAPI.Trade
       ESTIMATE_TRADABLE_QUANTITY,
 
       /**
+       * option exercise
+       */
+      OPTION_EXERCISE_SUBMIT,
+      OPTION_EXERCISE_CHECK,
+      OPTION_EXERCISE_RECORD,
+      OPTION_EXERCISE_POSITION,
+      OPTION_EXERCISE_CANCEL,
+
+      /**
        * contract
        */
       CONTRACT,
       CONTRACTS,
+
+      /**
+       * deposit/withdraw & fund details
+       */
+      TRANSFER_FUND,
+      FUND_DETAILS,
+      AGGREGATE_ASSETS,
+
+      /**
+       * position transfer
+       */
+      POSITION_TRANSFER,
+      POSITION_TRANSFER_RECORDS,
+      POSITION_TRANSFER_DETAIL,
+      POSITION_TRANSFER_EXTERNAL_RECORDS,
     };
 
     public static bool IsTradeApi(in string tradeApi) =>

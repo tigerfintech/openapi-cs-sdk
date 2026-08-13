@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Security;
+using System.Threading;
 using System.Threading.Channels;
+using System.Threading.Tasks;
 using DotNetty.Codecs;
 using DotNetty.Codecs.Protobuf;
 using DotNetty.Common.Utilities;
@@ -41,6 +43,7 @@ namespace TigerOpenAPI.Push
     private IEventLoopGroup group;
     private Bootstrap bootstrap;
     private volatile IChannel? channel;
+    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
     private PushClient() { }
     private static class SingletonInner
@@ -199,6 +202,66 @@ namespace TigerOpenAPI.Push
         {
           if (!connected)
             Thread.Sleep(RETRY_INTERVAL_MS);
+        }
+      } while (!connected);
+      connectCountdown.Wait(CONNECT_TIMEOUT_MS);
+    }
+
+    /**
+     * create the connection (The same tigerId has only one active connection)
+     */
+    public async Task<bool> ConnectAsync()
+    {
+      int waitTime = 0;
+      await semaphore.WaitAsync();
+      try
+      {
+        if (IsConnected())
+        {
+          return true;
+        }
+        CheckArgument();
+        await DoConnectAsync();
+        while (!IsConnected() || channel == null || channel.Id == null)
+        {
+          await Task.Delay(100);
+          waitTime += 100;
+          if (waitTime > CONNECT_TIMEOUT_MS) break;
+        }
+        ApiLogger.Info($"{(IsConnected() ? "Success" : "Failed")} connect to server," +
+          $" channel is: {(channel?.Id?.AsShortText() ?? string.Empty)}");
+      }
+      catch (Exception e)
+      {
+        ApiLogger.Error("Failed connect to server, cause: ", e);
+      }
+      finally { semaphore.Release(); }
+      return IsConnected();
+    }
+
+    private async Task DoConnectAsync()
+    {
+      bool connected = false;
+      int count = 0;
+      do
+      {
+        try
+        {
+          count++;
+          Init();
+
+          channel = await bootstrap.ConnectAsync();
+          connected = true;
+        }
+        catch (Exception e)
+        {
+          ApiLogger.Warn($"fail count:{count}, reconnect after {RETRY_INTERVAL_MS}ms, {e.Message}");
+          CloseConnect(false);
+        }
+        finally
+        {
+          if (!connected)
+            await Task.Delay(RETRY_INTERVAL_MS);
         }
       } while (!connected);
       connectCountdown.Wait(CONNECT_TIMEOUT_MS);

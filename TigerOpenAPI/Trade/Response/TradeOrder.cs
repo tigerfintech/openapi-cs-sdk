@@ -149,10 +149,15 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "status"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public OrderStatus Status { get; set; }
 
+    /** order replace status(NONE, RECEIVED, REPLACED, FAILED) */
+    public string ReplaceStatus { get; set; }
+    /** order cancel status(NONE, RECEIVED, FAILED) */
+    public string CancelStatus { get; set; }
+
     [JsonProperty(PropertyName = "source")]
     public string Source { get; set; }
     [JsonProperty(PropertyName = "discount")]
-    public Double Discount { get; set; }
+    public Int32 Discount { get; set; }
 
     [JsonProperty(PropertyName = "canModify")]
     public Boolean CanModify { get; set; }
