@@ -63,6 +63,17 @@ namespace TigerOpenAPI.Quote
       {
         request.ApiVersion = TigerApiConstants.API_VERSION_1;
       }
+      // financial_report / trading_calendar / financial_daily must use V2.
+      // Server rejects V3 ("failed to parse parameters in biz_content" for
+      // financial endpoints, empty market for trading_calendar). Java pins
+      // V2 in FinancialReportRequest / FinancialDailyRequest /
+      // QuoteTradeCalendarRequest; Rust uses VERSION_V2 for the same.
+      else if (QuoteApiService.FINANCIAL_REPORT.Equals(request.ApiMethodName)
+            || QuoteApiService.FINANCIAL_DAILY.Equals(request.ApiMethodName)
+            || QuoteApiService.TRADING_CALENDAR.Equals(request.ApiMethodName))
+      {
+        request.ApiVersion = TigerApiConstants.API_VERSION_2;
+      }
       // other param check
       return true;
     }
