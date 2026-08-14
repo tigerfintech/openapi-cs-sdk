@@ -1366,7 +1366,7 @@ namespace TigerOpenAPI.Tests.Integration
       }
       var industryId = listResp.Data[0].Id;
 
-      var model = new IndustryStocksModel { IndustryId = industryId };
+      var model = new IndustryStocksModel { IndustryId = industryId, Market = Market.US };
       var req = new TigerRequest<IndustryStocksResponse>
       {
         ApiMethodName = QuoteApiService.INDUSTRY_STOCKS,
