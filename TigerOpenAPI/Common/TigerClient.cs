@@ -126,8 +126,21 @@ namespace TigerOpenAPI.Common
           {
             request.ModelValue.Lang = Config.Language;
           }
-          Type type = request.ModelValue.GetType();
-          if (type != null && type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(BatchApiModel<>)))
+          Type? type = request.ModelValue.GetType();
+          // Walk the inheritance chain so subclasses of BatchApiModel<T>
+          // (e.g. OptionTradeTickV2Model : BatchApiModel<OptionQueryItem>)
+          // also hit the top-level-array branch.
+          bool isBatch = false;
+          while (type != null && type != typeof(object))
+          {
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(BatchApiModel<>)))
+            {
+              isBatch = true;
+              break;
+            }
+            type = type.BaseType;
+          }
+          if (isBatch)
             request.BizContent = JsonConvert.SerializeObject(((dynamic)(request.ModelValue)).Items, JsonSet);
           else
             request.BizContent = JsonConvert.SerializeObject(request.ModelValue, JsonSet);
