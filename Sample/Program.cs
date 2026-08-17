@@ -1441,10 +1441,10 @@ class Program
       ModelValue = new MarketScannerTagsModel()
       {
         Market = Market.HK,
-        MultiTagFieldList = new List<string>()
+        MultiTagFieldList = new List<MultiTagField>()
         {
           // only support MultiTagField_Industry and MultiTagField_Concept
-          nameof(MultiTagField.MultiTagField_Industry)
+          MultiTagField.MultiTagField_Industry
         }
       }
     };
