@@ -368,21 +368,33 @@ namespace TigerOpenAPI.Tests.Integration
     private string GetFundSymbol()
     {
       if (_fundSymbol != null) return _fundSymbol;
-      var resp = Execute<FundContractsResponse>(QuoteApiService.FUND_ALL_SYMBOLS, new ApiModel());
+      // fund_all_symbols returns { "data": ["IE00B11XZ988.USD", ...] } — a
+      // plain string array, so SymbolsResponse (not FundContractsResponse)
+      // is the correct deserialization target.
+      var resp = Execute<SymbolsResponse>(QuoteApiService.FUND_ALL_SYMBOLS, new ApiModel());
       if (resp.Data == null || resp.Data.Count == 0)
         Assert.Ignore("no fund symbols available from fund_all_symbols");
-      _fundSymbol = resp.Data[0].Symbol;
+      _fundSymbol = resp.Data[0];
       return _fundSymbol;
     }
 
     // =====================================================================
     // All Symbols (US market)
+    // Wire: data is a plain string array, so SymbolsResponse handles both
+    // regular tickers ("AAPL") and index symbols (".DJI"). Previously the
+    // test tried a response type whose element was an object, which
+    // failed on string elements.
     // =====================================================================
     [Test]
     public void GetAllSymbols_US_ReturnsSymbolList()
     {
-      Assert.Ignore("all_symbols SDK deserialization bug: index symbols like .DJI cannot be " +
-          "deserialized by the current SDK response type. Skip until SDK is fixed.");
+      var model = new QuoteMarketModel { Market = Market.US };
+      var resp = Execute<SymbolsResponse>(QuoteApiService.ALL_SYMBOLS, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "all_symbols should return a non-empty list");
+      Assert.That(resp.Data[0], Is.Not.Null.And.Not.Empty,
+          "all_symbols entries must be non-empty strings");
     }
 
     // =====================================================================
@@ -403,27 +415,60 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Stock Detail (AAPL)
-    // The API returns {"items":[...]} (a JSON object) but the SDK has no
-    // dedicated response type that can deserialize this shape.
-    // QuoteRealTimeQuoteResponse expects a JSON array for Data, causing
-    // "Cannot deserialize JSON object into List<RealTimeQuoteItem>".
-    // Fixing requires adding a new response type in src/ — skip until then.
+    // Wire: response data is an object {"items":[...]} (not a top-level
+    // array like quote_real_time). Uses the dedicated StockDetailResponse.
     // =====================================================================
     [Test]
     public void GetStockDetail_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("stock_detail API returns {\"items\":[...]} object; SDK lacks " +
-          "a matching response type (QuoteRealTimeQuoteResponse expects array). " +
-          "Requires src/ change to add dedicated StockDetailResponse.");
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "AAPL" }
+      };
+      var resp = Execute<StockDetailResponse>(QuoteApiService.STOCK_DETAIL, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "stock_detail data must not be null");
+      Assert.That(resp.Data.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "stock_detail items should be non-empty");
+
+      var item = resp.Data.Items[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"), "stock_detail symbol wire name");
+      Assert.That(item.SecType, Is.Not.Null.And.Not.Empty,
+          "stock_detail secType wire name");
+      Assert.That(item.Name, Is.Not.Null.And.Not.Empty,
+          "stock_detail name wire name");
     }
 
     // =====================================================================
     // Hour Trading Timeline (AAPL)
+    // Wire: { "symbol": "AAPL" } — singular. Uses HourTradingTimelineModel.
+    // Response is a data object with detail (pre/after snapshot) + items
+    // (extended-session tick points).
     // =====================================================================
     [Test]
     public void GetHourTradingTimeline_AAPL_Succeeds()
     {
-      Assert.Ignore("hour_trading_timeline API requires singular 'symbol' field but QuoteSymbolModel sends 'symbols' list. Skip until model mismatch is fixed in SDK.");
+      var model = new HourTradingTimelineModel { Symbol = "AAPL" };
+      var resp = Execute<HourTradingTimelineResponse>(
+          QuoteApiService.HOUR_TRADING_TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null,
+          "hour_trading_timeline data must not be null");
+
+      // Outside pre/post-market hours the detail + items may both be absent.
+      // Skip rather than assert on empty extended-session data.
+      if (resp.Data.Detail == null
+          && (resp.Data.Items == null || resp.Data.Items.Count == 0))
+        Assert.Ignore("non-extended-hours session, hour_trading_timeline data may be empty");
+
+      if (resp.Data.Items != null && resp.Data.Items.Count > 0)
+      {
+        var pt = resp.Data.Items[0];
+        Assert.That(pt.Time, Is.GreaterThan(0),
+            "hour trading timeline point time must be non-zero");
+        Assert.That(pt.Price, Is.GreaterThan(0),
+            "hour trading timeline point price must be > 0");
+      }
     }
 
     // =====================================================================
@@ -509,12 +554,29 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Quote Contract (AAPL)
+    // Quote Contract (AAPL option)
+    // quote_contract is the derivative-contract lookup endpoint. Per
+    // Python get_derivative_contracts it only supports OPT / WAR / IOPT
+    // — sending sec_type=STK gets rejected. Use the OPT fixture derived
+    // from OPTION_EXPIRATION + OPTION_CHAIN so this works on US accounts.
     // =====================================================================
     [Test]
     public void GetQuoteContract_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("quote_contract: 'sec_type':'STK' is not supported by this API endpoint. Skip until supported sec_type is identified.");
+      var opt = GetAaplOption();
+      var model = new QuoteContractsModel
+      {
+        Symbol = opt.Symbol,
+        SecType = SecType.OPT,
+        Expiry = opt.Expiry.ToString()
+      };
+      var resp = Execute<QuoteContractResponse>(QuoteApiService.QUOTE_CONTRACT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "quote_contract data must not be null");
+      Assert.That(resp.Data.Symbol, Is.EqualTo(opt.Symbol),
+          "quote_contract symbol wire name");
+      Assert.That(resp.Data.SecType, Is.EqualTo("OPT"),
+          "quote_contract secType wire name");
     }
 
     // =====================================================================
@@ -661,12 +723,32 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Stock Broker (AAPL)
+    // Stock Broker (HK 00700 — Tencent)
+    // stock_broker is HK-only (per API doc + Python SDK). Test uses a
+    // liquid HK symbol so brokers should be populated during HK hours.
+    // Empty during closed session is a legitimate skip.
     // =====================================================================
     [Test]
-    public void GetStockBroker_AAPL_ReturnsValidFields()
+    public void GetStockBroker_HK_ReturnsValidFields()
     {
-      Assert.Ignore("stock_broker only supports HK market, not US. Python SDK also skips this for non-HK accounts.");
+      var model = new QuoteStockBrokerModel
+      {
+        Symbol = "00700",
+        Limit = 10
+      };
+      var resp = Execute<QuoteStockBrokerResponse>(QuoteApiService.STOCK_BROKER, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "stock_broker data must not be null");
+
+      // Ask/Bid broker lists may be empty outside HK trading hours or
+      // when the venue is closed. In that case skip rather than fail.
+      bool anyAsk = resp.Data.AskBroker != null && resp.Data.AskBroker.Count > 0;
+      bool anyBid = resp.Data.BidBroker != null && resp.Data.BidBroker.Count > 0;
+      if (!anyAsk && !anyBid)
+        Assert.Ignore("stock_broker returned empty broker lists — HK market likely closed");
+
+      Assert.That(resp.Data.Symbol, Is.EqualTo("00700"),
+          "stock_broker symbol wire name");
     }
 
     // =====================================================================
@@ -692,11 +774,35 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Market Scanner Tags (US)
+    // Wire: multi_tag_field_list serializes each MultiTagField as its C#
+    // field name (e.g. "MultiTagField_Industry") — see MarketScannerTagsModel
+    // and EnumNameConverter. Previously the model shipped List<string> with
+    // no converter, which the server rejected as a biz_content parse error.
     // =====================================================================
     [Test]
     public void GetMarketScannerTags_US_ReturnsValidFields()
     {
-      Assert.Ignore("market_scanner_tags biz_content parse error — MarketScannerTagsModel MultiTagFieldList serialization mismatch. Skip until SDK model is fixed.");
+      var model = new MarketScannerTagsModel
+      {
+        Market = Market.US,
+        MultiTagFieldList = new List<MultiTagField>
+        {
+          MultiTagField.MultiTagField_Industry
+        }
+      };
+      var resp = Execute<MarketScannerTagsResponse>(
+          QuoteApiService.MARKET_SCANNER_TAGS, model);
+
+      Assert.That(resp.Data, Is.Not.Null,
+          "market_scanner_tags data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("market_scanner_tags returned 0 rows — no permission or data");
+
+      var item = resp.Data[0];
+      Assert.That(item.MultiTagField, Is.Not.Null.And.Not.Empty,
+          "market_scanner_tags multiTagField wire name");
+      Assert.That(item.TagList, Is.Not.Null.And.Count.GreaterThan(0),
+          "market_scanner_tags tagList wire name");
     }
 
     // =====================================================================
@@ -958,20 +1064,45 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Future Current Contract
+    // Wire: { "type": "<future_type>" } — uses FutureContractByTypeModel.
+    // Response is a JSON array of contracts (same as future_contracts /
+    // future_continuous_contracts), so FutureContractsResponse is the right
+    // wrapper — a single-object FutureContractResponse would be a mismatch.
     // =====================================================================
     [Test]
     public void GetFutureCurrentContract_Succeeds()
     {
-      Assert.Ignore("future_current_contract requires 'type' field but FutureContractByExchCodeModel has no type property. Skip until FutureContractByExchCodeModel is extended in SDK.");
+      string ftype = GetFutureType();
+      var model = new FutureContractByTypeModel { FutureType = ftype };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CURRENT_CONTRACT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_current_contract data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "future current contractCode wire name");
+        Assert.That(resp.Data[0].Type, Is.Not.Null.And.Not.Empty,
+            "future current contract type wire name");
+      }
     }
 
     // =====================================================================
-    // Future Contracts (by contract codes)
+    // Future Contracts (all contracts of a given type)
+    // Wire: { "type": "<future_type>" } — uses FutureContractByTypeModel.
     // =====================================================================
     [Test]
     public void GetFutureContracts_Succeeds()
     {
-      Assert.Ignore("future_contracts requires 'type' field but FutureContractCodesModel has no type property. Skip until SDK model is extended.");
+      string ftype = GetFutureType();
+      var model = new FutureContractByTypeModel { FutureType = ftype };
+      var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "future_contracts data must not be null");
+      if (resp.Data.Count > 0)
+      {
+        Assert.That(resp.Data[0].ContractCode, Is.Not.Null.And.Not.Empty,
+            "future contract code wire name");
+      }
     }
 
     // =====================================================================
@@ -1104,38 +1235,90 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Fund All Symbols
+    // Wire: data is a plain string array; use SymbolsResponse (see
+    // GetFundSymbol helper). Previously routed through FundContractsResponse
+    // which expects list-of-object.
     // =====================================================================
     [Test]
     public void GetFundAllSymbols_Succeeds()
     {
-      Assert.Ignore("fund_all_symbols SDK deserialization bug: cannot deserialize fund symbol format (e.g. IE00B11XZ988.USD). Skip until SDK is fixed.");
+      var resp = Execute<SymbolsResponse>(QuoteApiService.FUND_ALL_SYMBOLS, new ApiModel());
+      Assert.That(resp.Data, Is.Not.Null,
+          "fund_all_symbols data must not be null");
+      // Some accounts may not have fund entitlement — empty is legitimate.
+      if (resp.Data.Count == 0)
+        Assert.Ignore("fund_all_symbols returned 0 rows — no fund entitlement");
+
+      Assert.That(resp.Data[0], Is.Not.Null.And.Not.Empty,
+          "fund_all_symbols entries must be non-empty strings");
     }
 
     // =====================================================================
-    // Fund Contracts
+    // Fund Contracts (single symbol picked from fund_all_symbols)
     // =====================================================================
     [Test]
     public void GetFundContracts_Succeeds()
     {
-      Assert.Ignore("fund_contracts depends on fund_all_symbols which has SDK deserialization bug. Skip until SDK is fixed.");
+      var model = new FundSymbolModel
+      {
+        Symbols = new List<string> { GetFundSymbol() }
+      };
+      var resp = Execute<FundContractsResponse>(QuoteApiService.FUND_CONTRACTS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "fund_contracts data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("fund_contracts returned 0 rows for probe symbol");
+
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.Not.Null.And.Not.Empty,
+          "fund contract symbol wire name");
+      Assert.That(item.SecType, Is.Not.Null.And.Not.Empty,
+          "fund contract secType wire name");
     }
 
     // =====================================================================
-    // Fund Quote
+    // Fund Quote (latest NAV for a single symbol)
     // =====================================================================
     [Test]
     public void GetFundQuote_Succeeds()
     {
-      Assert.Ignore("fund_quote depends on fund_all_symbols which has SDK deserialization bug. Skip until SDK is fixed.");
+      var model = new FundSymbolModel
+      {
+        Symbols = new List<string> { GetFundSymbol() }
+      };
+      var resp = Execute<FundQuoteResponse>(QuoteApiService.FUND_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "fund_quote data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("fund_quote returned 0 rows for probe symbol");
+
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "fund_quote symbol wire name");
     }
 
     // =====================================================================
-    // Fund History Quote
+    // Fund History Quote (NAV time series)
     // =====================================================================
     [Test]
     public void GetFundHistoryQuote_Succeeds()
     {
-      Assert.Ignore("fund_history_quote depends on fund_all_symbols which has SDK deserialization bug. Skip until SDK is fixed.");
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new FundQuoteHistoryModel
+      {
+        Symbols = new List<string> { GetFundSymbol() },
+        BeginTime = now - 30L * 24 * 3600 * 1000,
+        EndTime = now,
+        Limit = 5
+      };
+      var resp = Execute<FundHistoryQuoteResponse>(
+          QuoteApiService.FUND_HISTORY_QUOTE, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "fund_history_quote data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("fund_history_quote returned 0 rows for probe symbol");
+
+      Assert.That(resp.Data[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "fund_history_quote symbol wire name");
     }
 
     // =====================================================================
@@ -1305,21 +1488,70 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Financial Daily (AAPL)
+    // Financial Daily (AAPL) — daily fundamental time series
+    // Wire: symbols + market + fields + begin_date + end_date (epoch millis).
+    // Server rejects requests missing any of those, so this uses the
+    // dedicated FinancialDailyModel (not QuoteSymbolModel).
     // =====================================================================
     [Test]
-    public void GetFinancialDaily_AAPL_Succeeds()
+    public void GetFinancialDaily_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("financial_daily requires 'market' field but QuoteSymbolModel has no market property. Skip until a combined model is available in SDK.");
+      long begin = DateUtil.ConvertTimestamp("2024-01-01", CustomTimeZone.NY_ZONE);
+      long end = DateUtil.ConvertTimestamp("2024-12-31", CustomTimeZone.NY_ZONE);
+
+      var model = new FinancialDailyModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US,
+        // Any always-populated daily fundamental — matches Java sample.
+        Fields = new List<string> { "open_price" },
+        BeginDate = begin,
+        EndDate = end
+      };
+      var resp = Execute<FinancialDailyResponse>(QuoteApiService.FINANCIAL_DAILY, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "financial_daily data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("financial_daily returned 0 rows — permission or data range issue");
+
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"),
+          "financial_daily symbol wire name");
+      Assert.That(item.Field, Is.Not.Null.And.Not.Empty,
+          "financial_daily field wire name");
+      Assert.That(item.Date, Is.GreaterThan(0),
+          "financial_daily date must be non-zero epoch millis");
     }
 
     // =====================================================================
-    // Financial Report (AAPL)
+    // Financial Report (AAPL) — periodic filings
+    // Wire: symbols + market + fields + period_type. begin_date/end_date
+    // are optional. Uses FinancialReportModel + FinancialPeriodType.
     // =====================================================================
     [Test]
-    public void GetFinancialReport_AAPL_Succeeds()
+    public void GetFinancialReport_AAPL_ReturnsValidFields()
     {
-      Assert.Ignore("financial_report requires 'market' field but QuoteSymbolModel has no market property. Skip until a combined model is available in SDK.");
+      var model = new FinancialReportModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US,
+        // Total revenue is populated in every quarterly report.
+        Fields = new List<string> { "total_revenue" },
+        PeriodType = FinancialPeriodType.Quarterly
+      };
+      var resp = Execute<FinancialReportResponse>(QuoteApiService.FINANCIAL_REPORT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "financial_report data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("financial_report returned 0 rows — permission or data range issue");
+
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"),
+          "financial_report symbol wire name");
+      Assert.That(item.Field, Is.Not.Null.And.Not.Empty,
+          "financial_report field wire name");
+      Assert.That(item.PeriodEndDate, Is.Not.Null.And.Not.Empty,
+          "financial_report periodEndDate wire name");
     }
 
     // =====================================================================

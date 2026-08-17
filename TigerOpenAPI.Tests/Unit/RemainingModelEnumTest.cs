@@ -919,16 +919,23 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void MarketScannerTagsModel_Serialization_WireNamesPresent()
     {
+      // MarketScannerTagsModel.MultiTagFieldList is List<MultiTagField> so
+      // each entry serializes to the C# field name (Java/Python
+      // "field_request_name"), e.g. "MultiTagField_Industry".
       var model = new MarketScannerTagsModel
       {
         Market = Market.US,
-        MultiTagFieldList = new List<string> { "industry", "concept" }
+        MultiTagFieldList = new List<MultiTagField>
+        {
+          MultiTagField.MultiTagField_Industry,
+          MultiTagField.MultiTagField_Concept
+        }
       };
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
       Assert.That(json, Does.Contain("\"market\":\"US\""));
       Assert.That(json, Does.Contain("\"multi_tag_field_list\""));
-      Assert.That(json, Does.Contain("industry"));
-      Assert.That(json, Does.Contain("concept"));
+      Assert.That(json, Does.Contain("MultiTagField_Industry"));
+      Assert.That(json, Does.Contain("MultiTagField_Concept"));
     }
 
     // ---- OptionChainV3Model ----
@@ -1236,6 +1243,94 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(values, Does.Contain("volume"));
       Assert.That(values, Does.Contain("amount"));
       Assert.That(values, Does.Contain("changeRate"));
+    }
+
+    // ---- HourTradingTimelineModel ----
+
+    [Test]
+    public void HourTradingTimelineModel_Serialization_UsesSingularSymbol()
+    {
+      // hour_trading_timeline wire uses the singular `symbol` key (not the
+      // `symbols` array used by QuoteSymbolModel), plus optional begin_time.
+      var m = new HourTradingTimelineModel { Symbol = "AAPL", BeginTime = 1700000000000 };
+      string json = JsonConvert.SerializeObject(m, TigerClient.JsonSet);
+      Assert.That(json, Does.Contain("\"symbol\":\"AAPL\""));
+      Assert.That(json, Does.Contain("\"begin_time\":1700000000000"));
+      Assert.That(json, Does.Not.Contain("\"symbols\""));
+    }
+
+    [Test]
+    public void HourTradingTimelineModel_Serialization_OmitsUnsetBeginTime()
+    {
+      // begin_time is optional — NullValueHandling.Ignore keeps it out of
+      // the payload when unset.
+      var m = new HourTradingTimelineModel { Symbol = "AAPL" };
+      string json = JsonConvert.SerializeObject(m, TigerClient.JsonSet);
+      Assert.That(json, Does.Contain("\"symbol\":\"AAPL\""));
+      Assert.That(json, Does.Not.Contain("begin_time"));
+    }
+
+    // ---- FinancialDailyModel ----
+
+    [Test]
+    public void FinancialDailyModel_Serialization_WireNamesPresent()
+    {
+      var m = new FinancialDailyModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US,
+        Fields = new List<string> { "open_price" },
+        BeginDate = 1704067200000,
+        EndDate = 1735689599000
+      };
+      string json = JsonConvert.SerializeObject(m, TigerClient.JsonSet);
+      Assert.That(json, Does.Contain("\"symbols\":[\"AAPL\"]"));
+      Assert.That(json, Does.Contain("\"market\":\"US\""));
+      Assert.That(json, Does.Contain("\"fields\":[\"open_price\"]"));
+      Assert.That(json, Does.Contain("\"begin_date\":1704067200000"));
+      Assert.That(json, Does.Contain("\"end_date\":1735689599000"));
+    }
+
+    // ---- FinancialReportModel ----
+
+    [Test]
+    public void FinancialReportModel_Serialization_PeriodTypeAsEnumName()
+    {
+      // period_type uses StringEnumConverter — serializes to enum member
+      // name ("Quarterly"/"Annual"/"LTM"), matching Java wire.
+      var m = new FinancialReportModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US,
+        Fields = new List<string> { "total_revenue" },
+        PeriodType = FinancialPeriodType.Quarterly
+      };
+      string json = JsonConvert.SerializeObject(m, TigerClient.JsonSet);
+      Assert.That(json, Does.Contain("\"symbols\":[\"AAPL\"]"));
+      Assert.That(json, Does.Contain("\"market\":\"US\""));
+      Assert.That(json, Does.Contain("\"fields\":[\"total_revenue\"]"));
+      Assert.That(json, Does.Contain("\"period_type\":\"Quarterly\""));
+      // begin_date/end_date default to null — omitted via NullValueHandling.
+      Assert.That(json, Does.Not.Contain("begin_date"));
+      Assert.That(json, Does.Not.Contain("end_date"));
+    }
+
+    [Test]
+    public void FinancialReportModel_Serialization_AllPeriodTypesRoundtrip()
+    {
+      foreach (var pt in new[] { FinancialPeriodType.Annual, FinancialPeriodType.Quarterly, FinancialPeriodType.LTM })
+      {
+        var m = new FinancialReportModel
+        {
+          Symbols = new List<string> { "AAPL" },
+          Market = Market.US,
+          Fields = new List<string> { "revenues" },
+          PeriodType = pt
+        };
+        string json = JsonConvert.SerializeObject(m, TigerClient.JsonSet);
+        Assert.That(json, Does.Contain($"\"period_type\":\"{pt}\""),
+            $"period_type must round-trip for {pt}");
+      }
     }
   }
 }
