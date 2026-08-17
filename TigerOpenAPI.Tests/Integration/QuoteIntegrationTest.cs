@@ -1041,12 +1041,21 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<WarrantFilterResponse>(QuoteApiService.WARRANT_FILTER, model);
 
       Assert.That(resp.Data, Is.Not.Null, "warrant_filter data must not be null");
-      // Warrant filter results may be empty depending on market conditions.
-      if (resp.Data.Items != null && resp.Data.Items.Count > 0)
+
+      // wire shape: server returns a bare items array; the {total, page, pageSize}
+      // wrapper fields stay at defaults. Only Items carries the answer. Inside
+      // HK TRADING an empty list is a regression; outside trading hours empty
+      // is expected and the wire path is already validated by the request
+      // completing without exception.
+      if (resp.Data.Items == null || resp.Data.Items.Count == 0)
       {
-        Assert.That(resp.Data.Items[0].Symbol, Is.Not.Null.And.Not.Empty,
-            "warrant item symbol must be non-empty");
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.HK,
+            "warrant_filter(00700) returned no items");
+        return; // out-of-hours: wire path validated by request completing
       }
+
+      Assert.That(resp.Data.Items[0].Symbol, Is.Not.Null.And.Not.Empty,
+          "warrant item symbol must be non-empty");
     }
 
     // =====================================================================
