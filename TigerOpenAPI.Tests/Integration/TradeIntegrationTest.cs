@@ -180,6 +180,10 @@ namespace TigerOpenAPI.Tests.Integration
             "position account must be non-empty");
         Assert.That(pos.SecType, Is.Not.Null.And.Not.Empty,
             "position secType must be non-empty");
+        Assert.That(pos.AverageCost, Is.GreaterThan(0),
+            "position averageCost must be > 0");
+        Assert.That(pos.MarketValue, Is.Not.EqualTo(0).Or.GreaterThan(0),
+            "position marketValue must be populated");
       }
     }
 
@@ -215,6 +219,42 @@ namespace TigerOpenAPI.Tests.Integration
             "order action must be non-empty");
         Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
             "order status must not be NONE");
+        Assert.That(order.OrderType, Is.Not.Null.And.Not.Empty,
+            "order orderType must be non-empty");
+      }
+    }
+
+    // =====================================================================
+    // Orders with status=filled filter (last 30 days; may be empty)
+    // =====================================================================
+    [Test]
+    public void GetOrders_Last30Days_FilledStatus_WithValidFieldsWhenNonEmpty()
+    {
+      long now = DateUtil.CurrentTimeMillis();
+      var model = new QueryOrderModel
+      {
+        Account = _account,
+        StartDate = now - 30L * 24 * 3600 * 1000,
+        EndDate = now,
+        Limit = 10,
+        StatusList = new List<OrderStatus> { OrderStatus.FILLED }
+      };
+      var resp = Execute<OrderBatchResponse>(TradeApiService.ORDERS, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "orders (filled) data wrapper must not be null");
+      var items = resp.Data!.Items;
+
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no filled orders to validate — skipping field checks (no fills in last 30 days)");
+      foreach (var order in items!)
+      {
+        Assert.That(order.Id, Is.Not.EqualTo(0), "filled order id must be non-zero");
+        Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
+            "filled order symbol must be non-empty");
+        Assert.That(order.Status, Is.EqualTo(OrderStatus.FILLED),
+            "filtered order status must be FILLED");
+        Assert.That(order.OrderType, Is.Not.Null.And.Not.Empty,
+            "filled order orderType must be non-empty");
       }
     }
 
@@ -664,6 +704,229 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp.IsSuccess(), Is.True,
           $"option_exercise_position returned error code={resp.Code} msg={resp.Message}");
       // Positions may be empty if no exercisable options.
+    }
+
+    // =====================================================================
+    // Preview Order (AAPL MKT BUY 1 — no actual order placed)
+    // preview_order sends the order to the gateway for fee/margin estimation
+    // only; no real order is created. The response reuses PlaceOrderResponse
+    // (same wire shape). isPass may be false when buying power is insufficient
+    // on a paper account, but the call itself must succeed.
+    // =====================================================================
+    [Test]
+    public void PreviewOrder_AAPL_MktBuy_Succeeds()
+    {
+      // Fetch the AAPL contract so we can build a well-formed PlaceOrderModel.
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel { Symbol = "AAPL", SecType = SecType.STK.ToString() }
+      };
+      var contractResp = _client!.Execute(contractReq);
+      Assert.That(contractResp, Is.Not.Null, "contract prerequisite must not be null");
+      Assert.That(contractResp!.IsSuccess(), Is.True,
+          $"contract prerequisite failed: code={contractResp.Code} msg={contractResp.Message}");
+      Assert.That(contractResp.Data, Is.Not.Null, "contract data must not be null");
+
+      var model = PlaceOrderModel.BuildMarketOrder(
+          _account, contractResp.Data!, ActionType.BUY, quantity: 1);
+      var req = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.PREVIEW_ORDER,
+        ModelValue = model
+      };
+      var resp = _client!.Execute(req);
+      Assert.That(resp, Is.Not.Null, "preview_order response must not be null");
+      Assert.That(resp!.IsSuccess(), Is.True,
+          $"preview_order returned error code={resp.Code} msg={resp.Message}");
+      Assert.That(resp.Data, Is.Not.Null, "preview_order data must not be null");
+      // Id == 0 is expected for preview (no order stored); just verify it
+      // deserialises cleanly with a non-negative value.
+      Assert.That(resp.Data.Id, Is.GreaterThanOrEqualTo(0),
+          "preview_order id must be >= 0");
+    }
+
+    // =====================================================================
+    // Place Order (AAPL MKT BUY 1) — Mode A
+    // Attempts to place a real order. Outside US trading hours the gateway
+    // returns a "not in trading hours" error (codes 70009 / 70010 / 1000 or
+    // a message containing "trading hours" / "market closed"). In that case
+    // the test passes because the wire path was validated. During US TRADING
+    // hours the order must succeed and return a positive order id.
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_AAPL_MktBuy_ModeA_TradingHoursOrExpectedError()
+    {
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel { Symbol = "AAPL", SecType = SecType.STK.ToString() }
+      };
+      var contractResp = _client!.Execute(contractReq);
+      Assert.That(contractResp, Is.Not.Null, "contract prerequisite must not be null");
+      Assert.That(contractResp!.IsSuccess(), Is.True,
+          $"contract prerequisite failed: code={contractResp.Code} msg={contractResp.Message}");
+      Assert.That(contractResp.Data, Is.Not.Null, "contract data must not be null");
+
+      var model = PlaceOrderModel.BuildMarketOrder(
+          _account, contractResp.Data!, ActionType.BUY, quantity: 1);
+      var req = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.PLACE_ORDER,
+        ModelValue = model
+      };
+      var resp = _client!.Execute(req);
+      Assert.That(resp, Is.Not.Null, "place_order response must not be null");
+
+      if (!resp!.IsSuccess())
+      {
+        // Outside trading hours the server returns a "not in trading hours"
+        // or "market closed" business error — accepted as a PASS because
+        // the full wire path was exercised. Any other error code is a real
+        // failure and must be surfaced.
+        var msg = resp.Message ?? string.Empty;
+        bool isExpectedOutOfHoursError =
+            msg.IndexOf("trading hours", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            msg.IndexOf("market closed", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            msg.IndexOf("not trading", StringComparison.OrdinalIgnoreCase) >= 0;
+        if (isExpectedOutOfHoursError)
+        {
+          TestContext.Progress.WriteLine(
+              $"place_order declined outside trading hours (expected): code={resp.Code} msg={msg}");
+          return; // out-of-hours: wire path validated by request completing
+        }
+        Assert.Fail($"place_order failed with unexpected error: code={resp.Code} msg={msg}");
+      }
+
+      // Inside trading hours the order must be accepted.
+      Assert.That(resp.Data, Is.Not.Null, "place_order data must not be null on success");
+      Assert.That(resp.Data!.Id, Is.GreaterThan(0),
+          "place_order id must be > 0 on success");
+    }
+
+    // =====================================================================
+    // Cancel Order — Mode A
+    // Attempts to cancel a non-existent order (id=0). The gateway returns a
+    // known business error (order not found / invalid id). This validates the
+    // full cancel_order wire path without requiring a live open order.
+    // If an open order happens to exist, prefer that id for a cleaner test.
+    // =====================================================================
+    [Test]
+    public void CancelOrder_NonExistentId_ReturnsExpectedBusinessError()
+    {
+      // Try to find a real active order id first; fall back to 0.
+      long orderId = 0;
+      var activeReq = new TigerRequest<OrderBatchResponse>
+      {
+        ApiMethodName = TradeApiService.ACTIVE_ORDERS,
+        ModelValue = new QueryOrderModel { Account = _account, Limit = 1 }
+      };
+      var activeResp = _client!.Execute(activeReq);
+      if (activeResp != null && activeResp.IsSuccess()
+          && activeResp.Data?.Items != null && activeResp.Data.Items.Count > 0)
+      {
+        orderId = activeResp.Data.Items[0].Id;
+        TestContext.Progress.WriteLine(
+            $"cancel_order: using real active order id={orderId}");
+      }
+
+      var model = new CancelOrderModel
+      {
+        Account = _account,
+        Id = orderId
+      };
+      var req = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.CANCEL_ORDER,
+        ModelValue = model
+      };
+      var resp = _client!.Execute(req);
+      Assert.That(resp, Is.Not.Null, "cancel_order response must not be null");
+
+      if (orderId > 0 && resp!.IsSuccess())
+      {
+        // A real active order was cancelled successfully.
+        TestContext.Progress.WriteLine(
+            $"cancel_order succeeded for active order id={orderId}");
+        return;
+      }
+
+      // For id=0 (or an order that is no longer cancellable) the gateway
+      // returns a business error. Verify it is a recognised order-related
+      // error code rather than an auth or 5xx failure.
+      var msg = resp!.Message ?? string.Empty;
+      bool isExpectedOrderError =
+          msg.IndexOf("order", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("invalid", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("cancel", StringComparison.OrdinalIgnoreCase) >= 0;
+      Assert.That(isExpectedOrderError, Is.True,
+          $"cancel_order returned an unrecognised error: code={resp.Code} msg={msg}. " +
+          "Expected an order-related business error for a non-existent / non-cancellable id.");
+    }
+
+    // =====================================================================
+    // Modify Order — Mode A
+    // Attempts to modify a non-existent order (id=0). The gateway returns a
+    // known business error (order not found / invalid). If an active order
+    // exists the test uses that id instead and verifies the call succeeds.
+    // =====================================================================
+    [Test]
+    public void ModifyOrder_NonExistentId_ReturnsExpectedBusinessError()
+    {
+      // Try to find a real active order id first; fall back to 0.
+      long orderId = 0;
+      var activeReq = new TigerRequest<OrderBatchResponse>
+      {
+        ApiMethodName = TradeApiService.ACTIVE_ORDERS,
+        ModelValue = new QueryOrderModel { Account = _account, Limit = 1 }
+      };
+      var activeResp = _client!.Execute(activeReq);
+      if (activeResp != null && activeResp.IsSuccess()
+          && activeResp.Data?.Items != null && activeResp.Data.Items.Count > 0)
+      {
+        orderId = activeResp.Data.Items[0].Id;
+        TestContext.Progress.WriteLine(
+            $"modify_order: using real active order id={orderId}");
+      }
+
+      var model = new ModifyOrderModel
+      {
+        Account = _account,
+        Id = orderId,
+        // Bump quantity by 1 as a minimal modification; gateway validates
+        // before accepting so an invalid id will fail before reaching fill.
+        TotalQuantity = 2
+      };
+      var req = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.MODIFY_ORDER,
+        ModelValue = model
+      };
+      var resp = _client!.Execute(req);
+      Assert.That(resp, Is.Not.Null, "modify_order response must not be null");
+
+      if (orderId > 0 && resp!.IsSuccess())
+      {
+        // A real active order was modified successfully.
+        Assert.That(resp.Data, Is.Not.Null, "modify_order data must not be null on success");
+        TestContext.Progress.WriteLine(
+            $"modify_order succeeded for active order id={orderId}");
+        return;
+      }
+
+      // For id=0 (or an order that is no longer modifiable) the gateway
+      // returns a business error. Verify it is a recognised order-related
+      // error code rather than an auth or 5xx failure.
+      var msg = resp!.Message ?? string.Empty;
+      bool isExpectedOrderError =
+          msg.IndexOf("order", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("invalid", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("modify", StringComparison.OrdinalIgnoreCase) >= 0;
+      Assert.That(isExpectedOrderError, Is.True,
+          $"modify_order returned an unrecognised error: code={resp.Code} msg={msg}. " +
+          "Expected an order-related business error for a non-existent / non-modifiable id.");
     }
   }
 }

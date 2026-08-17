@@ -123,8 +123,40 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(candle.Time, Is.GreaterThan(1577836800000L),
           "kline item time must be non-zero epoch millis");
       Assert.That(candle.Close, Is.GreaterThan(0), "kline close must be > 0");
+      Assert.That(candle.Open, Is.GreaterThan(0), "kline open must be > 0");
+      Assert.That(candle.Volume, Is.GreaterThan(0), "kline volume must be > 0");
       Assert.That(candle.High, Is.GreaterThanOrEqualTo(candle.Low),
           "kline high must be >= low");
+    }
+
+    // =====================================================================
+    // Kline weekly (AAPL)
+    // =====================================================================
+    [Test]
+    public void GetKline_AAPL_Weekly_ReturnsValidCandles()
+    {
+      var model = new QuoteKlineModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Period = KLineType.week.Value,
+        Limit = 5
+      };
+      var resp = Execute<QuoteKlineResponse>(QuoteApiService.KLINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.EqualTo(1),
+          "Kline (week) should return 1 symbol entry");
+      var kline = resp.Data[0];
+
+      Assert.That(kline.Symbol, Is.EqualTo("AAPL"), "kline (week) symbol wire name");
+      Assert.That(kline.Items, Is.Not.Null.And.Count.GreaterThan(0),
+          "kline (week) items must be non-empty");
+
+      var candle = kline.Items[0];
+      Assert.That(candle.Time, Is.GreaterThan(1577836800000L),
+          "kline (week) item time must be non-zero epoch millis");
+      Assert.That(candle.Close, Is.GreaterThan(0), "kline (week) close must be > 0");
+      Assert.That(candle.High, Is.GreaterThanOrEqualTo(candle.Low),
+          "kline (week) high must be >= low");
     }
 
     // =====================================================================
@@ -204,6 +236,10 @@ namespace TigerOpenAPI.Tests.Integration
             "call leg identifier must be non-empty");
         Assert.That(row.Call.Strike, Is.Not.Null.And.Not.Empty,
             "call leg strike must be non-empty");
+        Assert.That(double.Parse(row.Call.Strike), Is.GreaterThan(0),
+            "call leg strike must be > 0");
+        Assert.That(chain.Expiry, Is.GreaterThan(0),
+            "call leg chain expiry must be set (> 0)");
       }
       if (row.Put != null)
       {
@@ -211,6 +247,10 @@ namespace TigerOpenAPI.Tests.Integration
             "put leg identifier must be non-empty");
         Assert.That(row.Put.Strike, Is.Not.Null.And.Not.Empty,
             "put leg strike must be non-empty");
+        Assert.That(double.Parse(row.Put.Strike), Is.GreaterThan(0),
+            "put leg strike must be > 0");
+        Assert.That(chain.Expiry, Is.GreaterThan(0),
+            "put leg chain expiry must be set (> 0)");
       }
     }
 
@@ -443,6 +483,8 @@ namespace TigerOpenAPI.Tests.Integration
           "stock_detail secType wire name");
       Assert.That(item.Name, Is.Not.Null.And.Not.Empty,
           "stock_detail name wire name");
+      Assert.That(item.LatestPrice, Is.GreaterThan(0),
+          "stock_detail latestPrice must be > 0");
     }
 
     // =====================================================================
@@ -517,6 +559,37 @@ namespace TigerOpenAPI.Tests.Integration
       var pt = item.Intraday.Items[0];
       Assert.That(pt.Time, Is.GreaterThan(0), "timeline point time must be non-zero");
       Assert.That(pt.Price, Is.GreaterThan(0), "timeline point price must be > 0");
+    }
+
+    // =====================================================================
+    // Timeline (HK — 00700)
+    // =====================================================================
+    [Test]
+    public void GetTimeline_HK_00700_ReturnsValidFields()
+    {
+      var model = new QuoteTimelineModel
+      {
+        Symbols = new List<string> { "00700" },
+        Period = TimeLineType.day
+      };
+      var resp = Execute<QuoteTimelineResponse>(QuoteApiService.TIMELINE, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "timeline (HK) should return data for 00700");
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("00700"), "timeline (HK) symbol wire name");
+      Assert.That(item.PreClose, Is.GreaterThan(0), "timeline (HK) preClose must be > 0");
+
+      if (item.Intraday == null || item.Intraday.Items == null
+          || item.Intraday.Items.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.HK,
+            "timeline (HK) intraday returned no items");
+        return;
+      }
+      var pt = item.Intraday.Items[0];
+      Assert.That(pt.Time, Is.GreaterThan(0), "timeline (HK) point time must be non-zero");
+      Assert.That(pt.Price, Is.GreaterThan(0), "timeline (HK) point price must be > 0");
     }
 
     // =====================================================================
@@ -627,6 +700,26 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(q.LatestPrice, Is.GreaterThan(0), "quote_real_time latestPrice wire name");
       Assert.That(q.LatestTime, Is.GreaterThan(1577836800000L),
           "quote_real_time latestTime must be valid epoch millis");
+    }
+
+    // =====================================================================
+    // Quote Real-Time (HK market — 00700)
+    // =====================================================================
+    [Test]
+    public void GetQuoteRealTime_HK_00700_ReturnsPriceFields()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "00700" }
+      };
+      var resp = Execute<QuoteRealTimeQuoteResponse>(QuoteApiService.QUOTE_REAL_TIME, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.EqualTo(1),
+          "quote_real_time (HK) should return 1 item for 00700");
+      var q = resp.Data[0];
+      Assert.That(q.Symbol, Is.EqualTo("00700"), "quote_real_time (HK) symbol wire name");
+      Assert.That(q.LatestPrice, Is.GreaterThan(0),
+          "quote_real_time (HK) latestPrice must be > 0");
     }
 
     // =====================================================================
@@ -1218,6 +1311,8 @@ namespace TigerOpenAPI.Tests.Integration
       var item = resp.Data[0];
       Assert.That(item.ContractCode, Is.Not.Null.And.Not.Empty,
           "future real-time contractCode wire name");
+      Assert.That(item.LatestPrice, Is.GreaterThan(0),
+          "future real-time latestPrice must be > 0");
     }
 
     // =====================================================================
@@ -1640,6 +1735,34 @@ namespace TigerOpenAPI.Tests.Integration
           "financial_report field wire name");
       Assert.That(item.PeriodEndDate, Is.Not.Null.And.Not.Empty,
           "financial_report periodEndDate wire name");
+    }
+
+    // =====================================================================
+    // Financial Report (AAPL) — annual filings variant
+    // =====================================================================
+    [Test]
+    public void GetFinancialReport_AAPL_Annual_ReturnsValidFields()
+    {
+      var model = new FinancialReportModel
+      {
+        Symbols = new List<string> { "AAPL" },
+        Market = Market.US,
+        Fields = new List<string> { "total_revenue" },
+        PeriodType = FinancialPeriodType.Annual
+      };
+      var resp = Execute<FinancialReportResponse>(QuoteApiService.FINANCIAL_REPORT, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "financial_report (annual) data must not be null");
+      if (resp.Data.Count == 0)
+        Assert.Ignore("financial_report (annual) returned 0 rows — permission or data range issue");
+
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"),
+          "financial_report (annual) symbol wire name");
+      Assert.That(item.Field, Is.Not.Null.And.Not.Empty,
+          "financial_report (annual) field wire name");
+      Assert.That(item.PeriodEndDate, Is.Not.Null.And.Not.Empty,
+          "financial_report (annual) periodEndDate wire name");
     }
 
     // =====================================================================
