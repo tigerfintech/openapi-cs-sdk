@@ -118,8 +118,12 @@ namespace TigerOpenAPI.Quote.Response
     /// signalling non-leveraged / 2x / 3x, and negative values marking
     /// inverse ETFs (matches Python doc).
     /// </summary>
+    /// <summary>
+    /// stock_detail returns etf as a float (0.0 / 1.0), not an integer flag.
+    /// Use double? to tolerate both forms.
+    /// </summary>
     [JsonProperty(PropertyName = "etf")]
-    public int? Etf { get; set; }
+    public double? Etf { get; set; }
 
     /// <summary>Listing date (epoch millis at 00:00 in the market's local tz).</summary>
     [JsonProperty(PropertyName = "listingDate")]
