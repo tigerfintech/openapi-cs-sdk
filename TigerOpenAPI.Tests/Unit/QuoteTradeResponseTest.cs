@@ -562,7 +562,7 @@ namespace TigerOpenAPI.Tests.Unit
         ""symbol"":""AAPL"",""market"":""US"",""secType"":""STK"",""exchange"":""NASDAQ"",
         ""name"":""Apple Inc"",""shortable"":true,""askPrice"":200.5,""askSize"":100,
         ""bidPrice"":200.4,""bidSize"":200,""preClose"":199.9,""latestPrice"":200.45,
-        ""latestTime"":1700000000000,""volume"":1000000,""open"":199.0,""high"":201.0,
+        ""latestTime"":""08-14 16:00:00 EDT"",""volume"":1000000,""open"":199.0,""high"":201.0,
         ""low"":198.5,""change"":0.55,""amount"":200000000.0,""amplitude"":0.0125,
         ""marketStatus"":""Trading"",""tradingStatus"":2,""floatShares"":15000000000,
         ""shares"":15500000000,""eps"":6.5,""adrRate"":1.0,""etf"":0,
@@ -578,6 +578,8 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(it.Symbol, Is.EqualTo("AAPL"));
       Assert.That(it.SecType, Is.EqualTo("STK"));
       Assert.That(it.LatestPrice, Is.EqualTo(200.45));
+      Assert.That(it.LatestTime, Is.EqualTo("08-14 16:00:00 EDT"),
+        "stock_detail returns latestTime as a formatted string, not epoch-ms");
       Assert.That(it.Shares, Is.EqualTo(15500000000L));
       Assert.That(it.Etf, Is.EqualTo(0));
       Assert.That(it.HourTrading, Is.Not.Null);
