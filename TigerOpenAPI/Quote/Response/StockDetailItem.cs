@@ -62,8 +62,12 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "adjPreClose")]
     public double? AdjPreClose { get; set; }
 
+    /// <summary>
+    /// stock_detail returns latestTime as a formatted string ("08-14 16:00:00 EDT"),
+    /// unlike other real-time endpoints that return an epoch-ms long.
+    /// </summary>
     [JsonProperty(PropertyName = "latestTime")]
-    public long? LatestTime { get; set; }
+    public string? LatestTime { get; set; }
 
     [JsonProperty(PropertyName = "volume")]
     public long? Volume { get; set; }

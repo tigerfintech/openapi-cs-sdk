@@ -1504,7 +1504,10 @@ namespace TigerOpenAPI.Tests.Integration
         Symbols = new List<string> { "AAPL" },
         Market = Market.US,
         // Any always-populated daily fundamental — matches Java sample.
-        Fields = new List<string> { "open_price" },
+        // Valid FinancialDailyField enum values per Java reference:
+        // tev_to_ltm_total_revenues, tev_to_ltm_ebitda, market_capitalization,
+        // shares_outstanding, etc. "open_price" is NOT a valid enum.
+        Fields = new List<string> { "market_capitalization", "shares_outstanding" },
         BeginDate = begin,
         EndDate = end
       };
