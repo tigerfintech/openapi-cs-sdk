@@ -602,11 +602,18 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Quote Shortable Stocks (US)
+    // The endpoint requires an institutional / broker feed entitlement.
+    // Standard paper and retail accounts get code=1000 ("method not
+    // supported for this account type"). Kept as a skip until the CI
+    // credentials switch to an account that carries the entitlement.
     // =====================================================================
     [Test]
     public void GetQuoteShortableStocks_US_Succeeds()
     {
-      Assert.Ignore("quote_shortable_stocks: code=1000 - method not supported for this account type.");
+      Assert.Ignore(
+          "quote_shortable_stocks requires an account with the shortable-stock " +
+          "entitlement; server returns code=1000 for the standard test account. " +
+          "Re-enable once the CI credentials point at an entitled account.");
     }
 
     // =====================================================================
@@ -1384,12 +1391,33 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Broker Hold (US)
+    // Broker Hold (HK)
+    // broker_hold is HK-only on the server (US returns code=1010). This
+    // mirrors the stock_broker pattern below — query HK and validate wire
+    // names when data is present. Empty results outside HK trading hours
+    // are a legitimate skip; empty during HK trading is a failure.
     // =====================================================================
     [Test]
-    public void GetBrokerHold_US_Succeeds()
+    public void GetBrokerHold_HK_Succeeds()
     {
-      Assert.Ignore("broker_hold only supports HK market (code=1010). Use Market.HK for valid results.");
+      var model = new QuoteBrokerHoldModel(Market.HK, 10);
+      var resp = Execute<QuoteBrokerHoldResponse>(QuoteApiService.BROKER_HOLD, model);
+
+      Assert.That(resp.Data, Is.Not.Null, "broker_hold page item must not be null");
+      var items = resp.Data.Items;
+      if (items == null || items.Count == 0)
+      {
+        MarketHelpers.SkipOrFailByMarket(_client!, Market.HK,
+            "broker_hold returned no items");
+        return;
+      }
+
+      var top = items[0];
+      Assert.That(top.OrgId, Is.Not.Null.And.Not.Empty, "broker_hold orgId wire name");
+      Assert.That(top.OrgName, Is.Not.Null.And.Not.Empty, "broker_hold orgName wire name");
+      Assert.That(top.SharesHold, Is.GreaterThanOrEqualTo(0),
+          "broker_hold sharesHold must be >= 0");
+      Assert.That(top.Market, Is.Not.Null.And.Not.Empty, "broker_hold market wire name");
     }
 
     // =====================================================================
@@ -1745,16 +1773,22 @@ namespace TigerOpenAPI.Tests.Integration
       // Some accounts may not have access to the trade rank endpoint.
       if (resp != null && !resp.IsSuccess())
       {
-        Assert.Ignore($"trade_rank not accessible for this account: code={resp.Code} msg={resp.Message}");
+        Assert.Ignore(
+            $"trade_rank not accessible for this account: code={resp.Code} " +
+            $"msg={resp.Message}. Endpoint requires an entitled account.");
       }
 
       Assert.That(resp!.Data, Is.Not.Null, "trade_rank data must not be null");
-      if (resp.Data.Count > 0)
+      if (resp.Data.Count == 0)
       {
-        var item = resp.Data[0];
-        Assert.That(item.Symbol, Is.Not.Null.And.Not.Empty, "trade rank symbol wire name");
-        Assert.That(item.Market, Is.Not.Null.And.Not.Empty, "trade rank market wire name");
+        MarketHelpers.SkipOrFailByMarket(_client!, Market.US,
+            "trade_rank returned no items");
+        return;
       }
+
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.Not.Null.And.Not.Empty, "trade rank symbol wire name");
+      Assert.That(item.Market, Is.Not.Null.And.Not.Empty, "trade rank market wire name");
     }
 
     // =====================================================================
@@ -1767,11 +1801,17 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetShortInterest_AAPL_Skipped()
     {
+      // TODO(cs): expose short_interest in the C# SDK.
+      //   - Add QuoteApiService.SHORT_INTEREST = "short_interest".
+      //   - Add QuoteShortInterestModel (symbols, market) + response type.
+      //   - Replace this skip with a live call + wire-name assertions.
+      // Python SDK currently also skips: server returns
+      // "Account does not support short interest API method".
       Assert.Ignore(
-          "short_interest is not yet exposed in the C# SDK (no model/response/constant). " +
-          "The Python SDK also skips this: 'Account does not support short interest API method'. " +
-          "Add a QuoteShortInterestModel + QuoteShortInterestResponse and a " +
-          "QuoteApiService.SHORT_INTEREST constant before enabling this test.");
+          "short_interest not yet exposed in the C# SDK (no model / response / " +
+          "QuoteApiService constant). Server returns \"Account does not support " +
+          "short interest API method\" on the standard test account. Requires an " +
+          "entitled account + SDK plumbing before this test can be enabled.");
     }
 
     // =====================================================================
