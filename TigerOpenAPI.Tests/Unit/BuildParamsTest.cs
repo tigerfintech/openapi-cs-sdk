@@ -87,8 +87,8 @@ namespace TigerOpenAPI.Tests.Unit
       };
       _client.BuildParams(req);
       // BizContent is the JSON-serialized model value
-      Assert.That(req.BizContent, Does.Contain("US"),
-          "BizContent should contain the market field value");
+      Assert.That(req.BizContent, Does.Contain("\"market\":\"US\""),
+          "BizContent should contain the wire-name/value pair market:US");
     }
 
     [Test]

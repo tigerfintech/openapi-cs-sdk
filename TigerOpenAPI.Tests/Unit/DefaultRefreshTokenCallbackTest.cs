@@ -107,13 +107,14 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void TokenChange_NullUserToken_ThrowsAndIsCaught()
     {
-      // A null UserToken would NPE inside the callback; the try/catch swallows it.
+      // A null UserToken causes an NPE inside the callback; the try/catch swallows it.
+      // config.Token must remain unchanged because the assignment never reached.
       var config = new TigerConfig { ConfigFilePath = string.Empty, Token = "keep" };
       var callback = new DefaultRefreshTokenCallback();
 
       Assert.DoesNotThrow(() => callback.TokenChange(config, "keep", null!));
-      // config.Token not updated because the NPE happened before the assignment
-      // is uncertain; we only assert no exception escapes.
+      Assert.That(config.Token, Is.EqualTo("keep"),
+          "Token must not be updated when UserToken is null");
     }
   }
 }

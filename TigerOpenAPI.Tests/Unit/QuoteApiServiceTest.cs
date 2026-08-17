@@ -40,10 +40,8 @@ namespace TigerOpenAPI.Tests.Unit
       var values = GetConstantValues();
       foreach (var value in values)
       {
-        Assert.That(value, Does.Not.Contain(" "),
-            "constant must not contain spaces: " + value);
-        Assert.That(value, Is.EqualTo(value.ToLowerInvariant()),
-            "constant must be lowercase snake_case: " + value);
+        Assert.That(value, Does.Match("^[a-z][a-z0-9]*(_[a-z0-9]+)*$"),
+            "constant must be snake_case (lowercase letters/digits, underscore-delimited): " + value);
       }
     }
 

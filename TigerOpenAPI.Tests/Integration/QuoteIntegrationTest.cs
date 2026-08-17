@@ -1817,9 +1817,8 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Trade Rank (US market)
-    // NOTE: QuoteApiService does not yet expose a TRADE_RANK constant.
-    // The API method name "trade_rank" is used directly (matching the Python
-    // SDK's get_trade_rank endpoint). Add a constant once the SDK is updated.
+    // =====================================================================
+    // Trade Rank (US market)
     // =====================================================================
     [Test]
     public void GetTradeRank_US_ReturnsValidFields()
@@ -1827,18 +1826,23 @@ namespace TigerOpenAPI.Tests.Integration
       var model = new QuoteTradeRankModel { Market = Market.US };
       var req = new TigerRequest<QuoteTradeRankResponse>
       {
-        ApiMethodName = "trade_rank",
+        ApiMethodName = QuoteApiService.TRADE_RANK,
         ModelValue = model
       };
       var resp = _client!.Execute(req);
       Assert.That(resp, Is.Not.Null, "trade_rank response must not be null");
 
-      // Some accounts may not have access to the trade rank endpoint.
+      // Only ignore for known permission errors; other failures should propagate.
       if (resp != null && !resp.IsSuccess())
       {
-        Assert.Ignore(
-            $"trade_rank not accessible for this account: code={resp.Code} " +
-            $"msg={resp.Message}. Endpoint requires an entitled account.");
+        const int codeNoPermission = 70001;
+        if (resp.Code == codeNoPermission)
+          Assert.Ignore(
+              $"trade_rank not accessible for this account: code={resp.Code} " +
+              $"msg={resp.Message}. Endpoint requires an entitled account.");
+        else
+          Assert.Fail(
+              $"trade_rank failed with unexpected error: code={resp.Code} msg={resp.Message}");
       }
 
       Assert.That(resp!.Data, Is.Not.Null, "trade_rank data must not be null");
@@ -1856,20 +1860,20 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Short Interest (AAPL)
-    // NOTE: The short_interest API is not included in QuoteApiService and
-    // has no corresponding SDK model/response type. Python SDK explicitly
-    // skips this test: "Account does not support short interest API method".
-    // Skipped here until a dedicated C# SDK model and response are added.
+    // Tracked by: TODO — create an Issue for short_interest SDK plumbing.
+    // The short_interest API has no corresponding SDK model/response type.
+    // Python SDK explicitly skips this: "Account does not support short
+    // interest API method". Kept as a placeholder until the SDK is updated.
     // =====================================================================
     [Test]
-    public void GetShortInterest_AAPL_Skipped()
+    public void GetShortInterest_AAPL_Skipped_PendingSdkPlumbing()
     {
-      // TODO(cs): expose short_interest in the C# SDK.
+      // Pending work:
       //   - Add QuoteApiService.SHORT_INTEREST = "short_interest".
       //   - Add QuoteShortInterestModel (symbols, market) + response type.
       //   - Replace this skip with a live call + wire-name assertions.
-      // Python SDK currently also skips: server returns
-      // "Account does not support short interest API method".
+      // Server returns "Account does not support short interest API method"
+      // on the standard test account; requires an entitled account.
       Assert.Ignore(
           "short_interest not yet exposed in the C# SDK (no model / response / " +
           "QuoteApiService constant). Server returns \"Account does not support " +

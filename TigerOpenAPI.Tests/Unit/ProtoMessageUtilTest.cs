@@ -108,6 +108,7 @@ namespace TigerOpenAPI.Tests.Unit
       var req = ProtoMessageUtil.BuildSubscribeMessage(Market.US, QuoteSubject.Quote, indicators);
       Assert.That(req.Subscribe.Market, Is.EqualTo("US"));
       Assert.That(req.Subscribe.Symbols, Does.Contain("MA5"));
+      Assert.That(req.Subscribe.Symbols, Does.Contain("MA10"));
     }
 
     [Test]
