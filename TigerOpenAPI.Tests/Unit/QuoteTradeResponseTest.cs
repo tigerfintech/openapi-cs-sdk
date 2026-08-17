@@ -527,6 +527,157 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(resp.Data[0].Name, Is.EqualTo("Apple Inc"));
     }
 
+    // ---------------------------------------------------------------- SymbolsResponse
+
+    /// <summary>
+    /// all_symbols and fund_all_symbols share the same wire shape:
+    /// data is a plain string array. Regular tickers, index symbols
+    /// (leading dot) and fund symbols (ISIN.CCY) must all deserialize.
+    /// </summary>
+    [Test]
+    public void SymbolsResponse_Deserialize_MixedSymbolFormats()
+    {
+      string json = @"{""code"":0,""data"":[""AAPL"","".DJI"",""IE00B11XZ988.USD""]}";
+      var resp = JsonConvert.DeserializeObject<SymbolsResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.Count, Is.EqualTo(3));
+      Assert.That(resp.Data[0], Is.EqualTo("AAPL"));
+      Assert.That(resp.Data[1], Is.EqualTo(".DJI"), "index symbols must deserialize");
+      Assert.That(resp.Data[2], Is.EqualTo("IE00B11XZ988.USD"), "fund symbols must deserialize");
+    }
+
+    // ---------------------------------------------------------------- StockDetailResponse
+
+    /// <summary>
+    /// stock_detail returns data as an object ({"items":[...]}) rather
+    /// than a top-level array like quote_real_time. Verifies the wrapper
+    /// deserializes and that snapshot + fundamental + sub-object fields
+    /// all map correctly. Also confirms that all optional fields tolerate
+    /// missing wire keys without crashing.
+    /// </summary>
+    [Test]
+    public void StockDetailResponse_Deserialize_AllFieldGroupsMapped()
+    {
+      string json = @"{""code"":0,""data"":{""items"":[{
+        ""symbol"":""AAPL"",""market"":""US"",""secType"":""STK"",""exchange"":""NASDAQ"",
+        ""name"":""Apple Inc"",""shortable"":true,""askPrice"":200.5,""askSize"":100,
+        ""bidPrice"":200.4,""bidSize"":200,""preClose"":199.9,""latestPrice"":200.45,
+        ""latestTime"":1700000000000,""volume"":1000000,""open"":199.0,""high"":201.0,
+        ""low"":198.5,""change"":0.55,""amount"":200000000.0,""amplitude"":0.0125,
+        ""marketStatus"":""Trading"",""tradingStatus"":2,""floatShares"":15000000000,
+        ""shares"":15500000000,""eps"":6.5,""adrRate"":1.0,""etf"":0,
+        ""listingDate"":312825600000,""halted"":0.0,""delay"":0,
+        ""hourTrading"":{""tag"":""Pre-Mkt"",""latestPrice"":200.6,""preClose"":199.9,""volume"":1000},
+        ""nextMarketStatus"":{""tag"":""TRADING"",""beginTime"":1700000000000}
+      }]}}";
+      var resp = JsonConvert.DeserializeObject<StockDetailResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data, Is.Not.Null);
+      Assert.That(resp.Data.Items.Count, Is.EqualTo(1));
+      var it = resp.Data.Items[0];
+      Assert.That(it.Symbol, Is.EqualTo("AAPL"));
+      Assert.That(it.SecType, Is.EqualTo("STK"));
+      Assert.That(it.LatestPrice, Is.EqualTo(200.45));
+      Assert.That(it.Shares, Is.EqualTo(15500000000L));
+      Assert.That(it.Etf, Is.EqualTo(0));
+      Assert.That(it.HourTrading, Is.Not.Null);
+      Assert.That(it.HourTrading.LatestPrice, Is.EqualTo(200.6));
+      Assert.That(it.NextMarketStatus, Is.Not.Null);
+      // Sub-objects not present in the payload stay null.
+      Assert.That(it.StockSplit, Is.Null);
+      Assert.That(it.StockNotice, Is.Null);
+    }
+
+    /// <summary>
+    /// Minimal payload — only the required identity fields. All optional
+    /// fundamentals and sub-objects must deserialize as null / default.
+    /// </summary>
+    [Test]
+    public void StockDetailResponse_Deserialize_MinimalPayload()
+    {
+      string json = @"{""code"":0,""data"":{""items"":[{""symbol"":""AAPL"",""secType"":""STK"",""name"":""Apple""}]}}";
+      var resp = JsonConvert.DeserializeObject<StockDetailResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.Items[0].Symbol, Is.EqualTo("AAPL"));
+      Assert.That(resp.Data.Items[0].LatestPrice, Is.Null);
+      Assert.That(resp.Data.Items[0].HourTrading, Is.Null);
+    }
+
+    // ---------------------------------------------------------------- HourTradingTimelineResponse
+
+    /// <summary>
+    /// hour_trading_timeline wraps a preClose scalar, an optional detail
+    /// object (extended-hours snapshot), and an items array of tick points.
+    /// </summary>
+    [Test]
+    public void HourTradingTimelineResponse_Deserialize_DetailAndItems()
+    {
+      string json = @"{""code"":0,""data"":{
+        ""preClose"":224.05,
+        ""detail"":{""tag"":""Pre-Mkt"",""latestPrice"":224.2,""preClose"":224.05,""volume"":5000,""timestamp"":1700000000000},
+        ""items"":[
+          {""time"":1700000000000,""price"":224.1,""avgPrice"":224.05,""volume"":100},
+          {""time"":1700000060000,""price"":224.2,""avgPrice"":224.1,""volume"":150}
+        ]
+      }}";
+      var resp = JsonConvert.DeserializeObject<HourTradingTimelineResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.PreClose, Is.EqualTo(224.05));
+      Assert.That(resp.Data.Detail, Is.Not.Null);
+      Assert.That(resp.Data.Detail.LatestPrice, Is.EqualTo(224.2));
+      Assert.That(resp.Data.Items.Count, Is.EqualTo(2));
+      Assert.That(resp.Data.Items[0].Price, Is.EqualTo(224.1));
+      Assert.That(resp.Data.Items[1].AvgPrice, Is.EqualTo(224.1));
+    }
+
+    // ---------------------------------------------------------------- FinancialDailyResponse
+
+    /// <summary>
+    /// financial_daily returns data as an array of {symbol, date, field, value}
+    /// rows. date is epoch millis; value is numeric.
+    /// </summary>
+    [Test]
+    public void FinancialDailyResponse_Deserialize_TimeSeriesRows()
+    {
+      string json = @"{""code"":0,""data"":[
+        {""symbol"":""AAPL"",""date"":1704067200000,""field"":""open_price"",""value"":185.5},
+        {""symbol"":""AAPL"",""date"":1704153600000,""field"":""open_price"",""value"":186.2}
+      ]}";
+      var resp = JsonConvert.DeserializeObject<FinancialDailyResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.Count, Is.EqualTo(2));
+      Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"));
+      Assert.That(resp.Data[0].Field, Is.EqualTo("open_price"));
+      Assert.That(resp.Data[0].Value, Is.EqualTo(185.5));
+      Assert.That(resp.Data[0].Date, Is.EqualTo(1704067200000L));
+    }
+
+    // ---------------------------------------------------------------- FinancialReportResponse
+
+    /// <summary>
+    /// financial_report rows carry filing metadata (currency, filingDate,
+    /// periodEndDate) alongside a string-valued field/value pair. Value is
+    /// a wire string because currencies and other markers can be non-numeric.
+    /// </summary>
+    [Test]
+    public void FinancialReportResponse_Deserialize_FilingRows()
+    {
+      string json = @"{""code"":0,""data"":[{
+        ""symbol"":""AAPL"",""currency"":""USD"",""field"":""total_revenue"",
+        ""value"":""94836000000"",""filingDate"":""2024-11-01"",""periodEndDate"":""2024-09-30""
+      }]}";
+      var resp = JsonConvert.DeserializeObject<FinancialReportResponse>(json, TigerClient.JsonSet);
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.Count, Is.EqualTo(1));
+      var r = resp.Data[0];
+      Assert.That(r.Symbol, Is.EqualTo("AAPL"));
+      Assert.That(r.Currency, Is.EqualTo("USD"));
+      Assert.That(r.Field, Is.EqualTo("total_revenue"));
+      Assert.That(r.Value, Is.EqualTo("94836000000"));
+      Assert.That(r.FilingDate, Is.EqualTo("2024-11-01"));
+      Assert.That(r.PeriodEndDate, Is.EqualTo("2024-09-30"));
+    }
+
     // ---------------------------------------------------------------- Trade: Position Transfer
 
     [Test]

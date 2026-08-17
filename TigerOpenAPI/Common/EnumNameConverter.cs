@@ -11,7 +11,8 @@ namespace TigerOpenAPI.Common
     {
       typeof(StockField),
       typeof(AccumulateField),
-      typeof(AccumulatePeriod)
+      typeof(AccumulatePeriod),
+      typeof(MultiTagField)
     };
     public EnumNameConverter()
     {
