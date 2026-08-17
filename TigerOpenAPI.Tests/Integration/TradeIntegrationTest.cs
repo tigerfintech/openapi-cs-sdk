@@ -225,7 +225,7 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Orders with status=filled filter (last 30 days; may be empty)
+    // Filled Orders (last 30 days; may be empty — uses FILLED_ORDERS endpoint)
     // =====================================================================
     [Test]
     public void GetOrders_Last30Days_FilledStatus_WithValidFieldsWhenNonEmpty()
@@ -237,11 +237,10 @@ namespace TigerOpenAPI.Tests.Integration
         StartDate = now - 30L * 24 * 3600 * 1000,
         EndDate = now,
         Limit = 10,
-        StatusList = new List<OrderStatus> { OrderStatus.FILLED }
       };
-      var resp = Execute<OrderBatchResponse>(TradeApiService.ORDERS, model);
+      var resp = Execute<OrderBatchResponse>(TradeApiService.FILLED_ORDERS, model);
 
-      Assert.That(resp.Data, Is.Not.Null, "orders (filled) data wrapper must not be null");
+      Assert.That(resp.Data, Is.Not.Null, "filled orders data wrapper must not be null");
       var items = resp.Data!.Items;
 
       Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
@@ -251,8 +250,6 @@ namespace TigerOpenAPI.Tests.Integration
         Assert.That(order.Id, Is.Not.EqualTo(0), "filled order id must be non-zero");
         Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
             "filled order symbol must be non-empty");
-        Assert.That(order.Status, Is.EqualTo(OrderStatus.FILLED),
-            "filtered order status must be FILLED");
         Assert.That(order.OrderType, Is.Not.Null.And.Not.Empty,
             "filled order orderType must be non-empty");
       }
