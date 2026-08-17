@@ -85,6 +85,7 @@ namespace TigerOpenAPI.Quote
     public const string STOCK_INDUSTRY = "stock_industry";
     public const string FINANCIAL_CURRENCY = "financial_currency";
     public const string FINANCIAL_EXCHANGE_RATE = "financial_exchange_rate";
+    public const string TRADE_RANK = "trade_rank";
     public const string STOCK_FUNDAMENTAL = "stock_fundamental";
 
     /**
@@ -196,6 +197,7 @@ namespace TigerOpenAPI.Quote
       STOCK_INDUSTRY,
       FINANCIAL_CURRENCY,
       FINANCIAL_EXCHANGE_RATE,
+      TRADE_RANK,
       STOCK_FUNDAMENTAL,
       BROKER_HOLD,
       FUTURE_DEPTH,

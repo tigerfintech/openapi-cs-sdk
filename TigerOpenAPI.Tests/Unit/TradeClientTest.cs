@@ -181,7 +181,7 @@ namespace TigerOpenAPI.Tests.Unit
     }
 
     [Test]
-    public void Validate_TraceMethodWithAccountSet_ReturnsTrue()
+    public void Validate_TradeMethodWithAccountSet_ReturnsTrue()
     {
       var req = new TigerRequest<OptionExerciseSubmitResponse>
       {

@@ -60,7 +60,6 @@ integ:
   extends: .dotnet_base
   stage: integ
   allow_failure: true
-  when: always
   script:
     - mkdir -p test-results
     - dotnet build --no-restore -c Release
@@ -79,6 +78,7 @@ integ:
     TIGER_ID: $TIGEROPEN_TIGER_ID
     TIGER_PRIVATE_KEY: $TIGEROPEN_PRIVATE_KEY
     TIGER_ACCOUNT: $TIGEROPEN_ACCOUNT
+    TIGER_LICENSE: $TIGEROPEN_LICENSE
   rules:
     - if: $TIGEROPEN_TIGER_ID != "" && $TIGEROPEN_PRIVATE_KEY != ""
 
@@ -114,22 +114,18 @@ notify:webhook:
           try:
               tree = ET.parse(path)
               root = tree.getroot()
-              print(f"DEBUG {path}: root={root.tag}")
               for suite in root.iter("testsuite"):
-                  print(f"  suite attrs: {dict(suite.attrib)}")
                   t += int(suite.get("tests", suite.get("testcasecount", 0)))
-                  f += int(suite.get("failures", 0)) + int(suite.get("errors", 0))
-                  s += int(suite.get("skipped", 0))
                   f += int(suite.get("failures", 0)) + int(suite.get("errors", 0))
                   s += int(suite.get("skipped", 0))
               # Try JunitXml.TestLogger: <test-run testcasecount=N ...>
               if t == 0:
                   for run in root.iter("test-run"):
                       t = int(run.get("testcasecount", 0))
-                      f = int(run.get("failures", 0)) + int(run.get("errors", 0))
+                      f = int(run.get("failed", 0)) + int(run.get("errors", 0))
                       s = int(run.get("skipped", 0))
           except Exception as e:
-              print(f"Failed to parse {path}: {e}")
+              print(f"WARNING: Failed to parse {path}: {e}")
           return t, t - f - s, f, s
 
       unit_t, unit_p, unit_f, unit_s = parse_xml("test-results/unit.xml")
@@ -159,8 +155,6 @@ notify:webhook:
       if integ_stats:
           content += f"**Integration tests:** {integ_stats}\n"
       content += f"[View pipeline]({pipeline_url})"
-
-      print(f"===CONTENT===\n{content}\n===END===")
 
       payload = {
           "msg_type": "interactive",

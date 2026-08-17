@@ -43,5 +43,11 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "timestamp")]
     public long Timestamp { get; set; }
+
+    /// <summary>
+    /// Whether overnight (pre/post-market) trading is enabled for the symbol.
+    /// </summary>
+    [JsonProperty(PropertyName = "overnight")]
+    public bool Overnight { get; set; }
   }
 }

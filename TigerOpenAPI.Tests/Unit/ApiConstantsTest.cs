@@ -72,8 +72,13 @@ namespace TigerOpenAPI.Tests.Unit
       var quoteNames = new HashSet<string>(GetApiNames(typeof(QuoteApiService)));
       var tradeNames = GetApiNames(typeof(TradeApiService));
 
-      // USER_TOKEN_REFRESH is intentionally shared between quote and trade services
-      var knownShared = new HashSet<string> { "user_token_refresh" };
+      // USER_TOKEN_REFRESH is defined in QuoteApiService and is intentionally
+      // shared / re-routed by TradeClient; it is NOT declared in TradeApiService.
+      // Exclude it from the overlap check by its string value.
+      var knownShared = new HashSet<string>
+      {
+        QuoteApiService.USER_TOKEN_REFRESH
+      };
 
       var overlap = tradeNames.Where(n => quoteNames.Contains(n) && !knownShared.Contains(n)).ToList();
       Assert.That(overlap, Is.Empty,

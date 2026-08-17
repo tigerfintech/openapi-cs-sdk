@@ -18,6 +18,11 @@ namespace TigerOpenAPI.Common
       {
         ApiLogger.Info("tokenChange oldToken:{}, newTokenInfo:{}",
             oldToken, JsonConvert.SerializeObject(userToken));
+        if (userToken == null)
+        {
+          ApiLogger.Warn("tokenChange called with null userToken — skipping token update");
+          return;
+        }
         config.Token = userToken.Token;
         ConfigFileUtil.UpdateTokenFile(config, userToken.Token);
       }

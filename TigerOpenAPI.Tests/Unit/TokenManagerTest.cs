@@ -151,7 +151,7 @@ namespace TigerOpenAPI.Tests.Unit
     }
 
     [Test]
-    public void LoadTokenFile_EmptyTokenValue_ReturnsFalse()
+    public void LoadTokenFile_EmptyTokenValue_ThrowsKeyNotFoundException()
     {
       string dir = NewTempDir();
       // value after '=' is empty -> skipped by ReadPropertiesFile -> key absent

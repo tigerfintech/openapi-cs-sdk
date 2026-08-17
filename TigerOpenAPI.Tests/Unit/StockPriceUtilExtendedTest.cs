@@ -36,15 +36,21 @@ namespace TigerOpenAPI.Tests.Unit
     }
 
     [Test]
-    public void FindTickSize_OpenType_PriceAtEnd_NotMatched()
+    public void FindTickSize_OpenType_PriceAtEnd_ReturnsNull()
     {
       var items = MakeTickSizes("0", "100", TickSizeType.OPEN, 0.01);
-      // price exactly at end -> not matched (open)
-      // 100 is on tick, so FixPriceByTickSize returns 100, difference 0 -> match true
-      // Actually with OPEN, begin < price < end, so 100 is excluded -> FindTickSize returns null
-      // FixPriceByTickSize returns price unchanged, and MatchTickSize checks price == fixedPrice -> true
-      // But wait, price=0 returns false, so price=100 should work
-      Assert.That(StockPriceUtil.MatchTickSize(100, items), Is.True); // null result -> price unchanged -> match
+      // OPEN interval: begin < price < end — price exactly at end (100) is excluded,
+      // so FindTickSize returns null.
+      Assert.That(StockPriceUtil.FindTickSize(100, items), Is.Null);
+    }
+
+    [Test]
+    public void MatchTickSize_OpenType_PriceAtEnd_StillTrue()
+    {
+      var items = MakeTickSizes("0", "100", TickSizeType.OPEN, 0.01);
+      // FindTickSize returns null → FixPriceByTickSize returns price unchanged (100)
+      // → MatchTickSize sees price == fixedPrice → true.
+      Assert.That(StockPriceUtil.MatchTickSize(100, items), Is.True);
     }
 
     // --- TickSizeType.CLOSED: begin <= price <= end ---

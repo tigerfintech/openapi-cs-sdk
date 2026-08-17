@@ -140,7 +140,7 @@ namespace TigerOpenAPI.Tests.Integ
       Assert.That(q.Open,        Is.GreaterThan(0), "open");
       Assert.That(q.High,        Is.GreaterThan(0), "high");
       Assert.That(q.Low,         Is.GreaterThan(0), "low");
-      Assert.That(q.Close,       Is.GreaterThan(0).Or.EqualTo(0), "close (may be 0 before market close)");
+      Assert.That(q.Close,       Is.GreaterThanOrEqualTo(0), "close (may be 0 before market close)");
       Assert.That(q.PreClose,    Is.GreaterThan(0), "preClose wire name");
       Assert.That(q.LatestPrice, Is.GreaterThan(0), "latestPrice wire name");
 

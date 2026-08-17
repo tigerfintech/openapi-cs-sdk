@@ -108,6 +108,8 @@ namespace TigerOpenAPI.Tests.Unit
       string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""delay"":0}]}";
       var resp = JsonConvert.DeserializeObject<QuoteDelayResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"));
+      Assert.That(resp.Data[0].Delay, Is.EqualTo(0));
     }
 
     [Test]
@@ -116,6 +118,8 @@ namespace TigerOpenAPI.Tests.Unit
       string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""overnight"":false}]}";
       var resp = JsonConvert.DeserializeObject<QuoteOvernightResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"));
+      Assert.That(resp.Data[0].Overnight, Is.EqualTo(false));
     }
   }
 }

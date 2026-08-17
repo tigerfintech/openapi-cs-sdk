@@ -147,8 +147,10 @@ namespace TigerOpenAPI.Tests.Integration
           "assets response must expose a netLiquidation field somewhere in " +
           "the payload (top-level, items[*], or items[*].segments.*). " +
           $"Received keys: [{string.Join(",", resp.Data.Keys)}]");
-      Assert.That(netLiq!.Value, Is.GreaterThanOrEqualTo(0),
-          "netLiquidation must be >= 0");
+      // netLiquidation can be negative in margin-deficit / over-leveraged accounts,
+      // so only assert that the field deserializes to a finite number.
+      Assert.That(double.IsNaN(netLiq!.Value), Is.False,
+          "netLiquidation must be a finite number, not NaN");
     }
 
     // =====================================================================
@@ -167,18 +169,17 @@ namespace TigerOpenAPI.Tests.Integration
       var items = resp.Data!.Items;
 
       // Positions may legitimately be empty for a fresh paper account.
-      // When positions exist, validate key fields.
-      if (items != null && items.Count > 0)
+      // Assume.That skips (not passes) when there are no positions to validate.
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no positions to validate — skipping field checks (empty account)");
+      foreach (var pos in items!)
       {
-        foreach (var pos in items)
-        {
-          Assert.That(pos.Symbol, Is.Not.Null.And.Not.Empty,
-              "position symbol must be non-empty");
-          Assert.That(pos.Account, Is.Not.Null.And.Not.Empty,
-              "position account must be non-empty");
-          Assert.That(pos.SecType, Is.Not.Null.And.Not.Empty,
-              "position secType must be non-empty");
-        }
+        Assert.That(pos.Symbol, Is.Not.Null.And.Not.Empty,
+            "position symbol must be non-empty");
+        Assert.That(pos.Account, Is.Not.Null.And.Not.Empty,
+            "position account must be non-empty");
+        Assert.That(pos.SecType, Is.Not.Null.And.Not.Empty,
+            "position secType must be non-empty");
       }
     }
 
@@ -202,19 +203,18 @@ namespace TigerOpenAPI.Tests.Integration
       var items = resp.Data!.Items;
 
       // Orders may be empty if no trades in the last 30 days.
-      // When orders exist, validate identifier and status fields.
-      if (items != null && items.Count > 0)
+      // Assume.That skips (not passes) when there are no orders to validate.
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no orders to validate — skipping field checks (no trades in last 30 days)");
+      foreach (var order in items!)
       {
-        foreach (var order in items)
-        {
-          Assert.That(order.Id, Is.Not.EqualTo(0), "order id must be non-zero");
-          Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
-              "order symbol must be non-empty");
-          Assert.That(order.Action, Is.Not.Null.And.Not.Empty,
-              "order action must be non-empty");
-          Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
-              "order status must not be NONE");
-        }
+        Assert.That(order.Id, Is.Not.EqualTo(0), "order id must be non-zero");
+        Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
+            "order symbol must be non-empty");
+        Assert.That(order.Action, Is.Not.Null.And.Not.Empty,
+            "order action must be non-empty");
+        Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
+            "order status must not be NONE");
       }
     }
 
@@ -235,17 +235,16 @@ namespace TigerOpenAPI.Tests.Integration
       var items = resp.Data!.Items;
 
       // Active orders may be empty if no open orders exist.
-      // When orders exist, validate identifier fields.
-      if (items != null && items.Count > 0)
+      // Assume.That skips (not passes) when there are no active orders to validate.
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no active orders to validate — skipping field checks (no open orders)");
+      foreach (var order in items!)
       {
-        foreach (var order in items)
-        {
-          Assert.That(order.Id, Is.Not.EqualTo(0), "active order id must be non-zero");
-          Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
-              "active order symbol must be non-empty");
-          Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
-              "active order status must not be NONE");
-        }
+        Assert.That(order.Id, Is.Not.EqualTo(0), "active order id must be non-zero");
+        Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
+            "active order symbol must be non-empty");
+        Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
+            "active order status must not be NONE");
       }
     }
 
@@ -294,10 +293,12 @@ namespace TigerOpenAPI.Tests.Integration
 
       Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
           "contracts should return data for AAPL");
-      // Key may be uppercase or lowercase depending on SDK version
-      var firstKey = resp.Data.Keys.GetEnumerator();
-      firstKey.MoveNext();
-      var items = resp.Data[firstKey.Current];
+      // Key may be uppercase or lowercase depending on SDK version — find AAPL case-insensitively.
+      var aaplKey = resp.Data.Keys.FirstOrDefault(k =>
+          string.Equals(k, "AAPL", StringComparison.OrdinalIgnoreCase));
+      Assert.That(aaplKey, Is.Not.Null,
+          "contracts response must contain an entry for AAPL");
+      var items = resp.Data[aaplKey!];
       Assert.That(items, Is.Not.Null.And.Count.GreaterThan(0),
           "contracts list must be non-empty");
       Assert.That(items[0].SecType, Is.EqualTo("STK"), "contract secType wire name");
@@ -325,23 +326,33 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // Analytics Asset (30-day range)
+    // Analytics Asset (rolling 30-day window)
     // =====================================================================
     [Test]
     public void GetAnalyticsAsset_ReturnsValidFields()
     {
+      long nowMs   = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+      long startMs = nowMs - 30L * 24 * 3600 * 1000;
+      string startDate = DateTimeOffset.FromUnixTimeMilliseconds(startMs).ToString("yyyy-MM-dd");
+      string endDate   = DateTimeOffset.FromUnixTimeMilliseconds(nowMs).ToString("yyyy-MM-dd");
+
       var model = new PrimeAnalyticsAssetModel
       {
         Account = _account,
         SegType = SegmentType.SEC,
         Currency = Currency.USD,
-        StartDate = "2025-01-01",
-        EndDate = "2025-01-31"
+        StartDate = startDate,
+        EndDate = endDate
       };
       var resp = Execute<PrimeAnalyticsAssetResponse>(TradeApiService.ANALYTICS_ASSET, model);
 
       Assert.That(resp.Data, Is.Not.Null, "analytics_asset data must not be null");
-      // Summary may be null if no data in range.
+      if (resp.Data.Summary != null)
+      {
+        // Verify key summary wire-names deserialize correctly.
+        Assert.That(resp.Data.Summary.PnlPercentage, Is.Not.Null,
+            "summary.pnlPercentage wire name");
+      }
     }
 
     // =====================================================================
@@ -360,17 +371,16 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp.Data, Is.Not.Null, "inactive orders data wrapper must not be null");
       var items = resp.Data!.Items;
       // Inactive orders may be empty if no cancelled/rejected orders exist.
-      // When orders exist, validate identifier and status fields.
-      if (items != null && items.Count > 0)
+      // Assume.That skips (not passes) when there are no inactive orders to validate.
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no inactive orders to validate — skipping field checks (no cancelled/rejected orders)");
+      foreach (var order in items!)
       {
-        foreach (var order in items)
-        {
-          Assert.That(order.Id, Is.Not.EqualTo(0), "inactive order id must be non-zero");
-          Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
-              "inactive order symbol must be non-empty");
-          Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
-              "inactive order status must not be NONE");
-        }
+        Assert.That(order.Id, Is.Not.EqualTo(0), "inactive order id must be non-zero");
+        Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
+            "inactive order symbol must be non-empty");
+        Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
+            "inactive order status must not be NONE");
       }
     }
 
@@ -393,17 +403,16 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp.Data, Is.Not.Null, "filled orders data wrapper must not be null");
       var items = resp.Data!.Items;
       // Filled orders may be empty if no fills in the last 30 days.
-      // When orders exist, validate identifier and status fields.
-      if (items != null && items.Count > 0)
+      // Assume.That skips (not passes) when there are no filled orders to validate.
+      Assume.That(items, Is.Not.Null.And.Count.GreaterThan(0),
+          "no filled orders to validate — skipping field checks (no fills in last 30 days)");
+      foreach (var order in items!)
       {
-        foreach (var order in items)
-        {
-          Assert.That(order.Id, Is.Not.EqualTo(0), "filled order id must be non-zero");
-          Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
-              "filled order symbol must be non-empty");
-          Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
-              "filled order status must not be NONE");
-        }
+        Assert.That(order.Id, Is.Not.EqualTo(0), "filled order id must be non-zero");
+        Assert.That(order.Symbol, Is.Not.Null.And.Not.Empty,
+            "filled order symbol must be non-empty");
+        Assert.That(order.Status, Is.Not.EqualTo(OrderStatus.NONE),
+            "filled order status must not be NONE");
       }
     }
 
@@ -606,18 +615,21 @@ namespace TigerOpenAPI.Tests.Integration
     {
       Assert.That(_client, Is.Not.Null, "TradeClient is null");
       // Preview does not place a real exercise request. A dummy contract ID
-      // will likely return an error, but the call path is exercised.
+      // will likely return a business error, but the call path is exercised.
       var resp = await _client!.CheckOptionExerciseAsync(
           contractId: 0, type: "Exercise", quantity: 1, account: _account);
 
       Assert.That(resp, Is.Not.Null, "option_exercise_check response must not be null");
-      // With a dummy contract ID the server is expected to return an error.
-      // That is acceptable — the point is to exercise the preview call path.
       if (!resp.IsSuccess())
       {
-        Assert.Pass(
-            $"option_exercise_check returned error (expected for dummy contract) " +
-            $"code={resp.Code} msg={resp.Message}");
+        // Only pass on expected business errors (contract not found / no position).
+        // Any other error code (auth failure, 5xx, etc.) is a real failure.
+        const int codeContractNotFound = 70011;
+        const int codeNoPosition       = 70012;
+        if (resp.Code == codeContractNotFound || resp.Code == codeNoPosition)
+          Assert.Pass($"expected error for dummy contract, code={resp.Code} msg={resp.Message}");
+        else
+          Assert.Fail($"unexpected error from option_exercise_check, code={resp.Code} msg={resp.Message}");
       }
       // If the call succeeded, validate the data fields.
       Assert.That(resp.Data, Is.Not.Null,
