@@ -83,6 +83,11 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Assets (account-level asset summary)
+    // Response shape (per Python + Java + Go SDKs):
+    //   { code, data: { items: [ { account, netLiquidation, segments: {...} } ] } }
+    // TigerDictResponse deserializes `data` as Dictionary<string, object>; the
+    // "items" entry is a JArray. This test walks both the top-level entries
+    // and the items array so it works across account variants.
     // =====================================================================
     [Test]
     public void GetAssets_ReturnsNonEmptyData_WithValidNetLiquidation()
@@ -98,22 +103,52 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
           "assets data dict must be non-empty");
 
-      // The ASSETS API returns a dict keyed by currency. Each value is a JSON
-      // object containing netLiquidation and other fields. Extract and validate.
-      bool foundNetLiquidation = false;
+      // Collect every JSON node that carries a netLiquidation field, whether
+      // it lives at the top level (currency-keyed) or under items[*].segments.
+      var candidates = new List<JObject>();
       foreach (var entry in resp.Data)
       {
-        if (entry.Value is JObject jo && jo["netLiquidation"] != null)
+        switch (entry.Value)
         {
-          double nl = jo["netLiquidation"]!.Value<double>();
-          Assert.That(nl, Is.GreaterThanOrEqualTo(0),
-              $"netLiquidation for {entry.Key} must be >= 0");
-          foundNetLiquidation = true;
+          case JObject jo:
+            candidates.Add(jo);
+            break;
+          case JArray ja:
+            foreach (var it in ja)
+              if (it is JObject j) candidates.Add(j);
+            break;
         }
       }
-      // netLiquidation may not be present for all account types — skip if absent
-      if (!foundNetLiquidation)
-        Assert.Ignore("netLiquidation field not found in assets response — account may use different field names");
+
+      double? netLiq = null;
+      foreach (var jo in candidates)
+      {
+        if (jo["netLiquidation"] != null)
+        {
+          netLiq = jo["netLiquidation"]!.Value<double>();
+          break;
+        }
+        // Some responses nest netLiquidation under segments.
+        if (jo["segments"] is JObject segs)
+        {
+          foreach (var seg in segs.Properties())
+          {
+            if (seg.Value is JObject sv && sv["netLiquidation"] != null)
+            {
+              netLiq = sv["netLiquidation"]!.Value<double>();
+              break;
+            }
+          }
+        }
+        if (netLiq.HasValue) break;
+      }
+
+      Assert.That(netLiq.HasValue, Is.True,
+          "assets response must expose a netLiquidation field somewhere in " +
+          "the payload (top-level, items[*], or items[*].segments.*). " +
+          $"Received keys: [{string.Join(",", resp.Data.Keys)}]");
+      Assert.That(netLiq!.Value, Is.GreaterThanOrEqualTo(0),
+          "netLiquidation must be >= 0");
     }
 
     // =====================================================================
@@ -506,13 +541,18 @@ namespace TigerOpenAPI.Tests.Integration
 
     // =====================================================================
     // Aggregate Assets
-    // Only institution accounts are supported; individual accounts get
-    // "only support institution account" error. Skip for personal accounts.
+    // Institution-only endpoint: individual / retail / paper accounts get
+    // "only support institution account" back from the server. Kept as a
+    // skip until CI credentials point at an institutional account.
     // =====================================================================
     [Test]
     public void GetAggregateAssets_ReturnsValidFields()
     {
-      Assert.Ignore("aggregate_assets only supports institution accounts");
+      Assert.Ignore(
+          "aggregate_assets is only available to institutional accounts; " +
+          "server responds \"only support institution account\" for standard " +
+          "and paper accounts. Re-enable when CI credentials use an " +
+          "institutional account.");
     }
 
     // =====================================================================
@@ -544,11 +584,18 @@ namespace TigerOpenAPI.Tests.Integration
     // =====================================================================
     // Position Transfer External Records (may be empty)
     // API requires account_id (not account), since_date, and to_date.
+    // Standard / paper accounts get code=1200 bad_request; only specific
+    // brokerage account types support this endpoint. Kept as a skip until
+    // CI credentials point at an eligible account.
     // =====================================================================
     [Test]
     public void GetPositionTransferExternalRecords_Succeeds_WithValidFieldsWhenNonEmpty()
     {
-      Assert.Ignore("position_transfer_external_records: code=1200 standard account bad_request. Only supported for specific account types.");
+      Assert.Ignore(
+          "position_transfer_external_records returns code=1200 bad_request for " +
+          "standard / paper accounts; endpoint is limited to specific brokerage " +
+          "account types (external-transfer-enabled). Re-enable when CI " +
+          "credentials point at an eligible account.");
     }
 
     // =====================================================================
