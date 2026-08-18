@@ -171,7 +171,7 @@ namespace TigerOpenAPI.Tests.Unit
       };
       _client.BuildParams(req);
       Assert.That(req.BizContent, Is.Not.Null.And.Not.Empty);
-      Assert.That(req.BizContent, Does.Contain("US"));
+      Assert.That(req.BizContent, Does.Contain("\"market\":\"US\""));
     }
 
     [Test]

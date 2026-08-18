@@ -77,7 +77,7 @@ namespace TigerOpenAPI.Tests.Unit
       // Exclude it from the overlap check by its string value.
       var knownShared = new HashSet<string>
       {
-        QuoteApiService.USER_TOKEN_REFRESH
+        QuoteApiService.USER_TOKEN_REFRESH   // intentionally shared; re-routed by TradeClient
       };
 
       var overlap = tradeNames.Where(n => quoteNames.Contains(n) && !knownShared.Contains(n)).ToList();
