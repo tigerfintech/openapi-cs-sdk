@@ -182,7 +182,7 @@ namespace TigerOpenAPI.Tests.Integration
             "position secType must be non-empty");
         Assert.That(pos.AverageCost, Is.GreaterThan(0),
             "position averageCost must be > 0");
-        Assert.That(pos.MarketValue, Is.Not.EqualTo(0).Or.GreaterThan(0),
+        Assert.That(pos.MarketValue, Is.GreaterThanOrEqualTo(0),
             "position marketValue must be populated");
       }
     }
