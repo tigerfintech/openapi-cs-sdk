@@ -32,7 +32,7 @@ namespace TigerOpenAPI.Tests.Unit
     {
       return new UserToken
       {
-        TigerId = "20150000001",
+        TigerId = "00000001",
         License = "TBNZ",
         Token = token,
         CreateTime = createTime,

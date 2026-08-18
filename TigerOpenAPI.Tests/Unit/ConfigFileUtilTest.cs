@@ -104,7 +104,7 @@ namespace TigerOpenAPI.Tests.Unit
       string dir = NewTempDir();
       string pk = TestClientFactory.PrivateKeyBase64;
       string content =
-          "tiger_id=20150000001\n"
+          "tiger_id=00000001\n"
         + "account=testacct\n"
         + "license=TBNZ\n"
         + "private_key_pk8=" + pk + "\n"
@@ -116,7 +116,7 @@ namespace TigerOpenAPI.Tests.Unit
       var config = new TigerConfig { ConfigFilePath = dir };
       ConfigFileUtil.LoadConfigFile(config);
 
-      Assert.That(config.TigerId, Is.EqualTo("20150000001"));
+      Assert.That(config.TigerId, Is.EqualTo("00000001"));
       Assert.That(config.DefaultAccount, Is.EqualTo("testacct"));
       Assert.That(config.License, Is.EqualTo(License.TBNZ));
       Assert.That(config.PrivateKey, Is.EqualTo(pk));
