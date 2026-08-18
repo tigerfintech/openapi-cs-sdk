@@ -105,7 +105,7 @@ namespace TigerOpenAPI.Tests.Unit
     {
       var config = new TigerConfig
       {
-        TigerId = "20150000001",
+        TigerId = "00000001",
         License = License.TBNZ,
         PrivateKey = "PRIVATE_KEY_BYTES",
         DefaultAccount = "12345678901234567",
@@ -123,7 +123,7 @@ namespace TigerOpenAPI.Tests.Unit
         ConfigFilePath = "/tmp/tiger",
       };
 
-      Assert.That(config.TigerId, Is.EqualTo("20150000001"));
+      Assert.That(config.TigerId, Is.EqualTo("00000001"));
       Assert.That(config.License, Is.EqualTo(License.TBNZ));
       Assert.That(config.PrivateKey, Is.EqualTo("PRIVATE_KEY_BYTES"));
       Assert.That(config.DefaultAccount, Is.EqualTo("12345678901234567"));

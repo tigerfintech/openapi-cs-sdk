@@ -28,7 +28,7 @@ namespace TigerOpenAPI.Tests.TestSupport
     /// </summary>
     public static TigerConfig CreateOfflineConfig() => new TigerConfig
     {
-      TigerId = "20150000001",
+      TigerId = "00000001",
       License = License.TBNZ,
       PrivateKey = PrivateKeyBase64,
       ConfigFilePath = string.Empty,
