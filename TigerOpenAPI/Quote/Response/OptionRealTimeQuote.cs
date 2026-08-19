@@ -48,6 +48,18 @@ namespace TigerOpenAPI.Quote.Response
     public Double Vega { get; set; }
     [JsonProperty(PropertyName = "rho")]
     public Double Rho { get; set; }
+    [JsonProperty(PropertyName = "markPrice")]
+    public Double MarkPrice { get; set; }
+    [JsonProperty(PropertyName = "preMarkPrice")]
+    public Double PreMarkPrice { get; set; }
+    [JsonProperty(PropertyName = "markTimestamp")]
+    public long MarkTimestamp { get; set; }
+    [JsonProperty(PropertyName = "midPrice")]
+    public Double MidPrice { get; set; }
+    [JsonProperty(PropertyName = "preMidPrice")]
+    public Double PreMidPrice { get; set; }
+    [JsonProperty(PropertyName = "midTimestamp")]
+    public long MidTimestamp { get; set; }
   }
 }
 

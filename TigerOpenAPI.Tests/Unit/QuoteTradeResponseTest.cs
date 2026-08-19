@@ -172,12 +172,16 @@ namespace TigerOpenAPI.Tests.Unit
         ""askPrice"":1.5,""askSize"":10,""bidPrice"":1.4,""bidSize"":20,
         ""latestPrice"":1.45,""preClose"":1.3,""volume"":100,""openInterest"":50,
         ""multiplier"":100,""lastTimestamp"":1700000000,""impliedVol"":0.2,
-        ""delta"":-0.5,""gamma"":0.01,""theta"":-0.05,""vega"":0.1,""rho"":0.02},
+        ""delta"":-0.5,""gamma"":0.01,""theta"":-0.05,""vega"":0.1,""rho"":0.02,
+        ""markPrice"":1.46,""preMarkPrice"":1.31,""markTimestamp"":1700000100,
+        ""midPrice"":1.455,""preMidPrice"":1.305,""midTimestamp"":1700000100},
         ""call"":{""identifier"":""C1"",""strike"":""150"",""right"":""CALL"",
         ""askPrice"":2.5,""askSize"":30,""bidPrice"":2.4,""bidSize"":40,
         ""latestPrice"":2.45,""preClose"":2.3,""volume"":200,""openInterest"":60,
         ""multiplier"":100,""lastTimestamp"":1700000001,""impliedVol"":0.25,
-        ""delta"":0.5,""gamma"":0.02,""theta"":-0.06,""vega"":0.12,""rho"":0.03}}]}]}";
+        ""delta"":0.5,""gamma"":0.02,""theta"":-0.06,""vega"":0.12,""rho"":0.03,
+        ""markPrice"":2.46,""preMarkPrice"":2.31,""markTimestamp"":1700000101,
+        ""midPrice"":2.455,""preMidPrice"":2.305,""midTimestamp"":1700000101}}]}]}";
       var resp = JsonConvert.DeserializeObject<OptionChainResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
       var c = resp.Data[0];
@@ -194,8 +198,16 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(put.Vega, Is.EqualTo(0.1));
       Assert.That(put.Rho, Is.EqualTo(0.02));
       Assert.That(put.ImpliedVol, Is.EqualTo(0.2));
+      Assert.That(put.MarkPrice, Is.EqualTo(1.46));
+      Assert.That(put.PreMarkPrice, Is.EqualTo(1.31));
+      Assert.That(put.MarkTimestamp, Is.EqualTo(1700000100));
+      Assert.That(put.MidPrice, Is.EqualTo(1.455));
+      Assert.That(put.PreMidPrice, Is.EqualTo(1.305));
+      Assert.That(put.MidTimestamp, Is.EqualTo(1700000100));
       Assert.That(call.Identifier, Is.EqualTo("C1"));
       Assert.That(call.Delta, Is.EqualTo(0.5));
+      Assert.That(call.MarkPrice, Is.EqualTo(2.46));
+      Assert.That(call.MidPrice, Is.EqualTo(2.455));
     }
 
     [Test]
