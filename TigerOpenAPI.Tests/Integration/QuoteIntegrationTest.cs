@@ -836,6 +836,8 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(item.Symbol, Is.EqualTo("AAPL"), "quote_overnight symbol wire name");
       Assert.That(item.Timestamp, Is.GreaterThan(1577836800000L),
           "quote_overnight timestamp must be valid epoch millis");
+      Assert.That(item.TradingStatus, Is.EqualTo(5),
+          "quote_overnight tradingStatus must identify the overnight session");
     }
 
     // =====================================================================

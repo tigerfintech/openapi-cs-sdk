@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json;
 
 namespace TigerOpenAPI.Quote.Response
@@ -45,9 +44,10 @@ namespace TigerOpenAPI.Quote.Response
     public long Timestamp { get; set; }
 
     /// <summary>
-    /// Whether overnight (pre/post-market) trading is enabled for the symbol.
+    /// Trading session status. The overnight session is 5; other values are
+    /// 1 for pre-market, 2 for regular trading, and 3 for after-hours.
     /// </summary>
-    [JsonProperty(PropertyName = "overnight")]
-    public bool Overnight { get; set; }
+    [JsonProperty(PropertyName = "tradingStatus")]
+    public int TradingStatus { get; set; }
   }
 }
