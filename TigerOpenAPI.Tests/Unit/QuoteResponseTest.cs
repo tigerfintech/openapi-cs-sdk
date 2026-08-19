@@ -115,11 +115,29 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void QuoteOvernightResponse_Deserialize()
     {
-      string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""overnight"":false}]}";
+      string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""latestPrice"":224.5,
+        ""askPrice"":224.6,""askSize"":12,""bidPrice"":224.4,""bidSize"":8,
+        ""preClose"":220.0,""volume"":1000,""amount"":224500.0,""change"":4.5,
+        ""changeRate"":0.02045,""amplitude"":0.03,""timestamp"":1720000000000,
+        ""tradingStatus"":5}]}";
       var resp = JsonConvert.DeserializeObject<QuoteOvernightResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
-      Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"));
-      Assert.That(resp.Data[0].Overnight, Is.EqualTo(false));
+      Assert.That(resp.Data, Has.Count.EqualTo(1));
+      var item = resp.Data[0];
+      Assert.That(item.Symbol, Is.EqualTo("AAPL"));
+      Assert.That(item.LatestPrice, Is.EqualTo(224.5));
+      Assert.That(item.AskPrice, Is.EqualTo(224.6));
+      Assert.That(item.AskSize, Is.EqualTo(12));
+      Assert.That(item.BidPrice, Is.EqualTo(224.4));
+      Assert.That(item.BidSize, Is.EqualTo(8));
+      Assert.That(item.PreClose, Is.EqualTo(220.0));
+      Assert.That(item.Volume, Is.EqualTo(1000));
+      Assert.That(item.Amount, Is.EqualTo(224500.0));
+      Assert.That(item.Change, Is.EqualTo(4.5));
+      Assert.That(item.ChangeRate, Is.EqualTo(0.02045));
+      Assert.That(item.Amplitude, Is.EqualTo(0.03));
+      Assert.That(item.Timestamp, Is.EqualTo(1720000000000L));
+      Assert.That(item.TradingStatus, Is.EqualTo(5));
     }
   }
 }

@@ -1,6 +1,7 @@
 ## 1.2.4 (2026-08-19)
 ### New
 - `OptionRealTimeQuote` 新增 `MarkPrice`、`PreMarkPrice`、`MarkTimestamp`、`MidPrice`、`PreMidPrice`、`MidTimestamp` 字段
+- Push 推送的逐笔成交消息新增 `Cond`、`PartCode`、`PartName` 字段，`cond` 原始单字符代码已转换为可读字符串（如 `US_REGULAR_SALE`、`HK_AUTOMATCH_NORMAL`）
 
 ## 1.2.3 (2026-07-23)
 ### New

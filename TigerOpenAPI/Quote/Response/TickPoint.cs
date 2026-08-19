@@ -15,7 +15,12 @@ namespace TigerOpenAPI.Quote.Response
     public long Volume { get; set; }
     [JsonProperty(PropertyName = "type")]
     public string Type { get; set; }
-
+    [JsonProperty(PropertyName = "cond")]
+    public string Cond { get; set; }
+    [JsonProperty(PropertyName = "partCode")]
+    public string PartCode { get; set; }
+    [JsonProperty(PropertyName = "partName")]
+    public string PartName { get; set; }
   }
 }
 

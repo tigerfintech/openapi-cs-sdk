@@ -129,7 +129,7 @@ namespace TigerOpenAPI.Common.Util
       return name ?? code;
     }
 
-    private static string GetPartShortNameByCode(string code)
+    public static string GetPartShortNameByCode(string code)
     {
       if (string.IsNullOrWhiteSpace(code))
       {
@@ -139,7 +139,7 @@ namespace TigerOpenAPI.Common.Util
       return name ?? code;
     }
 
-    private static string GetTradeCondByCode(bool isUsStockSymbol, char code)
+    public static string GetTradeCondByCode(bool isUsStockSymbol, char code)
     {
       if (code == 0)
       {
