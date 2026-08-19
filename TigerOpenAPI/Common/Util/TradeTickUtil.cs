@@ -95,10 +95,11 @@ namespace TigerOpenAPI.Common.Util
       dict.Add('W', "US_AVERAGE_PRICE_TRADE");   // 均价交易
       dict.Add('X', "US_CROSS_TRADE");           //
       dict.Add('Z', "US_SOLD_OUT_OF_SEQUENCE");  // 场外售出
+      // Numeric condition codes
       dict.Add('0', "US_ODD_LOST_CROSS_TRADE");  // 碎股跨市场交易
-      dict.Add('4', "US_DERIVATIVELY_PRICED");   // 衍生工具定价
-      dict.Add('5', "US_MARKET_CENTER_RE_OPENING_TRADE");// 再开盘定价
-      dict.Add('6', "US_MARKET_CENTER_CLOSING_TRADE");   // 收盘定价
+      dict.Add('4', "US_DERIVATIVELY_PRICED");   // 衍生工具定价 — price derived from another instrument
+      dict.Add('5', "US_MARKET_CENTER_RE_OPENING_TRADE");// 再开盘定价 — re-opening trade
+      dict.Add('6', "US_MARKET_CENTER_CLOSING_TRADE");   // 收盘定价 — closing trade
       dict.Add('7', "US_QUALIFIED_CONTINGENT_TRADE");    // 合单交易
       dict.Add('9', "US_CONSOLIDATED_LAST_PRICE_PER_LISTING_PACKET");// 综合延迟价格
 

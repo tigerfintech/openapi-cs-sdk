@@ -4,6 +4,7 @@ using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Model;
 
+
 namespace TigerOpenAPI.Quote.Model
 {
   /// <summary>
@@ -20,10 +21,9 @@ namespace TigerOpenAPI.Quote.Model
   /// }
   /// </code>
   ///
-  /// <c>begin_date</c>/<c>end_date</c> are epoch millis. The server rejects
-  /// requests missing <c>market</c>, <c>fields</c>, or either date bound,
-  /// which is why the pre-existing test skipped when only
-  /// <see cref="QuoteSymbolModel"/> was available.
+  /// <c>begin_date</c>/<c>end_date</c> are epoch millis. Leave either field
+  /// unset (null) to skip that bound; the server rejects requests missing
+  /// <c>market</c> or <c>fields</c>.
   /// </summary>
   public class FinancialDailyModel : ApiModel
   {
@@ -37,11 +37,13 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "fields")]
     public List<string> Fields { get; set; }
 
-    [JsonProperty(PropertyName = "begin_date")]
-    public long BeginDate { get; set; }
+    /// <summary>Query start date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "begin_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? BeginDate { get; set; }
 
-    [JsonProperty(PropertyName = "end_date")]
-    public long EndDate { get; set; }
+    /// <summary>Query end date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "end_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? EndDate { get; set; }
 
     public FinancialDailyModel() : base()
     {

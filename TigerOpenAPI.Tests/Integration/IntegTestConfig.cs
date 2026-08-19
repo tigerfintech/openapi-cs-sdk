@@ -44,6 +44,7 @@ namespace TigerOpenAPI.Tests.Integration
     {
       string tigerId = Env("TIGEROPEN_TIGER_ID") ?? Env("TIGER_ID");
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY");
+      string account = Env("TIGEROPEN_ACCOUNT") ?? Env("TIGER_ACCOUNT");
 
       if (string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
       {
@@ -51,6 +52,13 @@ namespace TigerOpenAPI.Tests.Integration
             "Integration credentials not set — skipping. " +
             "Set TIGEROPEN_TIGER_ID + TIGEROPEN_PRIVATE_KEY " +
             "(+ TIGEROPEN_ACCOUNT for trade tests).");
+      }
+
+      if (string.IsNullOrWhiteSpace(account))
+      {
+        Assert.Ignore(
+            "TIGEROPEN_ACCOUNT is not set — skipping. " +
+            "Set TIGEROPEN_ACCOUNT (or TIGER_ACCOUNT) to run integration tests.");
       }
     }
 
