@@ -1653,15 +1653,14 @@ class Program
       ModelValue = new OptionKlineV2Model()
       {
         Market = Market.US,
-        OptionQuery = new List<OptionKlineModel>()
+        OptionQuery = new List<OptionKlineQueryItem>()
         {
-          new OptionKlineModel() {
+          new OptionKlineQueryItem() {
             Symbol = "AAPL", Right = "CALL", Strike = "170.0",
             Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE),
             BeginTime = DateUtil.ConvertTimestamp("2024-06-24", CustomTimeZone.NY_ZONE),
             EndTime = DateUtil.ConvertTimestamp("2024-06-26", CustomTimeZone.NY_ZONE),
             Period = OptionKType.min60.Value,
-            SortDir = SortDir.SortDir_Descend,
             Limit = 10
           }
         }

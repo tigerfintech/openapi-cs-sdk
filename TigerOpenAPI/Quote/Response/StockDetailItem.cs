@@ -1,6 +1,5 @@
 using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 
 namespace TigerOpenAPI.Quote.Response

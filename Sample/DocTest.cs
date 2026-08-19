@@ -312,8 +312,8 @@ class DocTest
         ApiMethodName = QuoteApiService.OPTION_KLINE,
         ModelValue = new OptionKlineV2Model() {
           Market = Market.US,
-          OptionQuery = new List<OptionKlineModel>() {
-            new OptionKlineModel() {
+          OptionQuery = new List<OptionKlineQueryItem>() {
+            new OptionKlineQueryItem() {
               Symbol = "AAPL",
               Right = "CALL",
               Strike = "200.0",

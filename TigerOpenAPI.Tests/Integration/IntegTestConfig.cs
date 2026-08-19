@@ -37,14 +37,14 @@ namespace TigerOpenAPI.Tests.Integration
     public static TradeClient? TradeClient => _tradeClient.Value;
 
     /// <summary>
-    /// Call from <c>[OneTimeSetUp]</c>. If credentials are absent the test
-    /// fixture is ignored via <see cref="Assert.Ignore(string)"/>.
+    /// Call from <c>[OneTimeSetUp]</c> for quote-only fixtures.
+    /// Ignores the fixture when tiger_id / private_key are absent.
+    /// Does <em>not</em> require TIGEROPEN_ACCOUNT — quote APIs work without it.
     /// </summary>
     public static void EnsureCredentials()
     {
       string tigerId = Env("TIGEROPEN_TIGER_ID") ?? Env("TIGER_ID");
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY");
-      string account = Env("TIGEROPEN_ACCOUNT") ?? Env("TIGER_ACCOUNT");
 
       if (string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
       {
@@ -53,11 +53,21 @@ namespace TigerOpenAPI.Tests.Integration
             "Set TIGEROPEN_TIGER_ID + TIGEROPEN_PRIVATE_KEY " +
             "(+ TIGEROPEN_ACCOUNT for trade tests).");
       }
+    }
 
+    /// <summary>
+    /// Call from <c>[OneTimeSetUp]</c> for trade fixtures.
+    /// Ignores the fixture when any of tiger_id / private_key / account are absent.
+    /// </summary>
+    public static void EnsureTradeCredentials()
+    {
+      EnsureCredentials();   // check tiger_id + private_key first
+
+      string account = Env("TIGEROPEN_ACCOUNT") ?? Env("TIGER_ACCOUNT");
       if (string.IsNullOrWhiteSpace(account))
       {
         Assert.Ignore(
-            "TIGEROPEN_ACCOUNT is not set — skipping. " +
+            "TIGEROPEN_ACCOUNT is not set — skipping trade tests. " +
             "Set TIGEROPEN_ACCOUNT (or TIGER_ACCOUNT) to run integration tests.");
       }
     }

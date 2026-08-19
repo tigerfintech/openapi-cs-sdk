@@ -28,11 +28,9 @@ namespace TigerOpenAPI.Tests.Integration
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-      IntegTestConfig.EnsureCredentials();
+      IntegTestConfig.EnsureTradeCredentials();
       _client = IntegTestConfig.TradeClient;
       _account = IntegTestConfig.Account;
-      Assert.That(_account, Is.Not.Null.And.Not.Empty,
-          "account must not be null or empty — set TIGEROPEN_ACCOUNT env var");
     }
 
     // ---- helper ----
