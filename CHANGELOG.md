@@ -1,7 +1,14 @@
+## 1.2.4 (2026-08-19)
+### New
+- `OptionRealTimeQuote` 新增 `MarkPrice`、`PreMarkPrice`、`MarkTimestamp`、`MidPrice`、`PreMidPrice`、`MidTimestamp` 字段
+
 ## 1.2.3 (2026-07-23)
 ### New
 - `CorporateActionType` 新增：`SYMBOL_CHANGE`、`DELISTING`、`IPO`
 - 新增 `CorporateSymbolChangeItem`、`CorporateDelistingItem`、`CorporateIpoItem` 及对应 Response 包装类
+
+### Change
+- 修正 `QuoteOvernightItem` 的服务端字段映射：移除不存在的 `Overnight`，新增映射 `tradingStatus` 的 `TradingStatus`
 
 ## 1.2.2 (2026-06-24)
 ### New
