@@ -24,12 +24,16 @@ namespace TigerOpenAPI.Tests.Unit
     public void BuildOptionContract_FromIdentifier_FieldsSetCorrectly()
     {
       // Standard OCC identifier: "AAPL  190118P00160000"
+      // Positions: symbol(6) + date YYMMDD(6) + right(1) + price*1000 padded to 8 digits
       var c = ContractItem.BuildOptionContract("AAPL  190118P00160000");
       Assert.That(c.SecType, Is.EqualTo(SecType.OPT.ToString()));
       Assert.That(c.Symbol, Is.EqualTo("AAPL"));
-      Assert.That(c.Expiry, Is.Not.Null.And.Not.Empty);
-      Assert.That(c.Strike, Is.GreaterThan(0));
-      Assert.That(c.Right, Is.EqualTo("PUT").Or.EqualTo("P"));
+      Assert.That(c.Right, Is.EqualTo("PUT"),
+          "Right char 'P' should map to \"PUT\"");
+      Assert.That(c.Expiry, Is.EqualTo("2019-01-18"),
+          "Expiry should be formatted as yyyy-MM-dd");
+      Assert.That(c.Strike, Is.EqualTo(160.0),
+          "00160000 encodes strike 160.000");
     }
 
     [Test]

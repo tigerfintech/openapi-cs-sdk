@@ -105,16 +105,18 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void BuildParams_NullValueHandling_OmitsNullFields()
     {
-      // QuoteMarketModel with null TradeSession — should NOT appear in BizContent
+      // QuoteMarketModel has no optional nullable fields that default to null,
+      // so this test verifies the general NullValueHandling.Ignore contract:
+      // fields absent from the model must not appear in BizContent.
       var req = new TigerRequest<TradeCalendarResponse>
       {
         ApiMethodName = QuoteApiService.TRADING_CALENDAR,
         ModelValue = new QuoteMarketModel { Market = Common.Enum.Market.US }
       };
       _client.BuildParams(req);
-      // TradeSession is null — NullValueHandling.Ignore means it must be absent
+      // QuoteMarketModel has no trade_session field — it must never appear
       Assert.That(req.BizContent, Does.Not.Contain("trade_session"),
-          "Null properties must be omitted from serialized BizContent");
+          "Absent properties must be omitted from serialized BizContent");
     }
   }
 }

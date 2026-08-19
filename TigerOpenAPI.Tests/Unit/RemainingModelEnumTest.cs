@@ -448,8 +448,8 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(model.Market, Is.EqualTo(Market.NONE));
       Assert.That(model.Symbols, Is.Null);
       Assert.That(model.ActionType, Is.EqualTo(CorporateActionType.NONE));
-      Assert.That(model.BeginDate, Is.EqualTo(0L));
-      Assert.That(model.EndDate, Is.EqualTo(0L));
+      Assert.That(model.BeginDate, Is.Null);
+      Assert.That(model.EndDate, Is.Null);
     }
 
     [Test]
@@ -501,8 +501,8 @@ namespace TigerOpenAPI.Tests.Unit
     {
       var model = new FinancialExchangeRateModel();
       Assert.That(model.CurrencyList, Is.Null);
-      Assert.That(model.BeginDate, Is.EqualTo(0L));
-      Assert.That(model.EndDate, Is.EqualTo(0L));
+      Assert.That(model.BeginDate, Is.Null);
+      Assert.That(model.EndDate, Is.Null);
     }
 
     [Test]

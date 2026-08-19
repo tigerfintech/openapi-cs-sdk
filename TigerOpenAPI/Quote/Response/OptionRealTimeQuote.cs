@@ -1,7 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using TigerOpenAPI.Common.Enum;
+﻿using Newtonsoft.Json;
 
 namespace TigerOpenAPI.Quote.Response
 {
@@ -53,13 +50,13 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "preMarkPrice")]
     public Double PreMarkPrice { get; set; }
     [JsonProperty(PropertyName = "markTimestamp")]
-    public long MarkTimestamp { get; set; }
+    public long MarkTimestamp { get; set; } // epoch milliseconds
     [JsonProperty(PropertyName = "midPrice")]
     public Double MidPrice { get; set; }
     [JsonProperty(PropertyName = "preMidPrice")]
     public Double PreMidPrice { get; set; }
     [JsonProperty(PropertyName = "midTimestamp")]
-    public long MidTimestamp { get; set; }
+    public long MidTimestamp { get; set; } // epoch milliseconds
   }
 }
 

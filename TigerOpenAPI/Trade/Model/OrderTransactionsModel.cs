@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 
@@ -26,11 +25,13 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "expiry")]
     public string? Expiry { get; set; }
 
-    [JsonProperty(PropertyName = "start_date")]
-    public Int64 StartDate { get; set; }
+    /// <summary>Query start date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "start_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? StartDate { get; set; }
 
-    [JsonProperty(PropertyName = "end_date")]
-    public Int64 EndDate { get; set; }
+    /// <summary>Query end date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "end_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? EndDate { get; set; }
 
     [JsonProperty(PropertyName = "limit")]
     public Int32 Limit { get; set; } = 20;
