@@ -21,8 +21,9 @@ namespace TigerOpenAPI.Quote.Model
   /// }
   /// </code>
   ///
-  /// <c>begin_date</c>/<c>end_date</c> are optional (epoch millis) — omit
-  /// via <c>0</c> to skip. <c>period_type</c> is required and takes the
+  /// <c>begin_date</c>/<c>end_date</c> are optional (epoch millis) — leave
+  /// unset (<c>null</c>) to skip that bound; the field is omitted from the
+  /// wire payload when null. <c>period_type</c> is required and takes the
   /// values from <see cref="FinancialPeriodType"/>.
   /// </summary>
   public class FinancialReportModel : ApiModel

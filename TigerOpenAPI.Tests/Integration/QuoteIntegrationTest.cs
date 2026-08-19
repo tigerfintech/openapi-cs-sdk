@@ -28,8 +28,6 @@ namespace TigerOpenAPI.Tests.Integration
   {
     private QuoteClient? _client;
 
-    private static readonly Regex TimePattern = new Regex(@"^\d{1,2}:\d{2}");
-
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
@@ -992,9 +990,9 @@ namespace TigerOpenAPI.Tests.Integration
       long now = DateUtil.CurrentTimeMillis();
       var model = new OptionKlineV2Model
       {
-        OptionQuery = new List<OptionKlineModel>
+        OptionQuery = new List<OptionKlineQueryItem>
         {
-          new OptionKlineModel
+          new OptionKlineQueryItem
           {
             Symbol = opt.Symbol,
             Right = opt.Right,

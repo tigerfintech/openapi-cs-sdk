@@ -97,9 +97,16 @@ namespace TigerOpenAPI.Tests.Integration
         status = null;
       }
 
-      lock (StatusLock)
+      // Only cache a successful status fetch — a null (query failure) must not
+      // be cached permanently, because transient errors (network hiccup,
+      // rate-limit) would otherwise poison the cache for the entire test run
+      // and cause every downstream test to Assert.Ignore silently.
+      if (status != null)
       {
-        StatusCache[market] = status;
+        lock (StatusLock)
+        {
+          StatusCache[market] = status;
+        }
       }
       return status;
     }

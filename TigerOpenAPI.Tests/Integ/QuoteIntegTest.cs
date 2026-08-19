@@ -30,7 +30,6 @@ namespace TigerOpenAPI.Tests.Integ
     private QuoteClient _client = null!;
 
     private static readonly Regex DatePattern = new Regex(@"^\d{4}-\d{2}-\d{2}$");
-    private static readonly Regex TimePattern = new Regex(@"^\d{1,2}:\d{2}");
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -115,7 +114,8 @@ namespace TigerOpenAPI.Tests.Integ
       Assert.That(state.MarketStatus, Is.Not.Null.And.Not.Empty, "marketStatus wire name");
       Assert.That(state.Status,       Is.Not.Null.And.Not.Empty, "status wire name");
       // openTime may be null outside trading hours; format varies by API version
-      Assert.That(state.OpenTime, Is.Not.Empty, "openTime must not be empty when present");
+      if (state.OpenTime != null)
+        Assert.That(state.OpenTime, Is.Not.Empty, "openTime must not be empty when present");
     }
 
     // =====================================================================
