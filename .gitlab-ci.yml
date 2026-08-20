@@ -140,11 +140,27 @@ notify:webhook:
       # 2. Determine pass/fail.
       #    unit_f is None  → XML missing/corrupt; treat as failed (conservative).
       #    unit_f > 0      → explicit unit failures.
+      #    integ_f is None → the `integ` job's `rules:` skip it entirely when
+      #                      TIGEROPEN_TIGER_ID/TIGEROPEN_PRIVATE_KEY aren't
+      #                      configured (fork MRs, unprotected branches) — that
+      #                      is an expected skip, NOT a failure. But if those
+      #                      credentials ARE configured, integ was expected to
+      #                      run and a missing/corrupt XML means it crashed
+      #                      before producing results — treat as failed
+      #                      (conservative), same as unit_f.
+      #    integ_f > 0     → explicit integration failures.
       #    CI_PIPELINE_STATUS is unreliable in .post stage (reads "running"),
       #    so we rely exclusively on parsed XML counts.
+      integ_expected = bool(os.environ.get("TIGEROPEN_TIGER_ID")) and \
+          bool(os.environ.get("TIGEROPEN_PRIVATE_KEY"))
+
       if unit_f is None:
           has_failed = True
           print("Unit JUnit XML unavailable — treating pipeline as failed")
+      elif integ_expected and integ_f is None:
+          has_failed = True
+          print("Integration JUnit XML unavailable despite credentials being "
+                "configured — treating pipeline as failed")
       else:
           has_failed = (unit_f > 0) or (integ_f is not None and integ_f > 0)
 
