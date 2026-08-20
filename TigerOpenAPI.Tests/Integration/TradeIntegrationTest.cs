@@ -658,11 +658,15 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp, Is.Not.Null, "option_exercise_check response must not be null");
       if (!resp.IsSuccess())
       {
-        // Only pass on expected business errors (contract not found / no position).
+        // Only pass on expected business errors (contract not found / no position /
+        // invalid param). code=1010 is returned when contractId=0 is rejected by
+        // server-side validation ("contractId can not be null").
         // Any other error code (auth failure, 5xx, etc.) is a real failure.
         const int codeContractNotFound = 70011;
         const int codeNoPosition       = 70012;
-        if (resp.Code == codeContractNotFound || resp.Code == codeNoPosition)
+        const int codeBizParamError    = 1010;
+        if (resp.Code == codeContractNotFound || resp.Code == codeNoPosition
+            || resp.Code == codeBizParamError)
           Assert.Pass($"expected error for dummy contract, code={resp.Code} msg={resp.Message}");
         else
           Assert.Fail($"unexpected error from option_exercise_check, code={resp.Code} msg={resp.Message}");
@@ -850,8 +854,11 @@ namespace TigerOpenAPI.Tests.Integration
       // For id=0 (or an order that is no longer cancellable) the gateway
       // returns a business error. Verify it is a recognised order-related
       // error code rather than an auth or 5xx failure.
+      // code=1010 is a generic biz param error returned when id=0 is rejected
+      // by server-side validation (e.g. "field 'id' cannot be empty").
       var msg = resp!.Message ?? string.Empty;
       bool isExpectedOrderError =
+          resp.Code == 1010 ||
           msg.IndexOf("order", StringComparison.OrdinalIgnoreCase) >= 0 ||
           msg.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0 ||
           msg.IndexOf("invalid", StringComparison.OrdinalIgnoreCase) >= 0 ||
