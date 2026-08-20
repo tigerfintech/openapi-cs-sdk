@@ -54,6 +54,10 @@ namespace TigerOpenAPI.Tests.Integration
       "only trade cash order by market order", "cash order by market order",
       "time range for the order",
       "opening or adding to positions is temporarily unavailable",
+      // Rate limiting — transient, not a permission boundary, but the same
+      // tolerate-and-skip treatment applies since retrying isn't this
+      // suite's job. Matches Java/Rust's RATE_LIMIT_PATTERNS.
+      "too_many_requests", "rate limit", "requestrateexceedlimit",
     };
 
     private static bool IsPermissionError(string? message)

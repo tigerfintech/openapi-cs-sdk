@@ -154,7 +154,22 @@ namespace TigerOpenAPI.Tests.Integration
         {
           return null;
         }
-        long expiry = expResp.Data[0].Timestamps[0];
+        // Pick an expiry > 14 days out — the nearest expiry can already be
+        // expired or expiring same-day (untradable), mirroring Java's
+        // MarketHelpers.resolveUsOptionIdentifier / Python's
+        // _resolve_us_option_contract selection algorithm.
+        var expItem = expResp.Data[0];
+        long expiry = expItem.Timestamps[expItem.Timestamps.Count - 1];
+        var today = DateTime.UtcNow.Date;
+        for (int i = 0; i < expItem.Timestamps.Count; i++)
+        {
+          var candidateDate = DateTimeOffset.FromUnixTimeMilliseconds(expItem.Timestamps[i]).UtcDateTime.Date;
+          if ((candidateDate - today).TotalDays > 14)
+          {
+            expiry = expItem.Timestamps[i];
+            break;
+          }
+        }
 
         // 2. chain for that expiry → pick the middle row's call leg
         //    (server usually orders strikes ascending; middle ≈ ATM).
