@@ -160,12 +160,35 @@ class DocTest
       return await qc.ExecuteAsync(req);
     });
 
+    await Run("quote/kLine crypto", async () => {
+      var req = new TigerRequest<QuoteKlineResponse>() {
+        ApiMethodName = QuoteApiService.KLINE,
+        ModelValue = new QuoteKlineModel() {
+          Symbols = new List<string> { "BTC.USD" },
+          Period = KLineType.day.Value,
+          SecType = SecType.CC
+        }
+      };
+      return await qc.ExecuteAsync(req);
+    });
+
     // timeline
     await Run("quote/timeline", async () => {
       var req = new TigerRequest<QuoteTimelineResponse>() {
         ApiMethodName = QuoteApiService.TIMELINE,
         ModelValue = new QuoteTimelineModel() {
           Symbols = new List<string> { "AAPL" }
+        }
+      };
+      return await qc.ExecuteAsync(req);
+    });
+
+    await Run("quote/timeline crypto", async () => {
+      var req = new TigerRequest<QuoteTimelineResponse>() {
+        ApiMethodName = QuoteApiService.TIMELINE,
+        ModelValue = new QuoteTimelineModel() {
+          Symbols = new List<string> { "BTC.USD" },
+          SecType = SecType.CC
         }
       };
       return await qc.ExecuteAsync(req);

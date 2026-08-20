@@ -48,6 +48,7 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(Wire(SecType.WAR), Is.EqualTo("WAR"));
       Assert.That(Wire(SecType.IOPT), Is.EqualTo("IOPT"));
       Assert.That(Wire(SecType.FUND), Is.EqualTo("FUND"));
+      Assert.That(Wire(SecType.CC), Is.EqualTo("CC"));
     }
 
     [Test]

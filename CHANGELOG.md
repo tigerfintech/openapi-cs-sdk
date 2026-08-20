@@ -1,5 +1,7 @@
 ## 1.2.4 (2026-08-19)
 ### New
+- 新增公开数字货币 K 线和当前分时行情支持（`SecType.CC`）
+- `KlinePoint` 和 `TimelinePoint` 新增可空的 `VolumeDecimal` 字段
 - `OptionRealTimeQuote` 新增 `MarkPrice`、`PreMarkPrice`、`MarkTimestamp`、`MidPrice`、`PreMidPrice`、`MidTimestamp` 字段
 - Push 推送的逐笔成交消息新增 `Cond`、`PartCode`、`PartName` 字段，`cond` 原始单字符代码已转换为可读字符串（如 `US_REGULAR_SALE`、`HK_AUTOMATCH_NORMAL`）
 

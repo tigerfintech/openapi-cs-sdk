@@ -74,9 +74,17 @@ namespace TigerOpenAPI.Quote
       {
         request.ApiVersion = TigerApiConstants.API_VERSION_2;
       }
+      else if (QuoteApiService.KLINE.Equals(request.ApiMethodName))
+      {
+        request.ApiVersion = TigerApiConstants.API_VERSION_2;
+      }
+      else if (QuoteApiService.TIMELINE.Equals(request.ApiMethodName)
+            && (request.ModelValue as QuoteTimelineModel)?.SecType == SecType.CC)
+      {
+        request.ApiVersion = TigerApiConstants.API_VERSION_3;
+      }
       // other param check
       return true;
     }
   }
 }
-
