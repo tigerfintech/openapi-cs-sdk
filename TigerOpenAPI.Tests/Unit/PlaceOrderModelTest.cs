@@ -39,14 +39,31 @@ namespace TigerOpenAPI.Tests.Unit
     }
 
     [Test]
-    public void IcebergOrder_NullOptional_NotPresentInJson()
+    public void IcebergOrder_SimpleOverload_MinDisplaySizeDefaultsToDisplaySize()
     {
+      // Gateway requires min_display_size; the simple overload defaults it to
+      // displaySize so callers who don't care about it still get a valid order.
       var o = PlaceOrderModel.BuildIcebergOrder("ACC1", _contract, ActionType.BUY, 100, 150.0, 10);
       string json = JsonConvert.SerializeObject(o, Settings);
 
-      // min_display_size is null — must be absent (NullValueHandling.Ignore)
+      Assert.That(json, Does.Contain("\"min_display_size\":10"),
+          "min_display_size must default to displaySize on the simple overload");
+    }
+
+    [Test]
+    public void IcebergOrder_NullOptional_NotPresentInJson()
+    {
+      // Full overload with explicit nulls — CheckIntervals/PriceType/StartTime/EndTime
+      // stay optional and must be omitted (NullValueHandling.Ignore).
+      var o = PlaceOrderModel.BuildIcebergOrder(
+          "ACC1", _contract, ActionType.BUY, 100, 150.0,
+          10, null, null, null, null, null);
+      string json = JsonConvert.SerializeObject(o, Settings);
+
       Assert.That(json, Does.Not.Contain("min_display_size"),
           "min_display_size (null) must not appear in serialized JSON");
+      Assert.That(json, Does.Not.Contain("check_intervals"),
+          "check_intervals (null) must not appear in serialized JSON");
     }
 
     [Test]

@@ -32,7 +32,7 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(o.TotalQuantity, Is.EqualTo(100));
       Assert.That(o.Action, Is.EqualTo(ActionType.BUY));
       Assert.That(o.Symbol, Is.EqualTo("AAPL"));
-      Assert.That(o.MinDisplaySize, Is.Null);
+      Assert.That(o.MinDisplaySize, Is.EqualTo(10));
       Assert.That(o.CheckIntervals, Is.Null);
       Assert.That(o.PriceType, Is.EqualTo(PlaceOrderModel.ICEBERG_PRICE_TYPE_LIMIT));
       Assert.That(o.StartTime, Is.Null);
