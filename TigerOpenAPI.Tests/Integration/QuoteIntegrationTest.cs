@@ -336,8 +336,12 @@ namespace TigerOpenAPI.Tests.Integration
         Market = Market.US
       };
       var expResp = Execute<OptionExpirationResponse>(QuoteApiService.OPTION_EXPIRATION, expModel);
-      Assert.That(expResp.Data, Is.Not.Null.And.Count.GreaterThan(0),
-          "need option expiration data for AAPL");
+      if (expResp.Data == null || expResp.Data.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.US,
+            "option_expiration returned no data for AAPL");
+        Assert.Ignore("no option expiration data for AAPL outside US trading hours");
+      }
       long expiry = expResp.Data[0].Timestamps[0];
 
       var chainModel = new OptionChainV3Model
@@ -349,9 +353,13 @@ namespace TigerOpenAPI.Tests.Integration
         }
       };
       var chainResp = Execute<OptionChainResponse>(QuoteApiService.OPTION_CHAIN, chainModel);
-      Assert.That(chainResp.Data, Is.Not.Null.And.Count.GreaterThan(0),
-          "need option chain data for AAPL");
-      Assert.That(chainResp.Data[0].Items, Is.Not.Null.And.Count.GreaterThan(0));
+      if (chainResp.Data == null || chainResp.Data.Count == 0
+          || chainResp.Data[0].Items == null || chainResp.Data[0].Items.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.US,
+            "option_chain returned no items for AAPL");
+        Assert.Ignore("no option chain data for AAPL outside US trading hours");
+      }
 
       var group = chainResp.Data[0].Items[0];
       string strike, right;
@@ -386,8 +394,12 @@ namespace TigerOpenAPI.Tests.Integration
       if (_futureExchangeCode != null) return _futureExchangeCode;
       var model = new FutureExchangeModel { SecType = SecType.FUT.ToString() };
       var resp = Execute<FutureExchangeResponse>(QuoteApiService.FUTURE_EXCHANGE, model);
-      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
-          "need at least 1 future exchange");
+      if (resp.Data == null || resp.Data.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.US,
+            "future_exchange returned no exchanges");
+        Assert.Ignore("no future exchanges available outside US trading hours");
+      }
       _futureExchangeCode = resp.Data[0].Code;
       return _futureExchangeCode;
     }
@@ -400,8 +412,12 @@ namespace TigerOpenAPI.Tests.Integration
       string exchCode = GetFutureExchangeCode();
       var model = new FutureContractByExchCodeModel { ExchangeCode = exchCode };
       var resp = Execute<FutureContractsResponse>(QuoteApiService.FUTURE_CONTRACT_BY_EXCHANGE_CODE, model);
-      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
-          "need at least 1 future contract for exchange " + exchCode);
+      if (resp.Data == null || resp.Data.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.US,
+            "future_contract_by_exchange_code returned no contracts for exchange " + exchCode);
+        Assert.Ignore("no future contracts for exchange " + exchCode + " outside US trading hours");
+      }
       _futureContractCode = resp.Data[0].ContractCode;
       _futureType = resp.Data[0].Type;
     }
