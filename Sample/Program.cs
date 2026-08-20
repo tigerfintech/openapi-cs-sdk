@@ -1946,6 +1946,7 @@ class Program
         Period = KLineType.min3.Value,
         BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
+        // Set SecType.CC and use a crypto symbol such as BTC.USD for crypto K-lines.
         // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
         Rigth = RightOption.br
       }
@@ -1992,6 +1993,7 @@ class Program
         Symbols = new List<string> { "AAPL" },
         Period = TimeLineType.day,
         TradeSession = TradeSession.Regular.ToString(),
+        // Set SecType.CC and use a crypto symbol such as BTC.USD for crypto timeline data.
         BeginTime = DateUtil.ConvertTimestamp("2023-03-03 03:00:00", CustomTimeZone.NY_ZONE)
       }
     };

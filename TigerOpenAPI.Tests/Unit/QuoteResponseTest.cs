@@ -45,32 +45,40 @@ namespace TigerOpenAPI.Tests.Unit
     public void QuoteKlineResponse_Deserialize()
     {
       string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""period"":""day"",
-        ""items"":[{""open"":190,""high"":195,""low"":188,""close"":192,""volume"":1000,""time"":1700000000}]}]}";
+        ""items"":[{""open"":190,""high"":195,""low"":188,""close"":192,""volume"":1000,
+        ""volumeDecimal"":1000.125,""time"":1700000000},{""open"":192,""high"":196,""low"":191,
+        ""close"":195,""volume"":500,""time"":1700000060}]}]}";
       var resp = JsonConvert.DeserializeObject<QuoteKlineResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
       Assert.That(resp.Data.Count, Is.EqualTo(1));
       var item = resp.Data[0];
       Assert.That(item.Symbol, Is.EqualTo("AAPL"));
       Assert.That(item.Period, Is.EqualTo("day"));
-      Assert.That(item.Items.Count, Is.EqualTo(1));
+      Assert.That(item.Items.Count, Is.EqualTo(2));
       var point = item.Items[0];
       Assert.That(point.Open, Is.EqualTo(190.0));
       Assert.That(point.High, Is.EqualTo(195.0));
       Assert.That(point.Low, Is.EqualTo(188.0));
       Assert.That(point.Close, Is.EqualTo(192.0));
       Assert.That(point.Volume, Is.EqualTo(1000));
+      Assert.That(point.VolumeDecimal, Is.EqualTo(1000.125));
+      Assert.That(item.Items[1].VolumeDecimal, Is.Null);
     }
 
     [Test]
     public void QuoteTimelineResponse_Deserialize()
     {
-      string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""period"":""1m"",
-        ""preClose"":190.0}]}";
+      string json = @"{""code"":0,""data"":[{""symbol"":""BTC.USD"",""period"":""1m"",
+        ""preClose"":190.0,""intraday"":{""items"":[{""price"":191.0,""avgPrice"":190.5,
+        ""volume"":10,""volumeDecimal"":10.75,""time"":1700000000},{""price"":192.0,
+        ""avgPrice"":191.0,""volume"":11,""time"":1700000060}]}}]}";
       var resp = JsonConvert.DeserializeObject<QuoteTimelineResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
-      Assert.That(resp.Data[0].Symbol, Is.EqualTo("AAPL"));
+      Assert.That(resp.Data[0].Symbol, Is.EqualTo("BTC.USD"));
       Assert.That(resp.Data[0].Period, Is.EqualTo("1m"));
       Assert.That(resp.Data[0].PreClose, Is.EqualTo(190.0));
+      Assert.That(resp.Data[0].Intraday.Items[0].VolumeDecimal, Is.EqualTo(10.75));
+      Assert.That(resp.Data[0].Intraday.Items[1].VolumeDecimal, Is.Null);
     }
 
     [Test]

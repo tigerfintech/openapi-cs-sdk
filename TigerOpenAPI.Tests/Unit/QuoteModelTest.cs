@@ -4,7 +4,11 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.Model;
+using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Response;
+using TigerOpenAPI.Tests.TestSupport;
 
 namespace TigerOpenAPI.Tests.Unit
 {
@@ -29,7 +33,14 @@ namespace TigerOpenAPI.Tests.Unit
     [Test]
     public void QuoteKlineModel_Serialization_WireNames()
     {
-      var model = new QuoteKlineModel { Symbols = new List<string> { "AAPL" }, BeginTime = 1000, EndTime = 2000 };
+      var model = new QuoteKlineModel
+      {
+        Symbols = new List<string> { "BTC.USD" },
+        BeginTime = 1000,
+        EndTime = 2000,
+        PageToken = "next-page",
+        SecType = SecType.CC
+      };
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
       Assert.That(json, Does.Contain("\"symbols\""));
       Assert.That(json, Does.Contain("\"period\":\"day\""));
@@ -37,14 +48,73 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(json, Does.Contain("\"end_time\":2000"));
       Assert.That(json, Does.Contain("\"limit\":300"));
       Assert.That(json, Does.Contain("\"right\":\"br\""));
+      Assert.That(json, Does.Contain("\"page_token\":\"next-page\""));
+      Assert.That(json, Does.Contain("\"sec_type\":\"CC\""));
+    }
+
+    [Test]
+    public void QuoteKlineModel_Serialization_OmitsNullSecType()
+    {
+      string json = JsonConvert.SerializeObject(new QuoteKlineModel(), TigerClient.JsonSet);
+      Assert.That(json, Does.Not.Contain("\"sec_type\""));
+    }
+
+    [Test]
+    public void QuoteKlineRequest_UsesApiVersion2()
+    {
+      var client = new QuoteClient(TestClientFactory.CreateOfflineConfig());
+      var request = new TigerRequest<QuoteKlineResponse>
+      {
+        ApiMethodName = QuoteApiService.KLINE,
+        ModelValue = new QuoteKlineModel { SecType = SecType.CC }
+      };
+
+      Assert.That(client.Validate(request, out _), Is.True);
+      Assert.That(request.ApiVersion, Is.EqualTo(TigerApiConstants.API_VERSION_2));
     }
 
     [Test]
     public void QuoteTimelineModel_Serialization()
     {
-      var model = new QuoteTimelineModel { Symbols = new List<string> { "AAPL" }, BeginTime = 1000 };
+      var model = new QuoteTimelineModel
+      {
+        Symbols = new List<string> { "BTC.USD" },
+        BeginTime = 1000,
+        SecType = SecType.CC
+      };
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
       Assert.That(json, Does.Contain("\"begin_time\":1000"));
+      Assert.That(json, Does.Contain("\"sec_type\":\"CC\""));
+    }
+
+    [Test]
+    public void QuoteTimelineRequest_UsesApiVersion3()
+    {
+      var client = new QuoteClient(TestClientFactory.CreateOfflineConfig());
+      var request = new TigerRequest<QuoteTimelineResponse>
+      {
+        ApiMethodName = QuoteApiService.TIMELINE,
+        ApiVersion = TigerApiConstants.API_VERSION_2,
+        ModelValue = new QuoteTimelineModel { SecType = SecType.CC }
+      };
+
+      Assert.That(client.Validate(request, out _), Is.True);
+      Assert.That(request.ApiVersion, Is.EqualTo(TigerApiConstants.API_VERSION_3));
+    }
+
+    [Test]
+    public void QuoteTimelineRequest_WithoutCc_PreservesApiVersion()
+    {
+      var client = new QuoteClient(TestClientFactory.CreateOfflineConfig());
+      var request = new TigerRequest<QuoteTimelineResponse>
+      {
+        ApiMethodName = QuoteApiService.TIMELINE,
+        ApiVersion = TigerApiConstants.API_VERSION_2,
+        ModelValue = new QuoteTimelineModel()
+      };
+
+      Assert.That(client.Validate(request, out _), Is.True);
+      Assert.That(request.ApiVersion, Is.EqualTo(TigerApiConstants.API_VERSION_2));
     }
 
     [Test]
@@ -234,6 +304,7 @@ namespace TigerOpenAPI.Tests.Unit
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
       Assert.That(json, Does.Contain("\"date\":\"2024-01-19\""));
       Assert.That(json, Does.Contain("\"right\":\"br\""));
+      Assert.That(json, Does.Not.Contain("\"sec_type\""));
     }
 
     [Test]

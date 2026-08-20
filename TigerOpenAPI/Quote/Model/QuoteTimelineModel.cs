@@ -17,9 +17,12 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "period"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public TimeLineType Period { get; set; }
 
+    [JsonProperty(PropertyName = "sec_type", NullValueHandling = NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public SecType? SecType { get; set; }
+
     public QuoteTimelineModel() : base()
     {
     }
   }
 }
-

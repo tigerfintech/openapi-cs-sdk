@@ -34,9 +34,12 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "page_token")]
     public string PageToken { get; set; }
 
+    [JsonProperty(PropertyName = "sec_type", NullValueHandling = NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public SecType? SecType { get; set; }
+
     public QuoteKlineModel() : base()
     {
     }
   }
 }
-
