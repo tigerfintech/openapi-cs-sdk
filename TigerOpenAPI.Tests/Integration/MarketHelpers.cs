@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Quote;
 using TigerOpenAPI.Quote.Model;
 using TigerOpenAPI.Quote.Response;
+using TigerOpenAPI.Trade.Model;
+using TigerOpenAPI.Trade.Response;
 
 namespace TigerOpenAPI.Tests.Integration
 {
@@ -37,6 +40,10 @@ namespace TigerOpenAPI.Tests.Integration
     private static readonly Dictionary<Market, string> OptionIdentifierCache = new();
     private static readonly object StatusLock = new();
     private static readonly object OptionLock = new();
+    private static ContractItem? _futuresContractCache;
+    private static readonly object FuturesLock = new();
+    private static (ContractLeg lower, ContractLeg upper)? _verticalSpreadLegsCache;
+    private static readonly object VerticalSpreadLock = new();
 
     /// <summary>
     /// True when the given market is currently in the main <c>TRADING</c>
@@ -194,6 +201,183 @@ namespace TigerOpenAPI.Tests.Integration
           }
         }
         return identifier;
+      }
+      catch
+      {
+        return null;
+      }
+    }
+
+    /// <summary>
+    /// Resolves a live US futures contract via <c>future_exchange</c> →
+    /// <c>future_current_contract</c> (the server's front-month contract for
+    /// a discovered exchange code), converted to a trade-side
+    /// <see cref="ContractItem"/> via <see cref="ContractItem.Convert(FutureContractItem)"/>.
+    /// Returns <c>null</c> if the API call chain failed or returned no data.
+    /// Cached per process.
+    /// </summary>
+    public static ContractItem? ResolveUsFuturesContract(QuoteClient qc)
+    {
+      lock (FuturesLock)
+      {
+        if (_futuresContractCache != null) return _futuresContractCache;
+      }
+
+      try
+      {
+        // 1. discover a live future exchange code
+        var exchModel = new FutureExchangeModel { SecType = SecType.FUT.ToString() };
+        var exchReq = new TigerRequest<FutureExchangeResponse>
+        {
+          ApiMethodName = QuoteApiService.FUTURE_EXCHANGE,
+          ModelValue = exchModel
+        };
+        var exchResp = qc.Execute(exchReq);
+        if (exchResp == null || !exchResp.IsSuccess()
+            || exchResp.Data == null || exchResp.Data.Count == 0)
+        {
+          return null;
+        }
+        string exchangeCode = exchResp.Data[0].Code;
+
+        // 2. front-month contract for that exchange
+        var byExchModel = new FutureContractByExchCodeModel { ExchangeCode = exchangeCode };
+        var byExchReq = new TigerRequest<FutureContractsResponse>
+        {
+          ApiMethodName = QuoteApiService.FUTURE_CONTRACT_BY_EXCHANGE_CODE,
+          ModelValue = byExchModel
+        };
+        var byExchResp = qc.Execute(byExchReq);
+        if (byExchResp == null || !byExchResp.IsSuccess()
+            || byExchResp.Data == null || byExchResp.Data.Count == 0)
+        {
+          return null;
+        }
+        string futureType = byExchResp.Data[0].Type;
+
+        var currentModel = new FutureContractByTypeModel { FutureType = futureType };
+        var currentReq = new TigerRequest<FutureContractsResponse>
+        {
+          ApiMethodName = QuoteApiService.FUTURE_CURRENT_CONTRACT,
+          ModelValue = currentModel
+        };
+        var currentResp = qc.Execute(currentReq);
+        if (currentResp == null || !currentResp.IsSuccess()
+            || currentResp.Data == null || currentResp.Data.Count == 0)
+        {
+          return null;
+        }
+
+        var contract = ContractItem.Convert(currentResp.Data[0]);
+        lock (FuturesLock)
+        {
+          _futuresContractCache = contract;
+        }
+        return contract;
+      }
+      catch
+      {
+        return null;
+      }
+    }
+
+    /// <summary>
+    /// Resolves two adjacent-strike PUT legs on AAPL for a vertical spread:
+    /// nearest expiry more than 14 days out, chain for that expiry, filtered
+    /// to PUTs sorted by strike ascending, picking the two strikes nearest
+    /// the middle of the chain. Returns <c>(lower, upper)</c> legs with
+    /// <c>Action</c>/<c>Ratio</c> unset (caller fills those in), or
+    /// <c>null</c> if the API call chain failed or returned too few strikes.
+    /// Cached per process.
+    /// </summary>
+    public static (ContractLeg lower, ContractLeg upper)? ResolveUsVerticalSpreadLegs(QuoteClient qc)
+    {
+      lock (VerticalSpreadLock)
+      {
+        if (_verticalSpreadLegsCache != null) return _verticalSpreadLegsCache;
+      }
+
+      try
+      {
+        // 1. first expiry more than 14 days out
+        var expModel = new OptionExpirationModel
+        {
+          Symbols = new List<string> { "AAPL" },
+          Market = Market.US
+        };
+        var expReq = new TigerRequest<OptionExpirationResponse>
+        {
+          ApiMethodName = QuoteApiService.OPTION_EXPIRATION,
+          ModelValue = expModel
+        };
+        var expResp = qc.Execute(expReq);
+        if (expResp == null || !expResp.IsSuccess()
+            || expResp.Data == null || expResp.Data.Count == 0
+            || expResp.Data[0].Timestamps == null
+            || expResp.Data[0].Timestamps.Count == 0)
+        {
+          return null;
+        }
+        long cutoff = DateTimeOffset.UtcNow.AddDays(14).ToUnixTimeMilliseconds();
+        long expiry = expResp.Data[0].Timestamps.FirstOrDefault(t => t > cutoff);
+        if (expiry == 0) expiry = expResp.Data[0].Timestamps[^1];
+
+        // 2. chain for that expiry, filtered to PUTs, sorted by strike asc
+        var chainModel = new OptionChainV3Model
+        {
+          Market = Market.US,
+          OptionBasic = new List<OptionChainModel>
+          {
+            new OptionChainModel { Symbol = "AAPL", Expiry = expiry }
+          }
+        };
+        var chainReq = new TigerRequest<OptionChainResponse>
+        {
+          ApiMethodName = QuoteApiService.OPTION_CHAIN,
+          ModelValue = chainModel
+        };
+        var chainResp = qc.Execute(chainReq);
+        if (chainResp == null || !chainResp.IsSuccess()
+            || chainResp.Data == null || chainResp.Data.Count == 0
+            || chainResp.Data[0].Items == null)
+        {
+          return null;
+        }
+
+        var puts = chainResp.Data[0].Items
+            .Select(row => row.Put)
+            .Where(put => put != null && !string.IsNullOrEmpty(put.Strike))
+            .OrderBy(put => double.Parse(put.Strike))
+            .ToList();
+        if (puts.Count < 2) return null;
+
+        int mid = puts.Count / 2;
+        if (mid + 1 >= puts.Count) mid = puts.Count - 2;
+        string expiryStr = DateTimeOffset.FromUnixTimeMilliseconds(expiry).ToString("yyyyMMdd");
+
+        var lower = new ContractLeg
+        {
+          Symbol = "AAPL",
+          SecType = SecType.OPT.ToString(),
+          Expiry = expiryStr,
+          Strike = puts[mid].Strike,
+          Right = "PUT"
+        };
+        var upper = new ContractLeg
+        {
+          Symbol = "AAPL",
+          SecType = SecType.OPT.ToString(),
+          Expiry = expiryStr,
+          Strike = puts[mid + 1].Strike,
+          Right = "PUT"
+        };
+
+        var legs = (lower, upper);
+        lock (VerticalSpreadLock)
+        {
+          _verticalSpreadLegsCache = legs;
+        }
+        return legs;
       }
       catch
       {

@@ -12,9 +12,9 @@ using TigerOpenAPI.Trade.Response;
 namespace TigerOpenAPI.Tests.Integration
 {
   /// <summary>
-  /// Integration tests for trade read-only APIs (contract/asset/position/
-  /// order queries) against the live gateway. No order placement,
-  /// modification, or cancellation.
+  /// Integration tests for trade APIs (contract/asset/position/order
+  /// queries, plus order preview/placement/modification/cancellation)
+  /// against the live gateway.
   /// Credentials come from env vars (see <see cref="IntegTestConfig"/>).
   /// Run with:  dotnet test --filter Category=Integration
   /// </summary>
@@ -27,6 +27,130 @@ namespace TigerOpenAPI.Tests.Integration
     // order id=0). Shared across multiple test methods below — keep a single
     // definition so a future server-side code change only needs one edit.
     private const int CodeBizParamError = 1010;
+
+    // Deliberately unfillable limit prices for BUY/SELL orders that must
+    // survive PREVIEW/PLACE without ever actually executing — mirrors
+    // Python's/Rust's SAFE_BUY_PRICE / SAFE_SELL_PRICE conventions.
+    private const double SafeBuyPrice = 0.01;
+    private const double SafeSellPrice = 999_999.0;
+
+    // Substring markers (lowercased match) indicating the gateway rejected
+    // an order for a permission/capability reason (no entitlement, market
+    // closed, unsupported order type for this account/instrument, etc.)
+    // rather than a real code defect. Cross-checked against Rust's
+    // battle-tested PERMISSION_ERROR_MARKERS (openapi-rust-sdk/tests/integ_trade.rs).
+    private static readonly string[] PermissionErrorMarkers =
+    {
+      "access forbidden", "forbidden", "no permission", "not supported",
+      "license", "not open", "not enabled", "no token",
+      "don't support trading", "don’t support trading",
+      "unsupported instrument", "only limit orders are supported",
+      "outside of regular trading hours", "market is closed",
+      "only limit orders can be placed",
+      "only limit, stop or stop-limit orders are allowed",
+      "at non-trading hour", "orders cannot be placed at this moment",
+      "auction order is not allowed at this moment",
+      "does not support stock long", "does not support stock short",
+      "only trade cash order by market order", "cash order by market order",
+      "time range for the order",
+      "opening or adding to positions is temporarily unavailable",
+    };
+
+    private static bool IsPermissionError(string? message)
+    {
+      if (string.IsNullOrEmpty(message)) return false;
+      string lower = message.ToLowerInvariant();
+      foreach (var marker in PermissionErrorMarkers)
+      {
+        if (lower.Contains(marker)) return true;
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Previews an order (permission-tolerant skip on failure), then places
+    /// it (permission-tolerant skip on failure). On success, asserts a
+    /// non-negative order id. Returns <c>true</c> if the order was placed,
+    /// <c>false</c> if the flow was skipped for a permission/capability
+    /// reason. Any other failure fails the test outright.
+    /// Mirrors Python's <c>_preview_and_place</c> / Rust's
+    /// <c>preview_and_place</c>.
+    /// </summary>
+    private bool PreviewAndPlace(PlaceOrderModel order, string context)
+    {
+      var previewReq = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.PREVIEW_ORDER,
+        ModelValue = order
+      };
+      var previewResp = _client!.Execute(previewReq);
+      if (previewResp == null)
+      {
+        Assert.Fail($"{context} — preview_order returned null response");
+        return false;
+      }
+      if (!previewResp.IsSuccess())
+      {
+        if (IsPermissionError(previewResp.Message))
+        {
+          TestContext.Progress.WriteLine($"{context} — skipped at preview: {previewResp.Message}");
+          return false;
+        }
+        Assert.Fail($"{context} — preview_order failed: {previewResp.Message}");
+        return false;
+      }
+
+      var placeReq = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.PLACE_ORDER,
+        ModelValue = order
+      };
+      var placeResp = _client!.Execute(placeReq);
+      if (placeResp == null)
+      {
+        Assert.Fail($"{context} — place_order returned null response");
+        return false;
+      }
+      if (!placeResp.IsSuccess())
+      {
+        if (IsPermissionError(placeResp.Message))
+        {
+          TestContext.Progress.WriteLine($"{context} — skipped at place: {placeResp.Message}");
+          return false;
+        }
+        Assert.Fail($"{context} — place_order failed: {placeResp.Message}");
+        return false;
+      }
+
+      Assert.That(placeResp.Data, Is.Not.Null, $"{context} — place_order data must not be null");
+      Assert.That(placeResp.Data!.Id, Is.GreaterThanOrEqualTo(0), $"{context} — place_order id must be non-negative");
+      return true;
+    }
+
+    /// <summary>
+    /// Fetches a stock contract. Returns <c>null</c> when the gateway
+    /// rejects the symbol for a permission/capability reason (e.g. "we
+    /// don't support trading of this stock now") — callers should
+    /// <see cref="Assert.Ignore(string)"/> in that case. Any other failure
+    /// fails the test outright.
+    /// </summary>
+    private ContractItem? FetchStockContract(string symbol, string secType = "STK")
+    {
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel { Symbol = symbol, SecType = secType }
+      };
+      var contractResp = _client!.Execute(contractReq);
+      Assert.That(contractResp, Is.Not.Null, $"contract fetch for {symbol} must not be null");
+      if (!contractResp!.IsSuccess())
+      {
+        if (IsPermissionError(contractResp.Message)) return null;
+        Assert.Fail($"contract fetch for {symbol} failed: {contractResp.Message}");
+      }
+      Assert.That(contractResp.Data, Is.Not.Null, $"contract fetch for {symbol} data must not be null");
+      return contractResp.Data!;
+    }
 
     private TradeClient? _client;
     private string _account = string.Empty;
@@ -794,11 +918,11 @@ namespace TigerOpenAPI.Tests.Integration
             msg.IndexOf("trading hours", StringComparison.OrdinalIgnoreCase) >= 0 ||
             msg.IndexOf("market closed", StringComparison.OrdinalIgnoreCase) >= 0 ||
             msg.IndexOf("not trading", StringComparison.OrdinalIgnoreCase) >= 0;
-        if (isExpectedOutOfHoursError)
+        if (isExpectedOutOfHoursError || IsPermissionError(msg))
         {
           TestContext.Progress.WriteLine(
-              $"place_order declined outside trading hours (expected): code={resp.Code} msg={msg}");
-          return; // out-of-hours: wire path validated by request completing
+              $"place_order declined outside trading hours or permission-restricted (expected): code={resp.Code} msg={msg}");
+          return; // out-of-hours or permission-restricted: wire path validated by request completing
         }
         Assert.Fail($"place_order failed with unexpected error: code={resp.Code} msg={msg}");
       }
@@ -807,6 +931,271 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp.Data, Is.Not.Null, "place_order data must not be null on success");
       Assert.That(resp.Data!.Id, Is.GreaterThan(0),
           "place_order id must be > 0 on success");
+    }
+
+    // =====================================================================
+    // US STK order-type sweep — deliberately unfillable prices (SafeBuyPrice/
+    // SafeSellPrice) so PREVIEW+PLACE round-trip the wire path without ever
+    // executing. Market order-type already covered above — not duplicated.
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_AAPL_StopSell_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildStopOrder(
+          _account, contract, ActionType.SELL, quantity: 1, auxPrice: SafeSellPrice);
+      PreviewAndPlace(model, "StopSell AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_StopLimitSell_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildStopLimitOrder(
+          _account, contract, ActionType.SELL, quantity: 1,
+          limitPrice: SafeSellPrice, auxPrice: SafeSellPrice);
+      PreviewAndPlace(model, "StopLimitSell AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_TrailSell_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildTrailOrder(
+          _account, contract, ActionType.SELL, quantity: 1,
+          trailingPercent: 10.0, auxPrice: SafeSellPrice);
+      PreviewAndPlace(model, "TrailSell AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_TwapBuy_AcceptsOrSkips()
+    {
+      long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+      long start = now + 60_000;
+      long end = now + 3_600_000;
+      var model = PlaceOrderModel.BuildTWAPOrder(
+          _account, "AAPL", ActionType.BUY, quantity: 1,
+          startTime: start, endTime: end, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "TwapBuy AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_VwapBuy_AcceptsOrSkips()
+    {
+      long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+      long start = now + 60_000;
+      long end = now + 3_600_000;
+      var model = PlaceOrderModel.BuildVWAPOrder(
+          _account, "AAPL", ActionType.BUY, quantity: 1,
+          startTime: start, endTime: end, participationRate: 0.1, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "VwapBuy AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_IcebergBuy_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildIcebergOrder(
+          _account, contract, ActionType.BUY, quantity: 10,
+          limitPrice: SafeBuyPrice, displaySize: 1);
+      PreviewAndPlace(model, "IcebergBuy AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_OcaBrackets_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildOCABracketsOrder(
+          _account, contract, ActionType.BUY, quantity: 1,
+          profitTakerPrice: SafeSellPrice, profitTakerTif: TimeInForce.DAY, profitTakerRth: true,
+          stopLossPrice: SafeBuyPrice, stopLossTif: TimeInForce.DAY, stopLossRth: true);
+      PreviewAndPlace(model, "OcaBrackets AAPL");
+    }
+
+    [Test]
+    public void PlaceOrder_AAPL_WithBrackets_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("AAPL");
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 1, limitPrice: SafeBuyPrice);
+      model.AddBracketsOrder(
+          profitTakerPrice: SafeSellPrice, profitTakerTif: TimeInForce.DAY, profitTakerRth: true,
+          stopLossPrice: SafeBuyPrice / 2, stopLossTif: TimeInForce.DAY);
+      PreviewAndPlace(model, "WithBrackets AAPL");
+    }
+
+    // =====================================================================
+    // US OPT limit — resolved via MarketHelpers.ResolveUsOptionIdentifier
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_UsOptLimit_AcceptsOrSkips()
+    {
+      string? identifier = MarketHelpers.ResolveUsOptionIdentifier(IntegTestConfig.QuoteClient);
+      if (string.IsNullOrEmpty(identifier))
+      {
+        Assert.Ignore("could not resolve a live US option identifier");
+        return;
+      }
+      var contract = ContractItem.BuildOptionContract(identifier!);
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 1, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, $"UsOptLimit {identifier}");
+    }
+
+    // =====================================================================
+    // US FUT limit — resolved via MarketHelpers.ResolveUsFuturesContract
+    // (server-resolved front-month contract, no client-side date math)
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_UsFutLimit_AcceptsOrSkips()
+    {
+      var contract = MarketHelpers.ResolveUsFuturesContract(IntegTestConfig.QuoteClient);
+      if (contract == null)
+      {
+        Assert.Ignore("could not resolve a live US futures contract");
+        return;
+      }
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 1, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, $"UsFutLimit {contract.Symbol}");
+    }
+
+    // =====================================================================
+    // HK/CN/SG STK limit — Python's exact symbol conventions.
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_HkStkLimit_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("00700");
+      if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
+      contract.Currency = Currency.HKD.ToString();
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "HkStkLimit 00700");
+    }
+
+    [Test]
+    public void PlaceOrder_CnStkLimit_AcceptsOrSkips()
+    {
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel
+        {
+          Symbol = "000001",
+          SecType = SecType.STK.ToString(),
+          Currency = "CNH",
+          Exchange = "SEHKSZSE"
+        }
+      };
+      var contractResp = _client!.Execute(contractReq);
+      Assert.That(contractResp, Is.Not.Null, "contract fetch for 000001 must not be null");
+      if (!contractResp!.IsSuccess())
+      {
+        if (IsPermissionError(contractResp.Message)) { Assert.Ignore("000001 contract not tradeable for this account"); return; }
+        Assert.Fail($"contract fetch for 000001 failed: {contractResp.Message}");
+      }
+      Assert.That(contractResp.Data, Is.Not.Null, "contract fetch for 000001 data must not be null");
+
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contractResp.Data!, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "CnStkLimit 000001");
+    }
+
+    [Test]
+    public void PlaceOrder_SgStkLimit_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("D05");
+      if (contract == null) { Assert.Ignore("D05 contract not tradeable for this account"); return; }
+      contract.Currency = Currency.SGD.ToString();
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "SgStkLimit D05");
+    }
+
+    // =====================================================================
+    // HK auction — limit gated on extended hours; market preview-only since
+    // fill price at auction is unpredictable.
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_HkAuctionLimit_AcceptsOrSkips()
+    {
+      if (!MarketHelpers.IsMarketOpenExtended(IntegTestConfig.QuoteClient, Market.HK))
+      {
+        Assert.Ignore("HK market not in an open/extended session — auction order not applicable");
+        return;
+      }
+      var contract = FetchStockContract("00700");
+      if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
+      contract.Currency = Currency.HKD.ToString();
+      var model = PlaceOrderModel.BuildAuctionOrder(
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+      PreviewAndPlace(model, "HkAuctionLimit 00700");
+    }
+
+    [Test]
+    public void PlaceOrder_HkAuctionMarket_PreviewOnly()
+    {
+      var contract = FetchStockContract("00700");
+      if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
+      contract.Currency = Currency.HKD.ToString();
+      var model = PlaceOrderModel.BuildAuctionOrder(
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice,
+          orderType: OrderType.AM);
+      var previewReq = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.PREVIEW_ORDER,
+        ModelValue = model
+      };
+      var previewResp = _client!.Execute(previewReq);
+      Assert.That(previewResp, Is.Not.Null, "HkAuctionMarket preview response must not be null");
+      if (!previewResp!.IsSuccess() && !IsPermissionError(previewResp.Message))
+      {
+        Assert.Fail($"HkAuctionMarket preview failed: {previewResp.Message}");
+      }
+    }
+
+    [Test]
+    public void PlaceOrder_HkBracket_AcceptsOrSkips()
+    {
+      var contract = FetchStockContract("00700");
+      if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
+      contract.Currency = Currency.HKD.ToString();
+      var model = PlaceOrderModel.BuildLimitOrder(
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+      model.AddBracketsOrder(
+          profitTakerPrice: SafeSellPrice, profitTakerTif: TimeInForce.DAY, profitTakerRth: true,
+          stopLossPrice: SafeBuyPrice / 2, stopLossTif: TimeInForce.DAY);
+      PreviewAndPlace(model, "HkBracket 00700");
+    }
+
+    // =====================================================================
+    // US MLEG vertical spread — resolved via
+    // MarketHelpers.ResolveUsVerticalSpreadLegs. Limit price is deliberately
+    // deep-negative (-100.0): a credit-spread combo at that price cannot
+    // execute — the safety mechanism, analogous to SafeBuyPrice/SafeSellPrice
+    // for single-leg orders.
+    // =====================================================================
+    [Test]
+    public void PlaceOrder_UsMlegVerticalSpread_AcceptsOrSkips()
+    {
+      var legs = MarketHelpers.ResolveUsVerticalSpreadLegs(IntegTestConfig.QuoteClient);
+      if (legs == null)
+      {
+        Assert.Ignore("could not resolve live AAPL PUT strikes for a vertical spread");
+        return;
+      }
+      var (lower, upper) = legs.Value;
+      lower.Action = ActionType.BUY.ToString();
+      lower.Ratio = 1;
+      upper.Action = ActionType.SELL.ToString();
+      upper.Ratio = 1;
+
+      var model = PlaceOrderModel.BuildMultiLegOrder(
+          _account, new List<ContractLeg> { lower, upper }, ComboType.VERTICAL,
+          ActionType.BUY, quantity: 1, orderType: OrderType.LMT,
+          limitPrice: -100.0, auxPrice: null, trailingPercent: null);
+      PreviewAndPlace(model, $"UsMlegVerticalSpread {lower.Strike}/{upper.Strike}");
     }
 
     // =====================================================================
