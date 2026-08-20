@@ -146,7 +146,7 @@ notify:webhook:
           has_failed = True
           print("Unit JUnit XML unavailable — treating pipeline as failed")
       else:
-          has_failed = unit_f > 0
+          has_failed = (unit_f > 0) or (integ_f is not None and integ_f > 0)
 
       # 3. Build Feishu card
       title = "❌ Pipeline failed" if has_failed else "✅ Pipeline passed"
