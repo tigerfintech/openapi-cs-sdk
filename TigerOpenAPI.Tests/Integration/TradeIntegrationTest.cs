@@ -34,25 +34,35 @@ namespace TigerOpenAPI.Tests.Integration
     private const double SafeBuyPrice = 0.01;
     private const double SafeSellPrice = 999_999.0;
 
+    // Substring markers (lowercased match) indicating an out-of-hours /
+    // session-boundary rejection. Before treating these as a legitimate
+    // skip, re-check live market status (mirrors the C++ / Java / Go / Rust
+    // reference pattern): a hit during genuine trading hours is a real bug
+    // (fail), not a boundary condition (skip).
+    private static readonly string[] HoursErrorMarkers =
+    {
+      "outside of regular trading hours", "market is closed",
+      "only limit orders can be placed",
+      "only limit, stop or stop-limit orders are allowed",
+      "at non-trading hour", "orders cannot be placed at this moment",
+      "auction order is not allowed at this moment",
+      "time range for the order",
+    };
+
     // Substring markers (lowercased match) indicating the gateway rejected
-    // an order for a permission/capability reason (no entitlement, market
-    // closed, unsupported order type for this account/instrument, etc.)
-    // rather than a real code defect. Cross-checked against Rust's
-    // battle-tested PERMISSION_ERROR_MARKERS (openapi-rust-sdk/tests/integ_trade.rs).
+    // an order for a permission/capability reason (no entitlement,
+    // unsupported order type for this account/instrument, etc.) rather than
+    // a real code defect. Cross-checked against Rust's battle-tested
+    // PERMISSION_ERROR_MARKERS (openapi-rust-sdk/tests/integ_trade.rs).
+    // These are treated as an unconditional skip — no market-status re-check.
     private static readonly string[] PermissionErrorMarkers =
     {
       "access forbidden", "forbidden", "no permission", "not supported",
       "license", "not open", "not enabled", "no token",
       "don't support trading", "don’t support trading",
       "unsupported instrument", "only limit orders are supported",
-      "outside of regular trading hours", "market is closed",
-      "only limit orders can be placed",
-      "only limit, stop or stop-limit orders are allowed",
-      "at non-trading hour", "orders cannot be placed at this moment",
-      "auction order is not allowed at this moment",
       "does not support stock long", "does not support stock short",
       "only trade cash order by market order", "cash order by market order",
-      "time range for the order",
       "opening or adding to positions is temporarily unavailable",
       // Rate limiting — transient, not a permission boundary, but the same
       // tolerate-and-skip treatment applies since retrying isn't this
@@ -60,16 +70,43 @@ namespace TigerOpenAPI.Tests.Integration
       "too_many_requests", "rate limit", "requestrateexceedlimit",
     };
 
-    private static bool IsPermissionError(string? message)
+    private static bool MatchesAny(string? message, string[] markers)
     {
       if (string.IsNullOrEmpty(message)) return false;
       string lower = message.ToLowerInvariant();
-      foreach (var marker in PermissionErrorMarkers)
+      foreach (var marker in markers)
       {
         if (lower.Contains(marker)) return true;
       }
       return false;
     }
+
+    /// <summary>
+    /// Classifies a preview/place failure message, mirroring the C++ / Java
+    /// / Go / Rust / TypeScript reference pattern: an hours-boundary marker
+    /// is re-checked against live market status before being treated as a
+    /// skip. A hit during genuine trading hours is a real bug, so this
+    /// throws via <see cref="Assert.Fail(string)"/> in that case. Pure
+    /// permission/capability markers are an unconditional skip (no
+    /// market-status re-check). Returns <c>true</c> when the caller should
+    /// skip.
+    /// </summary>
+    private static bool ShouldSkip(string? message, string context, Market market = Market.US)
+    {
+      if (MatchesAny(message, HoursErrorMarkers))
+      {
+        var qc = IntegTestConfig.QuoteClient;
+        if (qc != null && MarketHelpers.IsMarketTrading(qc, market))
+        {
+          Assert.Fail($"{context} — hours-boundary error during live trading hours: {message}");
+        }
+        return true;
+      }
+      return MatchesAny(message, PermissionErrorMarkers);
+    }
+
+    private static bool IsPermissionError(string? message) =>
+        MatchesAny(message, HoursErrorMarkers) || MatchesAny(message, PermissionErrorMarkers);
 
     /// <summary>
     /// Previews an order (permission-tolerant skip on failure), then places
@@ -95,7 +132,7 @@ namespace TigerOpenAPI.Tests.Integration
       }
       if (!previewResp.IsSuccess())
       {
-        if (IsPermissionError(previewResp.Message))
+        if (ShouldSkip(previewResp.Message, context))
         {
           TestContext.Progress.WriteLine($"{context} — skipped at preview: {previewResp.Message}");
           return false;
@@ -117,7 +154,7 @@ namespace TigerOpenAPI.Tests.Integration
       }
       if (!placeResp.IsSuccess())
       {
-        if (IsPermissionError(placeResp.Message))
+        if (ShouldSkip(placeResp.Message, context))
         {
           TestContext.Progress.WriteLine($"{context} — skipped at place: {placeResp.Message}");
           return false;
