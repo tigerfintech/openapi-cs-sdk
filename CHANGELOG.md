@@ -1,27 +1,29 @@
 ## 1.2.4 (2026-08-19)
 ### New
 - 新增公开数字货币 K 线和当前分时行情支持（`SecType.CC`）
-- `KlinePoint` 和 `TimelinePoint` 新增可空的 `VolumeDecimal` 字段
-- `OptionRealTimeQuote` 新增 `MarkPrice`、`PreMarkPrice`、`MarkTimestamp`、`MidPrice`、`PreMidPrice`、`MidTimestamp` 字段
-- Push 推送的逐笔成交消息新增 `Cond`、`PartCode`、`PartName` 字段，`cond` 原始单字符代码已转换为可读字符串（如 `US_REGULAR_SALE`、`HK_AUTOMATCH_NORMAL`）
+- K 线和分时行情补充精确成交量字段
+- 期权实时行情补充标记价格和中间价相关字段
+- Push 推送的逐笔成交消息补充成交条件说明字段，原始代码已转换为可读字符串
 
 ## 1.2.3 (2026-07-23)
 ### New
 - `CorporateActionType` 新增：`SYMBOL_CHANGE`、`DELISTING`、`IPO`
-- 新增 `CorporateSymbolChangeItem`、`CorporateDelistingItem`、`CorporateIpoItem` 及对应 Response 包装类
+- 新增公司行为查询能力，支持股票代码变更、摘牌、IPO 事件的结构化查询
 
 ### Change
-- 修正 `QuoteOvernightItem` 的服务端字段映射：移除不存在的 `Overnight`，新增映射 `tradingStatus` 的 `TradingStatus`
+- 修复 `QuoteOvernightItem` 交易状态字段解析错误的问题
 
 ## 1.2.2 (2026-06-24)
 ### New
-- **冰山单支持**：新增 `PlaceOrderModel.BuildIcebergOrder()` 两个重载（基础参数 / 完整参数），支持 `DisplaySize`、`MinDisplaySize`、`CheckIntervals`、`PriceType`（`LIMIT_PRICE` / `OPPONENT_PRICE`）、`StartTime`、`EndTime` 字段。
-- **单元测试**：`IcebergUnitTest`（25 项断言），覆盖基础构造、完整参数、零值省略及常量值，运行命令：`dotnet run --project Sample -- iceberg-unit`。
+- `PlaceOrderModel.BuildIcebergOrder()` — 冰山单构造
 
 ## 1.2.1 (2026-06-08)
 ### New
-- 新增期权提前行权接口：`SubmitOptionExerciseAsync` 提交行权/放弃申请、`CancelOptionExerciseAsync` 撤销申请、`CheckOptionExerciseAsync` 行权检验（预估持仓变化）、`GetOptionExerciseRecordsAsync` 分页查询行权记录、`GetOptionExercisePositionsAsync` 查询可行权持仓
+- 新增期权提前行权接口，支持提交/撤销行权申请、行权前检验持仓变化、查询行权记录和可行权持仓
 
 ## 1.2.0 (2026-06-08)
 ### Change
-- 修复重复常量，包名更新为 `TigerBrokers.OpenAPI` v1.2.0
+- 修复重复常量
+
+### Breaking
+- 包名更新为 `TigerBrokers.OpenAPI`；请将所有 `using` 引用及 NuGet 包引用从旧包名更新为 `TigerBrokers.OpenAPI` v1.2.0
