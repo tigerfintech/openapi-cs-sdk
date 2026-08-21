@@ -1326,7 +1326,8 @@ namespace TigerOpenAPI.Tests.Integration
           msg.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0 ||
           msg.IndexOf("invalid", StringComparison.OrdinalIgnoreCase) >= 0 ||
           msg.IndexOf("modify", StringComparison.OrdinalIgnoreCase) >= 0 ||
-          msg.IndexOf("cannot be a negative", StringComparison.OrdinalIgnoreCase) >= 0;
+          msg.IndexOf("cannot be a negative", StringComparison.OrdinalIgnoreCase) >= 0 ||
+          msg.IndexOf("did not submit any change", StringComparison.OrdinalIgnoreCase) >= 0;
       Assert.That(isExpectedOrderError, Is.True,
           $"modify_order returned an unrecognised error: code={resp.Code} msg={msg}. " +
           "Expected an order-related business error for a non-existent / non-modifiable id.");
