@@ -171,6 +171,9 @@ notify:webhook:
       #    integ_f > 0     → explicit integration failures.
       #    CI_PIPELINE_STATUS is unreliable in .post stage (reads "running"),
       #    so we rely exclusively on parsed XML counts.
+      # Must stay in sync with the `integ` job's `rules:` gate above — the
+      # same credential test, but GitLab evaluates that one and Python this
+      # one, so they cannot share an expression. Change one, change both.
       integ_expected = bool(os.environ.get("TIGEROPEN_TIGER_ID")) and \
           bool(os.environ.get("TIGEROPEN_PRIVATE_KEY"))
 
