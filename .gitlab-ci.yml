@@ -36,6 +36,10 @@ unit:
     TIGER_PRIVATE_KEY: ""
     TIGER_LICENSE: ""
   script:
+    # Drop this job's own stale report first: build dirs get reused, and a
+    # leftover file would be re-archived as if this run had produced it.
+    # Only our own file — a sibling job's report may legitimately sit here.
+    - rm -f test-results/unit.xml
     - mkdir -p test-results
     - dotnet build --no-restore -c Release
     - >-
@@ -46,8 +50,12 @@ unit:
         --collect:"XPlat Code Coverage"
   artifacts:
     when: always
+    # Explicit file, not the whole directory: the runner reuses build dirs, so a
+    # directory glob can also archive the *other* job's stale report from a
+    # previous pipeline. Artifact download order across `needs` is not
+    # guaranteed, so a stale copy can overwrite the real one in notify:webhook.
     paths:
-      - test-results/
+      - test-results/unit.xml
     reports:
       junit: test-results/unit.xml
       coverage_report:
@@ -64,6 +72,10 @@ integ:
   # otherwise write test-results/integ.xml at the same time and corrupt it.
   resource_group: $CI_COMMIT_REF_SLUG
   script:
+    # Drop this job's own stale report first: build dirs get reused, and a
+    # leftover file would be re-archived as if this run had produced it.
+    # Only our own file — a sibling job's report may legitimately sit here.
+    - rm -f test-results/integ.xml
     - mkdir -p test-results
     - dotnet build --no-restore -c Release
     - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
@@ -72,8 +84,12 @@ integ:
         --logger "junit;LogFilePath=${CI_PROJECT_DIR}/test-results/integ.xml"
   artifacts:
     when: always
+    # Explicit file, not the whole directory: the runner reuses build dirs, so a
+    # directory glob can also archive the *other* job's stale report from a
+    # previous pipeline. Artifact download order across `needs` is not
+    # guaranteed, so a stale copy can overwrite the real one in notify:webhook.
     paths:
-      - test-results/
+      - test-results/integ.xml
     reports:
       junit: test-results/integ.xml
     expire_in: 7 days
