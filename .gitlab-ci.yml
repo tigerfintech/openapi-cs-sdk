@@ -168,6 +168,15 @@ notify:webhook:
       else:
           has_failed = (unit_f > 0) or (integ_f is not None and integ_f > 0)
 
+      # 2b. Notify on failure only. A green card every 4 hours is noise nobody
+      #     reads, which also desensitises the channel to the red ones.
+      #     has_failed already covers "XML unavailable" above, so an unreadable
+      #     artifact still notifies — silence here means "we positively
+      #     verified everything passed", never "we couldn't tell".
+      if not has_failed:
+          print(f"Pipeline passed — {unit_stats} | {integ_stats} — skipping notification")
+          exit(0)
+
       # 3. Build notification card
       title = "❌ Pipeline failed" if has_failed else "✅ Pipeline passed"
       color = "red" if has_failed else "green"
