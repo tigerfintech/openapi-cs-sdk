@@ -28,6 +28,12 @@ namespace TigerOpenAPI.Quote.Response
     [JsonProperty(PropertyName = "time")]
     public long Time { get; set; }
 
+    /// <summary>
+    /// Delay minutes. 0 = real-time, 15 = 15-min delay, etc.
+    /// </summary>
+    [JsonProperty(PropertyName = "delay")]
+    public int Delay { get; set; }
+
   }
 }
 

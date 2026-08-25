@@ -1,0 +1,236 @@
+# C# SDK CI — mirrors Python SDK pipeline layout
+# unit:  zero-credential, zero-network, always runs
+# integ: real-credential, allow_failure, skipped without env vars
+#
+# Integration credentials: TIGER_ID, TIGER_PRIVATE_KEY, TIGER_LICENSE
+# env vars set in GitLab CI Variables (Protected + Masked).
+
+stages:
+  - unit
+  - integ
+
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  NUGET_PACKAGES: $CI_PROJECT_DIR/.nuget/packages
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .nuget/packages/
+
+.dotnet_base:
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - openapi
+  before_script:
+    - dotnet restore
+
+unit:
+  extends: .dotnet_base
+  stage: unit
+  variables:
+    # Explicitly unset all credential variables so unit tests cannot
+    # accidentally reach a live endpoint.
+    TIGER_ID: ""
+    TIGER_PRIVATE_KEY: ""
+    TIGER_LICENSE: ""
+  script:
+    # Drop this job's own stale report first: build dirs get reused, and a
+    # leftover file would be re-archived as if this run had produced it.
+    # Only our own file — a sibling job's report may legitimately sit here.
+    - rm -f test-results/unit.xml
+    - mkdir -p test-results
+    - dotnet build --no-restore -c Release
+    - >-
+        dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+        --no-build -c Release
+        --filter "FullyQualifiedName!~SerializationContractTest&Category!=Integration"
+        --logger "junit;LogFilePath=${CI_PROJECT_DIR}/test-results/unit.xml"
+        --collect:"XPlat Code Coverage"
+  artifacts:
+    when: always
+    # Explicit file, not the whole directory: the runner reuses build dirs, so a
+    # directory glob can also archive the *other* job's stale report from a
+    # previous pipeline. Artifact download order across `needs` is not
+    # guaranteed, so a stale copy can overwrite the real one in notify:webhook.
+    paths:
+      - test-results/unit.xml
+    reports:
+      junit: test-results/unit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: "**/coverage.cobertura.xml"
+    expire_in: 7 days
+  coverage: '/Total.*?([0-9]{1,3}%)$/'
+
+integ:
+  extends: .dotnet_base
+  stage: integ
+  allow_failure: true
+  # Serialize per-branch: a concurrent scheduled + manual pipeline would
+  # otherwise write test-results/integ.xml at the same time and corrupt it.
+  resource_group: $CI_COMMIT_REF_SLUG
+  script:
+    # Drop this job's own stale report first: build dirs get reused, and a
+    # leftover file would be re-archived as if this run had produced it.
+    # Only our own file — a sibling job's report may legitimately sit here.
+    - rm -f test-results/integ.xml
+    - mkdir -p test-results
+    - dotnet build --no-restore -c Release
+    - dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj
+        --no-build -c Release
+        --filter "FullyQualifiedName!~SerializationContractTest&Category=Integration"
+        --logger "junit;LogFilePath=${CI_PROJECT_DIR}/test-results/integ.xml"
+  artifacts:
+    when: always
+    # Explicit file, not the whole directory: the runner reuses build dirs, so a
+    # directory glob can also archive the *other* job's stale report from a
+    # previous pipeline. Artifact download order across `needs` is not
+    # guaranteed, so a stale copy can overwrite the real one in notify:webhook.
+    paths:
+      - test-results/integ.xml
+    reports:
+      junit: test-results/integ.xml
+    expire_in: 7 days
+  variables:
+    TIGER_ID: $TIGEROPEN_TIGER_ID
+    TIGER_PRIVATE_KEY: $TIGEROPEN_PRIVATE_KEY
+    TIGER_ACCOUNT: $TIGEROPEN_ACCOUNT
+    TIGER_LICENSE: $TIGEROPEN_LICENSE
+  rules:
+    - if: $TIGEROPEN_TIGER_ID != "" && $TIGEROPEN_PRIVATE_KEY != ""
+
+# Pipeline result notification via chat webhook.
+# Parses JUnit XML artifacts directly (no GitLab API dependency, no curl).
+notify:webhook:
+  image: python:3.11-slim
+  tags:
+    - openapi
+  stage: .post
+  when: always
+  allow_failure: true
+  needs:
+    - job: unit
+      artifacts: true
+    - job: integ
+      artifacts: true
+      optional: true
+  script:
+    - |
+      python3 << 'PYEOF'
+      import os, json, urllib.request
+      import xml.etree.ElementTree as ET
+
+      webhook_url = os.environ.get("WEBHOOK_URL", "")
+      if not webhook_url:
+          print("WEBHOOK_URL not configured, skipping notification")
+          exit(0)
+      card_content_tag = os.environ["CARD_CONTENT_TAG"]
+
+      # 1. Parse JUnit XML artifacts — split unit/integration stats.
+      #    Returns None tuple on parse error so callers can distinguish
+      #    "0 failures" from "couldn't read results at all".
+      def parse_xml(path):
+          t, f, s = 0, 0, 0
+          try:
+              tree = ET.parse(path)
+              root = tree.getroot()
+              for suite in root.iter("testsuite"):
+                  t += int(suite.get("tests", suite.get("testcasecount", 0)))
+                  f += int(suite.get("failures", 0)) + int(suite.get("errors", 0))
+                  s += int(suite.get("skipped", 0))
+              # Try JunitXml.TestLogger: <test-run testcasecount=N ...>
+              if t == 0:
+                  for run in root.iter("test-run"):
+                      t = int(run.get("testcasecount", 0))
+                      f = int(run.get("failed", 0)) + int(run.get("errors", 0))
+                      s = int(run.get("skipped", 0))
+          except Exception as e:
+              print(f"WARNING: Failed to parse {path}: {e}")
+              return None, None, None, None
+          return t, t - f - s, f, s
+
+      unit_t, unit_p, unit_f, unit_s = parse_xml("test-results/unit.xml")
+      integ_t, integ_p, integ_f, integ_s = parse_xml("test-results/integ.xml")
+
+      unit_stats = f"Unit: {unit_t} tests: {unit_p} passed, {unit_f} failed, {unit_s} skipped" if unit_t else ""
+      integ_stats = f"Integration: {integ_t} tests: {integ_p} passed, {integ_f} failed, {integ_s} skipped" if integ_t else ""
+
+      # 2. Determine pass/fail.
+      #    unit_f is None  → XML missing/corrupt; treat as failed (conservative).
+      #    unit_f > 0      → explicit unit failures.
+      #    integ_f is None → the `integ` job's `rules:` skip it entirely when
+      #                      TIGEROPEN_TIGER_ID/TIGEROPEN_PRIVATE_KEY aren't
+      #                      configured (fork MRs, unprotected branches) — that
+      #                      is an expected skip, NOT a failure. But if those
+      #                      credentials ARE configured, integ was expected to
+      #                      run and a missing/corrupt XML means it crashed
+      #                      before producing results — treat as failed
+      #                      (conservative), same as unit_f.
+      #    integ_f > 0     → explicit integration failures.
+      #    CI_PIPELINE_STATUS is unreliable in .post stage (reads "running"),
+      #    so we rely exclusively on parsed XML counts.
+      # Must stay in sync with the `integ` job's `rules:` gate above — the
+      # same credential test, but GitLab evaluates that one and Python this
+      # one, so they cannot share an expression. Change one, change both.
+      integ_expected = bool(os.environ.get("TIGEROPEN_TIGER_ID")) and \
+          bool(os.environ.get("TIGEROPEN_PRIVATE_KEY"))
+
+      if unit_f is None:
+          has_failed = True
+          print("Unit JUnit XML unavailable — treating pipeline as failed")
+      elif integ_expected and integ_f is None:
+          has_failed = True
+          print("Integration JUnit XML unavailable despite credentials being "
+                "configured — treating pipeline as failed")
+      else:
+          has_failed = (unit_f > 0) or (integ_f is not None and integ_f > 0)
+
+      # 2b. Notify on failure only. A green card every 4 hours is noise nobody
+      #     reads, which also desensitises the channel to the red ones.
+      #     has_failed already covers "XML unavailable" above, so an unreadable
+      #     artifact still notifies — silence here means "we positively
+      #     verified everything passed", never "we couldn't tell".
+      if not has_failed:
+          print(f"Pipeline passed — {unit_stats} | {integ_stats} — skipping notification")
+          exit(0)
+
+      # 3. Build notification card
+      title = "❌ Pipeline failed" if has_failed else "✅ Pipeline passed"
+      color = "red" if has_failed else "green"
+      project_name = os.environ.get("CI_PROJECT_NAME", "")
+      branch = os.environ.get("CI_COMMIT_REF_NAME", "")
+      commit = os.environ.get("CI_COMMIT_SHORT_SHA", "")
+      pipeline_iid = os.environ.get("CI_PIPELINE_IID", "")
+      pipeline_url = os.environ.get("CI_PROJECT_URL", "") + "/-/pipelines/" + os.environ.get("CI_PIPELINE_ID", "")
+
+      content = f"**Repo:** {project_name}\n**Branch:** {branch}\n**Commit:** {commit}\n"
+      if unit_stats:
+          content += f"\n**Unit tests:** {unit_stats}\n"
+      if integ_stats:
+          content += f"**Integration tests:** {integ_stats}\n"
+      content += f"[View pipeline]({pipeline_url})"
+
+      payload = {
+          "msg_type": "interactive",
+          "card": {
+              "header": {
+                  "title": {"tag": "plain_text", "content": f"{title} #{pipeline_iid} — {project_name}"},
+                  "template": color
+              },
+              "elements": [
+                  {"tag": "div", "text": {"tag": card_content_tag, "content": content}}
+              ]
+          }
+      }
+
+      data = json.dumps(payload).encode("utf-8")
+      req = urllib.request.Request(webhook_url, data=data, headers={"Content-Type": "application/json"})
+      try:
+          with urllib.request.urlopen(req, timeout=10) as resp:
+              result = json.loads(resp.read())
+              print(f"Webhook response: {result}")
+      except Exception as e:
+          print(f"Webhook request failed: {e}")
+      PYEOF

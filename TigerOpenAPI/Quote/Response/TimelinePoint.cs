@@ -12,9 +12,10 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "volume")]
     public long Volume { get; set; }
+    [JsonProperty(PropertyName = "volumeDecimal")]
+    public Double? VolumeDecimal { get; set; }
     [JsonProperty(PropertyName = "time")]
     public long Time { get; set; }
 
   }
 }
-

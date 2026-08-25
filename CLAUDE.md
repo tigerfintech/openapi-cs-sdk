@@ -57,3 +57,32 @@ dotnet build
 - API 文档（中文）：https://docs.itigerup.com/docs/
 - API 文档（英文）：https://docs-en.itigerup.com/docs/
 - 开发者平台：https://developer.itigerup.com/
+
+## 测试
+
+### 单元测试（零凭据、零网络）
+
+```bash
+dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj --filter "Category!=Integration"
+```
+
+| 测试类 | 覆盖内容 |
+|--------|----------|
+| IcebergOrderTest | 冰山单模型构造全字段校验（4个用例）|
+| StockPriceUtilTest | tick size 舍入与匹配逻辑（6个用例）|
+| SerializationContractTest | 反射扫描所有 Model/Item/Response，校验 [JsonProperty] 覆盖 |
+
+### 集成测试（需真实凭据）
+
+```bash
+export TIGER_ID=2015xxxx
+export TIGER_PRIVATE_KEY=<base64 pkcs8>
+export TIGER_LICENSE=TBNZ
+dotnet test TigerOpenAPI.Tests/TigerOpenAPI.Tests.csproj --filter "Category=Integration"
+```
+
+### CI
+
+`.gitlab-ci.yml` 包含两段流水线：
+- `unit` stage：无凭据，强制通过
+- `integ` stage：有凭据才触发，`allow_failure: true`

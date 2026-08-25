@@ -73,7 +73,7 @@ namespace TigerOpenAPI.Common.Util
       return minTick * multiple + begin;
     }
 
-    private static TickSizeItem? FindTickSize(decimal price, List<TickSizeItem>? tickSizes)
+    internal static TickSizeItem? FindTickSize(decimal price, List<TickSizeItem>? tickSizes)
     {
       if (price == 0 || tickSizes == null || !tickSizes.Any())
       {

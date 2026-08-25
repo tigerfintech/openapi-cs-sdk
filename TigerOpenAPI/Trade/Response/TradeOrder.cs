@@ -150,8 +150,10 @@ namespace TigerOpenAPI.Trade.Response
     public OrderStatus Status { get; set; }
 
     /** order replace status(NONE, RECEIVED, REPLACED, FAILED) */
+    [JsonProperty(PropertyName = "replaceStatus")]
     public string ReplaceStatus { get; set; }
     /** order cancel status(NONE, RECEIVED, FAILED) */
+    [JsonProperty(PropertyName = "cancelStatus")]
     public string CancelStatus { get; set; }
 
     [JsonProperty(PropertyName = "source")]

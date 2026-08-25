@@ -94,7 +94,7 @@ class Program
     //TigerResponse? response = await GetOptionBriefAsync(quoteClient);
     //TigerResponse? response = await GetOptionBriefV2Async(quoteClient);
     //TigerResponse? response = await GetOptionKLineAsync(quoteClient);
-    TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
+    //TigerResponse? response = await GetOptionKLineV2Async(quoteClient);
     //TigerResponse? response = await GetOptionTradeTickAsync(quoteClient);
     //TigerResponse? response = await GetOptionDepthAsync(quoteClient);
     //TigerResponse? response = await GetHKOptionSymbolsAsync(quoteClient);
@@ -160,7 +160,7 @@ class Program
     //TigerResponse? response = await GetContractAsync(tradeClient);
     //TigerResponse? response = await GetContractsAsync(tradeClient);
     //TigerResponse? response = await GetAccountsAsync(tradeClient);
-    //TigerResponse? response = await GetPositionsAsync(tradeClient);
+    TigerResponse? response = await GetPositionsAsync(tradeClient);
     //TigerResponse? response = await GetGlobalAssetsAsync(tradeClient);
     //TigerResponse? response = await GetPrimeAssetsAsync(tradeClient);
     //TigerResponse? response = await GetAssetsAnalyticsAsync(tradeClient);
@@ -1231,7 +1231,7 @@ class Program
       ApiMethodName = TradeApiService.POSITIONS,
       ModelValue = new PositionsModel()
       {
-        Account = "20200821144442583",
+        Account = "13810712",
         SecType = SecType.STK,
         Market = Market.US
       }
@@ -1441,10 +1441,10 @@ class Program
       ModelValue = new MarketScannerTagsModel()
       {
         Market = Market.HK,
-        MultiTagFieldList = new List<string>()
+        MultiTagFieldList = new List<MultiTagField>()
         {
           // only support MultiTagField_Industry and MultiTagField_Concept
-          nameof(MultiTagField.MultiTagField_Industry)
+          MultiTagField.MultiTagField_Industry
         }
       }
     };
@@ -1653,15 +1653,14 @@ class Program
       ModelValue = new OptionKlineV2Model()
       {
         Market = Market.US,
-        OptionQuery = new List<OptionKlineModel>()
+        OptionQuery = new List<OptionKlineQueryItem>()
         {
-          new OptionKlineModel() {
+          new OptionKlineQueryItem() {
             Symbol = "AAPL", Right = "CALL", Strike = "170.0",
             Expiry = DateUtil.ConvertTimestamp("2024-06-28", CustomTimeZone.NY_ZONE),
             BeginTime = DateUtil.ConvertTimestamp("2024-06-24", CustomTimeZone.NY_ZONE),
             EndTime = DateUtil.ConvertTimestamp("2024-06-26", CustomTimeZone.NY_ZONE),
             Period = OptionKType.min60.Value,
-            SortDir = SortDir.SortDir_Descend,
             Limit = 10
           }
         }
@@ -1947,6 +1946,7 @@ class Program
         Period = KLineType.min3.Value,
         BeginTime = DateUtil.ConvertTimestamp("2024-04-23", CustomTimeZone.NY_ZONE),
         EndTime = DateUtil.CurrentTimeMillis(),
+        // Set SecType.CC and use a crypto symbol such as BTC.USD for crypto K-lines.
         // TradeSession = TradeSession.AfterHours.ToString(), //only for US market stock
         Rigth = RightOption.br
       }
@@ -1993,6 +1993,7 @@ class Program
         Symbols = new List<string> { "AAPL" },
         Period = TimeLineType.day,
         TradeSession = TradeSession.Regular.ToString(),
+        // Set SecType.CC and use a crypto symbol such as BTC.USD for crypto timeline data.
         BeginTime = DateUtil.ConvertTimestamp("2023-03-03 03:00:00", CustomTimeZone.NY_ZONE)
       }
     };

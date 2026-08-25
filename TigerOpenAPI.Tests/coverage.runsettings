@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <!-- Exclude auto-generated protobuf (Pb) classes and untestable Push/socket classes -->
+          <Exclude>[TigerOpenAPI]TigerOpenAPI.Quote.Pb*,[TigerOpenAPI]TigerOpenAPI.Push*</Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

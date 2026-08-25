@@ -433,12 +433,13 @@ namespace TigerOpenAPI.Trade.Model
     public const string ICEBERG_PRICE_TYPE_BID = "BID_PRICE";
     public const string ICEBERG_PRICE_TYPE_LATEST = "LATEST_PRICE";
 
-    /// <summary>构造冰山单（最简参数），默认 LIMIT_PRICE</summary>
+    /// <summary>构造冰山单（最简参数），默认 LIMIT_PRICE。minDisplaySize 默认等于 displaySize
+    /// —— 网关要求该字段必填，调用方不关心时取与 displaySize 相同的值。</summary>
     public static PlaceOrderModel BuildIcebergOrder(string account, ContractItem contract,
         ActionType action, Int64 quantity, Double limitPrice, Int64 displaySize)
     {
       return BuildIcebergOrder(account, contract, action, quantity, limitPrice,
-          displaySize, null, null, ICEBERG_PRICE_TYPE_LIMIT, null, null);
+          displaySize, displaySize, null, ICEBERG_PRICE_TYPE_LIMIT, null, null);
     }
 
     /// <summary>构造冰山单（完整参数）</summary>

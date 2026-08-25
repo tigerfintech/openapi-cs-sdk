@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json;
 
 namespace TigerOpenAPI.Quote.Response
@@ -43,5 +42,18 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "timestamp")]
     public long Timestamp { get; set; }
+
+    /// <summary>
+    /// Trading session status.
+    /// <list type="bullet">
+    ///   <item>1 — pre-market</item>
+    ///   <item>2 — regular trading</item>
+    ///   <item>3 — after-hours</item>
+    ///   <item>4 — closed</item>
+    ///   <item>5 — overnight session</item>
+    /// </list>
+    /// </summary>
+    [JsonProperty(PropertyName = "tradingStatus")]
+    public int TradingStatus { get; set; }
   }
 }

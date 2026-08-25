@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Model;
@@ -17,11 +16,13 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "action_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
     public CorporateActionType ActionType { get; set; }
 
-    [JsonProperty(PropertyName = "begin_date")]
-    public Int64 BeginDate { get; set; }
+    /// <summary>Query start date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "begin_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? BeginDate { get; set; }
 
-    [JsonProperty(PropertyName = "end_date")]
-    public Int64 EndDate { get; set; }
+    /// <summary>Query end date. Leave unset (null) to skip this bound.</summary>
+    [JsonProperty(PropertyName = "end_date", NullValueHandling = NullValueHandling.Ignore)]
+    public long? EndDate { get; set; }
 
     public CorporateActionModel() : base()
     {
