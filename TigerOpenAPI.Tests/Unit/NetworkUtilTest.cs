@@ -139,7 +139,7 @@ namespace TigerOpenAPI.Tests.Unit
     public void GetDefaultUrlInfo_TestSocket_ReturnsTestSocketDomain()
     {
       var info = InvokeGetDefaultUrlInfo(Env.TEST, Protocol.SECURE_SOCKET);
-      Assert.That(info.Domain, Is.EqualTo(TigerApiConstants.API_TEST_SOCKET_DOMAIN_URL));
+      Assert.That(info.Domain, Is.EqualTo(TigerApiConstants.DEFAULT_TEST_DOMAIN_URL));
     }
   }
 }
