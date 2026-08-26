@@ -78,7 +78,7 @@ namespace TigerOpenAPI.Tests.Unit
     {
       Assert.That(TigerApiConstants.API_ONLINE_DOMAIN_URL, Is.Not.Empty);
       Assert.That(TigerApiConstants.API_SANDBOX_DOMAIN_URL, Is.Not.Empty);
-      Assert.That(TigerApiConstants.API_TEST_DOMAIN_URL, Is.Not.Empty);
+      Assert.That(TigerApiConstants.DEFAULT_TEST_DOMAIN_URL, Is.EqualTo(TigerApiConstants.API_SANDBOX_DOMAIN_URL));
       Assert.That(TigerApiConstants.DEFAULT_PROD_DOMAIN_URL, Is.EqualTo(TigerApiConstants.API_ONLINE_DOMAIN_URL));
     }
 
