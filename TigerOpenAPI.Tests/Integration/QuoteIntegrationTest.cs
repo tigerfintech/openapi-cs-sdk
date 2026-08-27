@@ -718,7 +718,7 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     [Test]
-    public void GetQuoteRealTime_CC_BTCUSD_ReturnsAmount()
+    public void GetQuoteRealTime_CC_BTC_USD_ReturnsAmount()
     {
       var model = new QuoteSymbolModel
       {

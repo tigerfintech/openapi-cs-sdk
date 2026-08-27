@@ -26,14 +26,14 @@ namespace TigerOpenAPI.Tests.Unit
     {
       var model = new QuoteSymbolModel
       {
-        Symbols = new List<string> { "BTCUSD" },
+        Symbols = new List<string> { "BTC.USD" },
         SecType = SecType.CC
       };
 
       string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
 
       Assert.That(json, Does.Contain("\"symbols\""));
-      Assert.That(json, Does.Contain("\"BTCUSD\""));
+      Assert.That(json, Does.Contain("\"BTC.USD\""));
       Assert.That(json, Does.Contain("\"sec_type\":\"CC\""));
     }
 
