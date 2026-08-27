@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.6 (2026-08-27)
 ### New
 - `RealTimeQuoteItem` 新增 `Amount` 字段，支持股票和数字货币实时行情成交额。
 - `QuoteSymbolModel` 新增 `SecType` 字段，支持通过 `QUOTE_REAL_TIME` 查询数字货币实时行情。
