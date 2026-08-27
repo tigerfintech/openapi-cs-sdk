@@ -22,6 +22,22 @@ namespace TigerOpenAPI.Tests.Unit
     // --- QuoteSymbolModel / subclasses ---
 
     [Test]
+    public void QuoteSymbolModel_Serialization_IncludesSecType()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "BTCUSD" },
+        SecType = SecType.CC
+      };
+
+      string json = JsonConvert.SerializeObject(model, TigerClient.JsonSet);
+
+      Assert.That(json, Does.Contain("\"symbols\""));
+      Assert.That(json, Does.Contain("\"BTCUSD\""));
+      Assert.That(json, Does.Contain("\"sec_type\":\"CC\""));
+    }
+
+    [Test]
     public void QuoteKlineModel_Defaults_PeriodDay_Limit300_RightBr()
     {
       var model = new QuoteKlineModel();

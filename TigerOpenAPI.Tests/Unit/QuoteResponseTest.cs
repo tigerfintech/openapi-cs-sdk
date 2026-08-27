@@ -21,7 +21,7 @@ namespace TigerOpenAPI.Tests.Unit
       string json = @"{""code"":0,""data"":[{""symbol"":""AAPL"",""open"":190.0,""high"":195.0,
         ""low"":188.0,""close"":192.5,""preClose"":189.0,""latestPrice"":192.5,
         ""askPrice"":192.6,""askSize"":100,""bidPrice"":192.4,""bidSize"":200,
-        ""volume"":1000000,""latestTime"":1700000000,""status"":""NORMAL""}]}";
+        ""volume"":1000000,""amount"":123456.78,""latestTime"":1700000000,""status"":""NORMAL""}]}";
       var resp = JsonConvert.DeserializeObject<QuoteRealTimeQuoteResponse>(json, TigerClient.JsonSet);
       Assert.That(resp.IsSuccess(), Is.True);
       Assert.That(resp.Data.Count, Is.EqualTo(1));
@@ -38,7 +38,21 @@ namespace TigerOpenAPI.Tests.Unit
       Assert.That(item.BidPrice, Is.EqualTo(192.4));
       Assert.That(item.BidSize, Is.EqualTo(200));
       Assert.That(item.Volume, Is.EqualTo(1000000));
+      Assert.That(item.Amount, Is.EqualTo(123456.78));
       Assert.That(item.Status, Is.EqualTo(StockStatus.NORMAL));
+    }
+
+    [Test]
+    public void QuoteRealTimeQuoteResponse_DeserializeCryptoAmount()
+    {
+      string json = @"{""code"":0,""data"":[{""symbol"":""BTCUSD"",""latestPrice"":65000.0,
+        ""volume"":0,""amount"":987654.32}]}";
+      var resp = JsonConvert.DeserializeObject<QuoteRealTimeQuoteResponse>(json, TigerClient.JsonSet);
+
+      Assert.That(resp.IsSuccess(), Is.True);
+      Assert.That(resp.Data.Count, Is.EqualTo(1));
+      Assert.That(resp.Data[0].Symbol, Is.EqualTo("BTCUSD"));
+      Assert.That(resp.Data[0].Amount, Is.EqualTo(987654.32));
     }
 
     [Test]

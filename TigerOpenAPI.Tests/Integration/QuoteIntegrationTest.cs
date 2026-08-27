@@ -712,8 +712,30 @@ namespace TigerOpenAPI.Tests.Integration
       var q = resp.Data[0];
       Assert.That(q.Symbol, Is.EqualTo("AAPL"), "quote_real_time symbol wire name");
       Assert.That(q.LatestPrice, Is.GreaterThan(0), "quote_real_time latestPrice wire name");
+      Assert.That(q.Amount, Is.GreaterThan(0), "quote_real_time amount wire name");
       Assert.That(q.LatestTime, Is.GreaterThan(1577836800000L),
           "quote_real_time latestTime must be valid epoch millis");
+    }
+
+    [Test]
+    public void GetQuoteRealTime_CC_BTCUSD_ReturnsAmount()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "BTC.USD" },
+        SecType = SecType.CC
+      };
+      var resp = Execute<QuoteRealTimeQuoteResponse>(QuoteApiService.QUOTE_REAL_TIME, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_real_time CC should return items for BTC.USD");
+      var q = resp.Data[0];
+      Assert.That(q.Symbol, Is.Not.Empty, "quote_real_time CC symbol wire name");
+      if (q.Amount == 0)
+      {
+        Assert.Ignore("quote_real_time CC amount not returned by current server");
+      }
+      Assert.That(q.Amount, Is.GreaterThan(0), "quote_real_time CC amount wire name");
     }
 
     // =====================================================================

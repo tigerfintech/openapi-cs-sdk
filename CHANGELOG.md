@@ -1,3 +1,8 @@
+## Unreleased
+### New
+- `RealTimeQuoteItem` 新增 `Amount` 字段，支持股票和数字货币实时行情成交额。
+- `QuoteSymbolModel` 新增 `SecType` 字段，支持通过 `QUOTE_REAL_TIME` 查询数字货币实时行情。
+
 ## 1.2.5 (2026-08-26)
 ### Fixed
 - 移除公开 SDK 中的内部测试域名默认值，TEST 环境默认回退到公开 sandbox 域名。

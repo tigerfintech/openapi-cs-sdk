@@ -33,6 +33,10 @@ namespace TigerOpenAPI.Quote.Response
 
     [JsonProperty(PropertyName = "volume")]
     public long Volume { get; set; }
+
+    [JsonProperty(PropertyName = "amount")]
+    public Double Amount { get; set; }
+
     [JsonProperty(PropertyName = "latestTime")]
     public long LatestTime { get; set; }
 
@@ -44,4 +48,3 @@ namespace TigerOpenAPI.Quote.Response
 
   }
 }
-
