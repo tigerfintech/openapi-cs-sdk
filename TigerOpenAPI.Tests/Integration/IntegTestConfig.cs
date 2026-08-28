@@ -45,13 +45,15 @@ namespace TigerOpenAPI.Tests.Integration
     {
       string tigerId = Env("TIGEROPEN_TIGER_ID") ?? Env("TIGER_ID");
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY");
+      string propsPath = Env("TIGEROPEN_PROPS_PATH") ?? string.Empty;
 
-      if (string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+      if ((string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+          && string.IsNullOrWhiteSpace(propsPath))
       {
         Assert.Ignore(
             "Integration credentials not set — skipping. " +
             "Set TIGEROPEN_TIGER_ID + TIGEROPEN_PRIVATE_KEY " +
-            "(+ TIGEROPEN_ACCOUNT for trade tests).");
+            "(+ TIGEROPEN_ACCOUNT for trade tests), or TIGEROPEN_PROPS_PATH.");
       }
     }
 
@@ -78,6 +80,7 @@ namespace TigerOpenAPI.Tests.Integration
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY") ?? string.Empty;
       string account = Env("TIGEROPEN_ACCOUNT") ?? Env("TIGER_ACCOUNT") ?? string.Empty;
       string licenseStr = Env("TIGEROPEN_LICENSE") ?? Env("TIGER_LICENSE") ?? "TBNZ";
+      string propsPath = Env("TIGEROPEN_PROPS_PATH") ?? string.Empty;
 
       if (!Enum.TryParse<License>(licenseStr, true, out var license))
         license = License.TBNZ;
@@ -87,6 +90,7 @@ namespace TigerOpenAPI.Tests.Integration
         TigerId = tigerId,
         PrivateKey = privateKey,
         DefaultAccount = account,
+        ConfigFilePath = propsPath,
         License = license,
         AutoGrabPermission = false,
         AutoRefreshToken = false,
@@ -97,7 +101,9 @@ namespace TigerOpenAPI.Tests.Integration
     {
       string tigerId = Env("TIGEROPEN_TIGER_ID") ?? Env("TIGER_ID");
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY");
-      if (string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+      string propsPath = Env("TIGEROPEN_PROPS_PATH") ?? string.Empty;
+      if ((string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+          && string.IsNullOrWhiteSpace(propsPath))
         return null;
       return new QuoteClient(BuildConfig());
     }
@@ -106,7 +112,9 @@ namespace TigerOpenAPI.Tests.Integration
     {
       string tigerId = Env("TIGEROPEN_TIGER_ID") ?? Env("TIGER_ID");
       string privateKey = Env("TIGEROPEN_PRIVATE_KEY") ?? Env("TIGER_PRIVATE_KEY");
-      if (string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+      string propsPath = Env("TIGEROPEN_PROPS_PATH") ?? string.Empty;
+      if ((string.IsNullOrWhiteSpace(tigerId) || string.IsNullOrWhiteSpace(privateKey))
+          && string.IsNullOrWhiteSpace(propsPath))
         return null;
       return new TradeClient(BuildConfig());
     }

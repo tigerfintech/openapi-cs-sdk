@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using TigerOpenAPI.Common;
@@ -36,6 +38,40 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // ---- helper ----
+    private const int MaxDiagnosticLength = 3000;
+    private static bool IsSensitiveDiagnosticField(string name)
+    {
+      string normalized = name.Replace("_", string.Empty).Replace("-", string.Empty);
+      return normalized.Contains("account", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("token", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("private", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("secret", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("sign", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("authorization", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("password", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("apikey", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string SerializeForDiagnostic(object? value)
+    {
+      var token = JToken.FromObject(value ?? new object());
+      foreach (var property in token.SelectTokens("$..*").OfType<JProperty>())
+      {
+        if (IsSensitiveDiagnosticField(property.Name)) property.Value = "<redacted>";
+      }
+      var text = token.ToString(Formatting.None);
+      return text.Length > MaxDiagnosticLength
+          ? text.Substring(0, MaxDiagnosticLength) + "...<truncated>"
+          : text;
+    }
+
+    private static string DumpContext(string method, ApiModel? model, TigerResponse? resp)
+    {
+      string request = SerializeForDiagnostic(model ?? new ApiModel());
+      string response = resp == null ? "null" : SerializeForDiagnostic(resp);
+      return $"method={method}; request={request}; response={response}";
+    }
+
     private T Execute<T>(string method, ApiModel? model = null) where T : TigerResponse
     {
       Assert.That(_client, Is.Not.Null,
@@ -46,9 +82,9 @@ namespace TigerOpenAPI.Tests.Integration
         ModelValue = model ?? new ApiModel()
       };
       var resp = _client!.Execute(req);
-      Assert.That(resp, Is.Not.Null, $"{method} response must not be null");
+      Assert.That(resp, Is.Not.Null, $"{method} response must not be null; {DumpContext(method, model, resp)}");
       Assert.That(resp!.IsSuccess(), Is.True,
-          $"{method} returned error code={resp.Code} msg={resp.Message}");
+          $"{method} returned error; {DumpContext(method, model, resp)}");
       return resp;
     }
 
@@ -514,6 +550,12 @@ namespace TigerOpenAPI.Tests.Integration
       var resp = Execute<HourTradingTimelineResponse>(
           QuoteApiService.HOUR_TRADING_TIMELINE, model);
 
+      if (resp.Data == null)
+      {
+        Assert.Ignore(
+            "hour_trading_timeline returned null data (extended-session data is unavailable; wire path validated)");
+      }
+
       Assert.That(resp.Data, Is.Not.Null,
           "hour_trading_timeline data must not be null");
 
@@ -712,8 +754,30 @@ namespace TigerOpenAPI.Tests.Integration
       var q = resp.Data[0];
       Assert.That(q.Symbol, Is.EqualTo("AAPL"), "quote_real_time symbol wire name");
       Assert.That(q.LatestPrice, Is.GreaterThan(0), "quote_real_time latestPrice wire name");
+      Assert.That(q.Amount, Is.GreaterThan(0), "quote_real_time amount wire name");
       Assert.That(q.LatestTime, Is.GreaterThan(1577836800000L),
           "quote_real_time latestTime must be valid epoch millis");
+    }
+
+    [Test]
+    public void GetQuoteRealTime_CC_BTC_USD_ReturnsAmount()
+    {
+      var model = new QuoteSymbolModel
+      {
+        Symbols = new List<string> { "BTC.USD" },
+        SecType = SecType.CC
+      };
+      var resp = Execute<QuoteRealTimeQuoteResponse>(QuoteApiService.QUOTE_REAL_TIME, model);
+
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          "quote_real_time CC should return items for BTC.USD");
+      var q = resp.Data[0];
+      Assert.That(q.Symbol, Is.Not.Empty, "quote_real_time CC symbol wire name");
+      if (q.Amount == 0)
+      {
+        Assert.Ignore("quote_real_time CC amount not returned by current server");
+      }
+      Assert.That(q.Amount, Is.GreaterThan(0), "quote_real_time CC amount wire name");
     }
 
     // =====================================================================

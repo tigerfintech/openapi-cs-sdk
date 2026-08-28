@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using TigerOpenAPI.Common.Enum;
@@ -34,6 +36,21 @@ namespace TigerOpenAPI.Tests.Integration
     private const double SafeBuyPrice = 0.01;
     private const double SafeSellPrice = 999_999.0;
 
+    // Substring markers (lowercased match) indicating the server rejected
+    // the order type/parameters at this instant rather than a client-side
+    // request-shape bug. These are unconditional skips: live TRADING status
+    // does not disprove them because the restriction can come from the order's
+    // own outside-RTH/auction/TWAP parameters.
+    private static readonly string[] OrderTypeRestrictionMarkers =
+    {
+      "auction order is not allowed at this moment",
+      "only limit orders are supported for trades executed outside of regular trading hours",
+      "only limit orders can be placed during pre market or post market",
+      "only limit, stop or stop-limit orders are allowed at non-trading hour",
+      "only regular trading hours supported when trading fractional shares",
+      "the time range for the order",
+    };
+
     // Substring markers (lowercased match) indicating an out-of-hours /
     // session-boundary rejection. Before treating these as a legitimate
     // skip, re-check live market status (mirrors the C++ / Java / Go / Rust
@@ -42,6 +59,7 @@ namespace TigerOpenAPI.Tests.Integration
     private static readonly string[] HoursErrorMarkers =
     {
       "outside of regular trading hours", "market is closed",
+      "you can only trade during regular trading hours",
       "only limit orders can be placed",
       "only limit, stop or stop-limit orders are allowed",
       "at non-trading hour", "orders cannot be placed at this moment",
@@ -93,6 +111,10 @@ namespace TigerOpenAPI.Tests.Integration
     /// </summary>
     private static bool ShouldSkip(string? message, string context, Market market = Market.US)
     {
+      if (MatchesAny(message, OrderTypeRestrictionMarkers))
+      {
+        return true;
+      }
       if (MatchesAny(message, HoursErrorMarkers))
       {
         var qc = IntegTestConfig.QuoteClient;
@@ -127,7 +149,7 @@ namespace TigerOpenAPI.Tests.Integration
       var previewResp = _client!.Execute(previewReq);
       if (previewResp == null)
       {
-        Assert.Fail($"{context} — preview_order returned null response");
+        Assert.Fail($"{context} — preview_order returned null response; {DumpContext(TradeApiService.PREVIEW_ORDER, order, previewResp)}");
         return false;
       }
       if (!previewResp.IsSuccess())
@@ -137,7 +159,7 @@ namespace TigerOpenAPI.Tests.Integration
           TestContext.Progress.WriteLine($"{context} — skipped at preview: {previewResp.Message}");
           return false;
         }
-        Assert.Fail($"{context} — preview_order failed: {previewResp.Message}");
+        Assert.Fail($"{context} — preview_order failed; {DumpContext(TradeApiService.PREVIEW_ORDER, order, previewResp)}");
         return false;
       }
 
@@ -149,7 +171,7 @@ namespace TigerOpenAPI.Tests.Integration
       var placeResp = _client!.Execute(placeReq);
       if (placeResp == null)
       {
-        Assert.Fail($"{context} — place_order returned null response");
+        Assert.Fail($"{context} — place_order returned null response; {DumpContext(TradeApiService.PLACE_ORDER, order, placeResp)}");
         return false;
       }
       if (!placeResp.IsSuccess())
@@ -159,7 +181,7 @@ namespace TigerOpenAPI.Tests.Integration
           TestContext.Progress.WriteLine($"{context} — skipped at place: {placeResp.Message}");
           return false;
         }
-        Assert.Fail($"{context} — place_order failed: {placeResp.Message}");
+        Assert.Fail($"{context} — place_order failed; {DumpContext(TradeApiService.PLACE_ORDER, order, placeResp)}");
         return false;
       }
 
@@ -205,6 +227,40 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // ---- helper ----
+    private const int MaxDiagnosticLength = 3000;
+    private static bool IsSensitiveDiagnosticField(string name)
+    {
+      string normalized = name.Replace("_", string.Empty).Replace("-", string.Empty);
+      return normalized.Contains("account", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("token", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("private", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("secret", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("sign", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("authorization", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("password", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("apikey", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string SerializeForDiagnostic(object? value)
+    {
+      var token = JToken.FromObject(value ?? new object());
+      foreach (var property in token.SelectTokens("$..*").OfType<JProperty>())
+      {
+        if (IsSensitiveDiagnosticField(property.Name)) property.Value = "<redacted>";
+      }
+      var text = token.ToString(Formatting.None);
+      return text.Length > MaxDiagnosticLength
+          ? text.Substring(0, MaxDiagnosticLength) + "...<truncated>"
+          : text;
+    }
+
+    private static string DumpContext(string method, ApiModel? model, TigerResponse? resp)
+    {
+      string request = SerializeForDiagnostic(model ?? new TradeModel());
+      string response = resp == null ? "null" : SerializeForDiagnostic(resp);
+      return $"method={method}; request={request}; response={response}";
+    }
+
     private T Execute<T>(string method, TradeModel? model = null) where T : TigerResponse
     {
       Assert.That(_client, Is.Not.Null,
@@ -218,9 +274,9 @@ namespace TigerOpenAPI.Tests.Integration
       if (req.ModelValue != null && string.IsNullOrWhiteSpace(req.ModelValue.Account))
         req.ModelValue.Account = _account;
       var resp = _client!.Execute(req);
-      Assert.That(resp, Is.Not.Null, $"{method} response must not be null");
+      Assert.That(resp, Is.Not.Null, $"{method} response must not be null; {DumpContext(method, req.ModelValue, resp)}");
       Assert.That(resp!.IsSuccess(), Is.True,
-          $"{method} returned error code={resp.Code} msg={resp.Message}");
+          $"{method} returned error; {DumpContext(method, req.ModelValue, resp)}");
       return resp;
     }
 

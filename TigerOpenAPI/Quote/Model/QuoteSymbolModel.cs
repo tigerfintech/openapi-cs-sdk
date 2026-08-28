@@ -24,9 +24,12 @@ namespace TigerOpenAPI.Quote.Model
     [JsonProperty(PropertyName = "trade_session")]
     public string TradeSession { get; set; }
 
+    [JsonProperty(PropertyName = "sec_type", NullValueHandling = NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+    public SecType? SecType { get; set; }
+
     public QuoteSymbolModel() : base()
     {
     }
   }
 }
-
