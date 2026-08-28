@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,14 +38,37 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // ---- helper ----
+    private const int MaxDiagnosticLength = 3000;
+    private static bool IsSensitiveDiagnosticField(string name)
+    {
+      string normalized = name.Replace("_", string.Empty).Replace("-", string.Empty);
+      return normalized.Contains("account", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("token", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("private", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("secret", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("sign", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("authorization", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("password", StringComparison.OrdinalIgnoreCase)
+          || normalized.Contains("apikey", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string SerializeForDiagnostic(object? value)
+    {
+      var token = JToken.FromObject(value ?? new object());
+      foreach (var property in token.SelectTokens("$..*").OfType<JProperty>())
+      {
+        if (IsSensitiveDiagnosticField(property.Name)) property.Value = "<redacted>";
+      }
+      var text = token.ToString(Formatting.None);
+      return text.Length > MaxDiagnosticLength
+          ? text.Substring(0, MaxDiagnosticLength) + "...<truncated>"
+          : text;
+    }
+
     private static string DumpContext(string method, ApiModel? model, TigerResponse? resp)
     {
-      string request = JsonConvert.SerializeObject(model ?? new ApiModel());
-      string response = resp == null
-          ? "null"
-          : JsonConvert.SerializeObject(resp);
-      if (request.Length > 3000) request = request.Substring(0, 3000) + "...<truncated>";
-      if (response.Length > 3000) response = response.Substring(0, 3000) + "...<truncated>";
+      string request = SerializeForDiagnostic(model ?? new ApiModel());
+      string response = resp == null ? "null" : SerializeForDiagnostic(resp);
       return $"method={method}; request={request}; response={response}";
     }
 
