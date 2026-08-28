@@ -45,10 +45,8 @@ namespace TigerOpenAPI.Tests.Integration
       "auction order is not allowed at this moment",
       "only limit orders can be placed during pre market or post market",
       "only limit, stop or stop-limit orders are allowed at non-trading hour",
-      "you can only trade during regular trading hours",
       "only regular trading hours supported when trading fractional shares",
       "the time range for the order",
-      "outside of regular trading hours",
     };
 
     // Substring markers (lowercased match) indicating an out-of-hours /
@@ -59,6 +57,7 @@ namespace TigerOpenAPI.Tests.Integration
     private static readonly string[] HoursErrorMarkers =
     {
       "outside of regular trading hours", "market is closed",
+      "you can only trade during regular trading hours",
       "only limit orders can be placed",
       "only limit, stop or stop-limit orders are allowed",
       "at non-trading hour", "orders cannot be placed at this moment",

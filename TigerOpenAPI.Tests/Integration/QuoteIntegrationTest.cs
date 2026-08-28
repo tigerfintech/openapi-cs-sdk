@@ -528,9 +528,8 @@ namespace TigerOpenAPI.Tests.Integration
 
       if (resp.Data == null)
       {
-        TestContext.Progress.WriteLine(
-            "hour_trading_timeline returned null data (expected when extended-session data is unavailable; wire path validated)");
-        return;
+        Assert.Ignore(
+            "hour_trading_timeline returned null data (extended-session data is unavailable; wire path validated)");
       }
 
       Assert.That(resp.Data, Is.Not.Null,

@@ -78,7 +78,8 @@ namespace TigerOpenAPI.Quote
       {
         request.ApiVersion = TigerApiConstants.API_VERSION_2;
       }
-      // quote_real_time is served by the v2 gateway path; the CC branch is selected by sec_type=CC.
+      // quote_real_time v2 is required for CC routing and exposes amount;
+      // the v3 route does not provide the same response contract.
       else if (QuoteApiService.QUOTE_REAL_TIME.Equals(request.ApiMethodName))
       {
         request.ApiVersion = TigerApiConstants.API_VERSION_2;
