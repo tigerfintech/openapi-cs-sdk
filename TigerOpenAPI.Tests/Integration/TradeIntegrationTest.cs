@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using TigerOpenAPI.Common.Enum;
@@ -147,7 +148,7 @@ namespace TigerOpenAPI.Tests.Integration
       var previewResp = _client!.Execute(previewReq);
       if (previewResp == null)
       {
-        Assert.Fail($"{context} — preview_order returned null response");
+        Assert.Fail($"{context} — preview_order returned null response; {DumpContext(TradeApiService.PREVIEW_ORDER, order, previewResp)}");
         return false;
       }
       if (!previewResp.IsSuccess())
@@ -157,7 +158,7 @@ namespace TigerOpenAPI.Tests.Integration
           TestContext.Progress.WriteLine($"{context} — skipped at preview: {previewResp.Message}");
           return false;
         }
-        Assert.Fail($"{context} — preview_order failed: {previewResp.Message}");
+        Assert.Fail($"{context} — preview_order failed; {DumpContext(TradeApiService.PREVIEW_ORDER, order, previewResp)}");
         return false;
       }
 
@@ -169,7 +170,7 @@ namespace TigerOpenAPI.Tests.Integration
       var placeResp = _client!.Execute(placeReq);
       if (placeResp == null)
       {
-        Assert.Fail($"{context} — place_order returned null response");
+        Assert.Fail($"{context} — place_order returned null response; {DumpContext(TradeApiService.PLACE_ORDER, order, placeResp)}");
         return false;
       }
       if (!placeResp.IsSuccess())
@@ -179,7 +180,7 @@ namespace TigerOpenAPI.Tests.Integration
           TestContext.Progress.WriteLine($"{context} — skipped at place: {placeResp.Message}");
           return false;
         }
-        Assert.Fail($"{context} — place_order failed: {placeResp.Message}");
+        Assert.Fail($"{context} — place_order failed; {DumpContext(TradeApiService.PLACE_ORDER, order, placeResp)}");
         return false;
       }
 
@@ -225,6 +226,17 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // ---- helper ----
+    private static string DumpContext(string method, ApiModel? model, TigerResponse? resp)
+    {
+      string request = JsonConvert.SerializeObject(model ?? new TradeModel());
+      string response = resp == null
+          ? "null"
+          : JsonConvert.SerializeObject(resp);
+      if (request.Length > 3000) request = request.Substring(0, 3000) + "...<truncated>";
+      if (response.Length > 3000) response = response.Substring(0, 3000) + "...<truncated>";
+      return $"method={method}; request={request}; response={response}";
+    }
+
     private T Execute<T>(string method, TradeModel? model = null) where T : TigerResponse
     {
       Assert.That(_client, Is.Not.Null,
@@ -238,9 +250,9 @@ namespace TigerOpenAPI.Tests.Integration
       if (req.ModelValue != null && string.IsNullOrWhiteSpace(req.ModelValue.Account))
         req.ModelValue.Account = _account;
       var resp = _client!.Execute(req);
-      Assert.That(resp, Is.Not.Null, $"{method} response must not be null");
+      Assert.That(resp, Is.Not.Null, $"{method} response must not be null; {DumpContext(method, req.ModelValue, resp)}");
       Assert.That(resp!.IsSuccess(), Is.True,
-          $"{method} returned error code={resp.Code} msg={resp.Message}");
+          $"{method} returned error; {DumpContext(method, req.ModelValue, resp)}");
       return resp;
     }
 

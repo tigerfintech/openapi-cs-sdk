@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using TigerOpenAPI.Common;
@@ -36,6 +37,17 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // ---- helper ----
+    private static string DumpContext(string method, ApiModel? model, TigerResponse? resp)
+    {
+      string request = JsonConvert.SerializeObject(model ?? new ApiModel());
+      string response = resp == null
+          ? "null"
+          : JsonConvert.SerializeObject(resp);
+      if (request.Length > 3000) request = request.Substring(0, 3000) + "...<truncated>";
+      if (response.Length > 3000) response = response.Substring(0, 3000) + "...<truncated>";
+      return $"method={method}; request={request}; response={response}";
+    }
+
     private T Execute<T>(string method, ApiModel? model = null) where T : TigerResponse
     {
       Assert.That(_client, Is.Not.Null,
@@ -46,9 +58,9 @@ namespace TigerOpenAPI.Tests.Integration
         ModelValue = model ?? new ApiModel()
       };
       var resp = _client!.Execute(req);
-      Assert.That(resp, Is.Not.Null, $"{method} response must not be null");
+      Assert.That(resp, Is.Not.Null, $"{method} response must not be null; {DumpContext(method, model, resp)}");
       Assert.That(resp!.IsSuccess(), Is.True,
-          $"{method} returned error code={resp.Code} msg={resp.Message}");
+          $"{method} returned error; {DumpContext(method, model, resp)}");
       return resp;
     }
 
