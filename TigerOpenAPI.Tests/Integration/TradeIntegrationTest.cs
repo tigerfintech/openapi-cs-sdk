@@ -34,6 +34,22 @@ namespace TigerOpenAPI.Tests.Integration
     private const double SafeBuyPrice = 0.01;
     private const double SafeSellPrice = 999_999.0;
 
+    // Substring markers (lowercased match) indicating the server rejected
+    // the order type/parameters at this instant rather than a client-side
+    // request-shape bug. These are unconditional skips: live TRADING status
+    // does not disprove them because the restriction can come from the order's
+    // own outside-RTH/auction/TWAP parameters.
+    private static readonly string[] OrderTypeRestrictionMarkers =
+    {
+      "auction order is not allowed at this moment",
+      "only limit orders can be placed during pre market or post market",
+      "only limit, stop or stop-limit orders are allowed at non-trading hour",
+      "you can only trade during regular trading hours",
+      "only regular trading hours supported when trading fractional shares",
+      "the time range for the order",
+      "outside of regular trading hours",
+    };
+
     // Substring markers (lowercased match) indicating an out-of-hours /
     // session-boundary rejection. Before treating these as a legitimate
     // skip, re-check live market status (mirrors the C++ / Java / Go / Rust
@@ -93,6 +109,10 @@ namespace TigerOpenAPI.Tests.Integration
     /// </summary>
     private static bool ShouldSkip(string? message, string context, Market market = Market.US)
     {
+      if (MatchesAny(message, OrderTypeRestrictionMarkers))
+      {
+        return true;
+      }
       if (MatchesAny(message, HoursErrorMarkers))
       {
         var qc = IntegTestConfig.QuoteClient;
