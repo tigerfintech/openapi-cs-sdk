@@ -1066,6 +1066,11 @@ namespace TigerOpenAPI.Tests.Integration
     [Test]
     public void GetOptionKline_AAPL_ReturnsValidFields()
     {
+      if (!MarketHelpers.IsMarketTrading(_client!, Market.US))
+      {
+        Assert.Ignore("US market is not trading; skipping option kline live data check");
+      }
+
       var opt = GetAaplOption();
       long now = DateUtil.CurrentTimeMillis();
       var model = new OptionKlineV2Model
@@ -1092,6 +1097,12 @@ namespace TigerOpenAPI.Tests.Integration
       var item = resp.Data[0];
       Assert.That(item.Symbol, Is.EqualTo("AAPL"), "option kline symbol wire name");
       Assert.That(item.Strike, Is.Not.Null.And.Not.Empty, "option kline strike wire name");
+      if (item.Items == null || item.Items.Count == 0)
+      {
+        MarketHelpers.AssertNonEmptyDuringTrading(_client!, Market.US,
+            "option_kline returned no candles for resolved AAPL option");
+        return;
+      }
       Assert.That(item.Items, Is.Not.Null.And.Count.GreaterThan(0),
           "option kline items must be non-empty");
     }
