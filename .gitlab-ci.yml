@@ -67,7 +67,7 @@ unit:
 integ:
   extends: .dotnet_base
   stage: integ
-  allow_failure: true
+  allow_failure: false
   # Serialize per-branch: a concurrent scheduled + manual pipeline would
   # otherwise write test-results/integ.xml at the same time and corrupt it.
   resource_group: $CI_COMMIT_REF_SLUG
