@@ -7,6 +7,9 @@ using NUnit.Framework;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
+using TigerOpenAPI.Quote;
+using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Response;
 using TigerOpenAPI.Trade;
 using TigerOpenAPI.Trade.Model;
 using TigerOpenAPI.Trade.Response;
@@ -278,6 +281,30 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp!.IsSuccess(), Is.True,
           $"{method} returned error; {DumpContext(method, req.ModelValue, resp)}");
       return resp;
+    }
+
+    // A BUY limit price far below the current HK quote, but within the
+    // exchange's price-deviation tolerance — unlike a hardcoded absolute
+    // constant, this never falls too far outside whatever range the
+    // exchange currently allows.
+    private static double SafeHkBuyPrice(string symbol)
+    {
+      var quoteClient = IntegTestConfig.QuoteClient;
+      Assert.That(quoteClient, Is.Not.Null,
+          "QuoteClient is null — credentials should have been checked in OneTimeSetUp");
+      var req = new TigerRequest<QuoteRealTimeQuoteResponse>
+      {
+        ApiMethodName = QuoteApiService.QUOTE_REAL_TIME,
+        ModelValue = new QuoteSymbolModel { Symbols = new List<string> { symbol }, Market = Market.HK }
+      };
+      var resp = quoteClient!.Execute(req);
+      Assert.That(resp, Is.Not.Null, $"quote_real_time response must not be null for {symbol}");
+      Assert.That(resp!.IsSuccess(), Is.True, $"quote_real_time returned error for {symbol}: {resp.Message}");
+      Assert.That(resp.Data, Is.Not.Null.And.Count.GreaterThan(0),
+          $"no live quote for {symbol}, cannot compute a safe buy price");
+      var latestPrice = resp.Data![0].LatestPrice;
+      Assert.That(latestPrice, Is.GreaterThan(0), $"non-positive latestPrice for {symbol}");
+      return Math.Round(latestPrice * 0.5, 2);
     }
 
     // =====================================================================
@@ -1167,7 +1194,7 @@ namespace TigerOpenAPI.Tests.Integration
       if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
       contract.Currency = Currency.HKD.ToString();
       var model = PlaceOrderModel.BuildLimitOrder(
-          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeHkBuyPrice("00700"));
       PreviewAndPlace(model, "HkStkLimit 00700");
     }
 
