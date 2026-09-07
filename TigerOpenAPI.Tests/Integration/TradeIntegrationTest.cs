@@ -7,6 +7,9 @@ using NUnit.Framework;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
+using TigerOpenAPI.Quote;
+using TigerOpenAPI.Quote.Model;
+using TigerOpenAPI.Quote.Response;
 using TigerOpenAPI.Trade;
 using TigerOpenAPI.Trade.Model;
 using TigerOpenAPI.Trade.Response;
@@ -278,6 +281,87 @@ namespace TigerOpenAPI.Tests.Integration
       Assert.That(resp!.IsSuccess(), Is.True,
           $"{method} returned error; {DumpContext(method, req.ModelValue, resp)}");
       return resp;
+    }
+
+    // A BUY limit price far below the current HK quote, but within the
+    // exchange's price-deviation tolerance — unlike a hardcoded absolute
+    // constant, this never falls too far outside whatever range the
+    // exchange currently allows.
+    private static double SafeHkBuyPrice(string symbol)
+    {
+      var quoteClient = IntegTestConfig.QuoteClient;
+      Assert.That(quoteClient, Is.Not.Null,
+          "QuoteClient is null — credentials should have been checked in OneTimeSetUp");
+      var req = new TigerRequest<QuoteRealTimeQuoteResponse>
+      {
+        ApiMethodName = QuoteApiService.QUOTE_REAL_TIME,
+        ModelValue = new QuoteSymbolModel { Symbols = new List<string> { symbol }, Market = Market.HK }
+      };
+      QuoteRealTimeQuoteResponse? resp;
+      try
+      {
+        resp = quoteClient!.Execute(req);
+      }
+      catch (Exception e)
+      {
+        Assert.Ignore($"cannot resolve {symbol} quote for safe buy price: {e.Message}");
+        throw; // unreachable — Assert.Ignore always throws
+      }
+      if (resp == null || !resp.IsSuccess())
+      {
+        Assert.Ignore($"cannot resolve {symbol} quote for safe buy price: {resp?.Message ?? "null response"}");
+      }
+      if (resp!.Data == null || resp.Data.Count == 0)
+      {
+        Assert.Ignore($"no live quote for {symbol}, cannot compute a safe buy price");
+      }
+      var latestPrice = resp.Data![0].LatestPrice;
+      if (latestPrice <= 0)
+      {
+        Assert.Ignore($"non-positive latestPrice for {symbol}");
+      }
+
+      // HK's tick size is a price-banded table (e.g. HK$200-500 -> 0.2), not
+      // a single fixed value — a price that isn't a clean multiple of the
+      // band it falls into is rejected outright.
+      var tradeClient = IntegTestConfig.TradeClient;
+      Assert.That(tradeClient, Is.Not.Null,
+          "TradeClient is null — credentials should have been checked in OneTimeSetUp");
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel { Symbol = symbol }
+      };
+      var contractResp = tradeClient!.Execute(contractReq);
+      if (contractResp == null || !contractResp.IsSuccess())
+      {
+        Assert.Ignore($"cannot resolve {symbol} contract for tick sizes: {contractResp?.Message ?? "null response"}");
+      }
+      var tickSizes = contractResp!.Data?.TickSizes;
+      if (tickSizes == null || tickSizes.Count == 0)
+      {
+        Assert.Ignore($"no tick sizes for {symbol}, cannot compute a safe buy price");
+      }
+
+      var rawPrice = latestPrice * 0.5;
+      double? tickSize = null;
+      foreach (var band in tickSizes!)
+      {
+        var begin = double.Parse(band.Begin);
+        var end = band.End == "Infinity" ? double.PositiveInfinity : double.Parse(band.End);
+        if (rawPrice > begin && rawPrice <= end)
+        {
+          tickSize = band.TickSize;
+          break;
+        }
+      }
+      if (tickSize == null || tickSize <= 0)
+      {
+        Assert.Ignore($"no tick size band covers {rawPrice} for {symbol}");
+      }
+
+      var ticks = Math.Floor(rawPrice / tickSize!.Value);
+      return Math.Round(ticks * tickSize.Value, 4);
     }
 
     // =====================================================================
@@ -1167,7 +1251,7 @@ namespace TigerOpenAPI.Tests.Integration
       if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
       contract.Currency = Currency.HKD.ToString();
       var model = PlaceOrderModel.BuildLimitOrder(
-          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeHkBuyPrice("00700"));
       PreviewAndPlace(model, "HkStkLimit 00700");
     }
 
@@ -1226,7 +1310,7 @@ namespace TigerOpenAPI.Tests.Integration
       if (contract == null) { Assert.Ignore("00700 contract not tradeable for this account"); return; }
       contract.Currency = Currency.HKD.ToString();
       var model = PlaceOrderModel.BuildAuctionOrder(
-          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeBuyPrice);
+          _account, contract, ActionType.BUY, quantity: 100, limitPrice: SafeHkBuyPrice("00700"));
       PreviewAndPlace(model, "HkAuctionLimit 00700");
     }
 
