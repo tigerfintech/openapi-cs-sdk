@@ -320,7 +320,48 @@ namespace TigerOpenAPI.Tests.Integration
       {
         Assert.Ignore($"non-positive latestPrice for {symbol}");
       }
-      return Math.Round(latestPrice * 0.5, 2);
+
+      // HK's tick size is a price-banded table (e.g. HK$200-500 -> 0.2), not
+      // a single fixed value — a price that isn't a clean multiple of the
+      // band it falls into is rejected outright.
+      var tradeClient = IntegTestConfig.TradeClient;
+      Assert.That(tradeClient, Is.Not.Null,
+          "TradeClient is null — credentials should have been checked in OneTimeSetUp");
+      var contractReq = new TigerRequest<ContractResponse>
+      {
+        ApiMethodName = TradeApiService.CONTRACT,
+        ModelValue = new ContractModel { Symbol = symbol }
+      };
+      var contractResp = tradeClient!.Execute(contractReq);
+      if (contractResp == null || !contractResp.IsSuccess())
+      {
+        Assert.Ignore($"cannot resolve {symbol} contract for tick sizes: {contractResp?.Message ?? "null response"}");
+      }
+      var tickSizes = contractResp!.Data?.TickSizes;
+      if (tickSizes == null || tickSizes.Count == 0)
+      {
+        Assert.Ignore($"no tick sizes for {symbol}, cannot compute a safe buy price");
+      }
+
+      var rawPrice = latestPrice * 0.5;
+      double? tickSize = null;
+      foreach (var band in tickSizes!)
+      {
+        var begin = double.Parse(band.Begin);
+        var end = band.End == "Infinity" ? double.PositiveInfinity : double.Parse(band.End);
+        if (rawPrice > begin && rawPrice <= end)
+        {
+          tickSize = band.TickSize;
+          break;
+        }
+      }
+      if (tickSize == null || tickSize <= 0)
+      {
+        Assert.Ignore($"no tick size band covers {rawPrice} for {symbol}");
+      }
+
+      var ticks = Math.Floor(rawPrice / tickSize!.Value);
+      return Math.Round(ticks * tickSize.Value, 4);
     }
 
     // =====================================================================
