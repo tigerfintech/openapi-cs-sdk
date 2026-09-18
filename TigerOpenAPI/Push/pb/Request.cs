@@ -26,7 +26,7 @@ namespace TigerOpenAPI.Quote.Pb {
           string.Concat(
             "Cg1SZXF1ZXN0LnByb3RvEjRjb20udGlnZXJicm9rZXJzLnN0b2NrLm9wZW5h",
             "cGkuY2xpZW50LnNvY2tldC5kYXRhLnBiGhJTb2NrZXRDb21tb24ucHJvdG8i",
-            "kAYKB1JlcXVlc3QSWwoHY29tbWFuZBgBIAEoDjJKLmNvbS50aWdlcmJyb2tl",
+            "wAYKB1JlcXVlc3QSWwoHY29tbWFuZBgBIAEoDjJKLmNvbS50aWdlcmJyb2tl",
             "cnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIuU29ja2V0",
             "Q29tbW9uLkNvbW1hbmQSCgoCaWQYAiABKA0SXwoJc3Vic2NyaWJlGAMgASgL",
             "MkcuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVudC5zb2Nr",
@@ -38,18 +38,19 @@ namespace TigerOpenAPI.Quote.Pb {
             "SW50ZXJ2YWwYBSABKA1IAYgBARIcCg9yZWNlaXZlSW50ZXJ2YWwYBiABKA1I",
             "AogBARIYCgt1c2VGdWxsVGljaxgHIAEoCEgDiAEBQhAKDl9hY2NlcHRWZXJz",
             "aW9uQg8KDV9zZW5kSW50ZXJ2YWxCEgoQX3JlY2VpdmVJbnRlcnZhbEIOCgxf",
-            "dXNlRnVsbFRpY2sazgEKCVN1YnNjcmliZRJdCghkYXRhVHlwZRgBIAEoDjJL",
+            "dXNlRnVsbFRpY2sa/gEKCVN1YnNjcmliZRJdCghkYXRhVHlwZRgBIAEoDjJL",
             "LmNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3BlbmFwaS5jbGllbnQuc29ja2V0",
             "LmRhdGEucGIuU29ja2V0Q29tbW9uLkRhdGFUeXBlEhQKB3N5bWJvbHMYAiAB",
             "KAlIAIgBARIUCgdhY2NvdW50GAMgASgJSAGIAQESEwoGbWFya2V0GAQgASgJ",
-            "SAKIAQFCCgoIX3N5bWJvbHNCCgoIX2FjY291bnRCCQoHX21hcmtldEIMCgpf",
-            "c3Vic2NyaWJlQgoKCF9jb25uZWN0QhiqAhVUaWdlck9wZW5BUEkuUXVvdGUu",
-            "UGJQAGIGcHJvdG8z"));
+            "SAKIAQESGwoOYXNzZXRRdW90ZVR5cGUYBSABKAlIA4gBAUIKCghfc3ltYm9s",
+            "c0IKCghfYWNjb3VudEIJCgdfbWFya2V0QhEKD19hc3NldFF1b3RlVHlwZUIM",
+            "Cgpfc3Vic2NyaWJlQgoKCF9jb25uZWN0QhiqAhVUaWdlck9wZW5BUEkuUXVv",
+            "dGUuUGJQAGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request), global::TigerOpenAPI.Quote.Pb.Request.Parser, new[]{ "Command", "Id", "Subscribe", "Connect" }, new[]{ "Subscribe", "Connect" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Connect), global::TigerOpenAPI.Quote.Pb.Request.Types.Connect.Parser, new[]{ "TigerId", "Sign", "SdkVersion", "AcceptVersion", "SendInterval", "ReceiveInterval", "UseFullTick" }, new[]{ "AcceptVersion", "SendInterval", "ReceiveInterval", "UseFullTick" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe), global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe.Parser, new[]{ "DataType", "Symbols", "Account", "Market" }, new[]{ "Symbols", "Account", "Market" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe), global::TigerOpenAPI.Quote.Pb.Request.Types.Subscribe.Parser, new[]{ "DataType", "Symbols", "Account", "Market", "AssetQuoteType" }, new[]{ "Symbols", "Account", "Market", "AssetQuoteType" }, null, null, null)})
           }));
     }
     #endregion
@@ -879,6 +880,7 @@ namespace TigerOpenAPI.Quote.Pb {
           symbols_ = other.symbols_;
           account_ = other.account_;
           market_ = other.market_;
+          assetQuoteType_ = other.assetQuoteType_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -972,6 +974,30 @@ namespace TigerOpenAPI.Quote.Pb {
           market_ = null;
         }
 
+        /// <summary>Field number for the "assetQuoteType" field.</summary>
+        public const int AssetQuoteTypeFieldNumber = 5;
+        private string assetQuoteType_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string AssetQuoteType {
+          get { return assetQuoteType_ ?? ""; }
+          set {
+            assetQuoteType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+        /// <summary>Gets whether the "assetQuoteType" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasAssetQuoteType {
+          get { return assetQuoteType_ != null; }
+        }
+        /// <summary>Clears the value of the "assetQuoteType" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearAssetQuoteType() {
+          assetQuoteType_ = null;
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -991,6 +1017,7 @@ namespace TigerOpenAPI.Quote.Pb {
           if (Symbols != other.Symbols) return false;
           if (Account != other.Account) return false;
           if (Market != other.Market) return false;
+          if (AssetQuoteType != other.AssetQuoteType) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -1002,6 +1029,7 @@ namespace TigerOpenAPI.Quote.Pb {
           if (HasSymbols) hash ^= Symbols.GetHashCode();
           if (HasAccount) hash ^= Account.GetHashCode();
           if (HasMarket) hash ^= Market.GetHashCode();
+          if (HasAssetQuoteType) hash ^= AssetQuoteType.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -1036,6 +1064,10 @@ namespace TigerOpenAPI.Quote.Pb {
             output.WriteRawTag(34);
             output.WriteString(Market);
           }
+          if (HasAssetQuoteType) {
+            output.WriteRawTag(42);
+            output.WriteString(AssetQuoteType);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -1062,6 +1094,10 @@ namespace TigerOpenAPI.Quote.Pb {
             output.WriteRawTag(34);
             output.WriteString(Market);
           }
+          if (HasAssetQuoteType) {
+            output.WriteRawTag(42);
+            output.WriteString(AssetQuoteType);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -1083,6 +1119,9 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           if (HasMarket) {
             size += 1 + pb::CodedOutputStream.ComputeStringSize(Market);
+          }
+          if (HasAssetQuoteType) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(AssetQuoteType);
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -1107,6 +1146,9 @@ namespace TigerOpenAPI.Quote.Pb {
           }
           if (other.HasMarket) {
             Market = other.Market;
+          }
+          if (other.HasAssetQuoteType) {
+            AssetQuoteType = other.AssetQuoteType;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -1139,6 +1181,10 @@ namespace TigerOpenAPI.Quote.Pb {
                 Market = input.ReadString();
                 break;
               }
+              case 42: {
+                AssetQuoteType = input.ReadString();
+                break;
+              }
             }
           }
         #endif
@@ -1168,6 +1214,10 @@ namespace TigerOpenAPI.Quote.Pb {
               }
               case 34: {
                 Market = input.ReadString();
+                break;
+              }
+              case 42: {
+                AssetQuoteType = input.ReadString();
                 break;
               }
             }

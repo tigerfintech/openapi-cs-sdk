@@ -25,6 +25,18 @@ namespace TigerOpenAPI.Push
     uint Subscribe(Subject subject, string account);
 
     /**
+     * subscribe trade data with the specified asset quote type.
+     * assetQuoteType only takes effect on Asset / Position subject,
+     * the enum name (ETH / RTH / OVERNIGHT) is sent to the server.
+     *
+     * @param subject trade subject
+     * @param account subscribe account, nullable
+     * @param assetQuoteType asset quote type, nullable(the field is not sent when null)
+     * @return request id
+     */
+    uint Subscribe(Subject subject, string? account, AssetQuoteType? assetQuoteType);
+
+    /**
      * cancel subscribe all trade data, include Order / Position / Asset / OrderTransaction
      *
      * @param subject trade subject

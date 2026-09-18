@@ -74,6 +74,16 @@ namespace TigerOpenAPI.Common.Util
 
     public static Request BuildSubscribeMessage(string? account, Subject subject)
     {
+      return BuildSubscribeMessage(account, subject, null);
+    }
+
+    /// <summary>
+    /// build subscribe message with asset quote type. only meaningful for
+    /// <see cref="Subject.Asset"/> and <see cref="Subject.Position"/> subscriptions.
+    /// the enum name (ETH / RTH / OVERNIGHT) is sent, not the ordinal.
+    /// </summary>
+    public static Request BuildSubscribeMessage(string? account, Subject subject, AssetQuoteType? assetQuoteType)
+    {
       Request request = new Request()
       {
         Command = Command.Subscribe,
@@ -85,6 +95,8 @@ namespace TigerOpenAPI.Common.Util
       };
       if (!string.IsNullOrWhiteSpace(account))
         request.Subscribe.Account = account;
+      if (assetQuoteType.HasValue)
+        request.Subscribe.AssetQuoteType = assetQuoteType.Value.ToString();
       return request;
     }
 
