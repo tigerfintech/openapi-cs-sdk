@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf;
 using Newtonsoft.Json;
@@ -6,6 +7,7 @@ using NUnit.Framework;
 using TigerOpenAPI.Common;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
+using TigerOpenAPI.Push;
 using TigerOpenAPI.Quote.Pb;
 using TigerOpenAPI.Trade.Model;
 
@@ -189,6 +191,29 @@ namespace TigerOpenAPI.Tests.Unit
           "field 5 must not appear on the wire when assetQuoteType is unset");
     }
 
+    // -----------------------------------------------------------------
+    // 3. source compatibility of ISubscribeAsyncApi
+    // -----------------------------------------------------------------
+
+    /// <summary>
+    /// A caller that implemented ISubscribeAsyncApi before the assetQuoteType overload
+    /// existed (LegacySubscribeApi below) must still compile. The overload carries a
+    /// default interface implementation that forwards to Subscribe(subject, account),
+    /// so the legacy implementor keeps the old behaviour without any code change.
+    /// </summary>
+    [Test]
+    public void LegacyImplementor_NewOverload_FallsBackToTwoArgSubscribe()
+    {
+      var legacy = new LegacySubscribeApi();
+      ISubscribeAsyncApi api = legacy;
+
+      uint id = api.Subscribe(Subject.Asset, "U123456", AssetQuoteType.OVERNIGHT);
+
+      Assert.That(id, Is.EqualTo(42u));
+      Assert.That(legacy.LastSubject, Is.EqualTo(Subject.Asset));
+      Assert.That(legacy.LastAccount, Is.EqualTo("U123456"));
+    }
+
     private static int IndexOf(byte[] haystack, byte[] needle)
     {
       for (int i = 0; i + needle.Length <= haystack.Length; i++)
@@ -202,5 +227,47 @@ namespace TigerOpenAPI.Tests.Unit
       }
       return -1;
     }
+  }
+
+  /// <summary>
+  /// Deliberately implements only the members that existed before the assetQuoteType
+  /// overload was added — i.e. what a downstream mock written against the old SDK
+  /// looks like. If the new overload ever loses its default implementation, this
+  /// class stops compiling, which is exactly the source-breaking change we guard against.
+  /// </summary>
+  internal class LegacySubscribeApi : ISubscribeAsyncApi
+  {
+    public Subject? LastSubject { get; private set; }
+    public string? LastAccount { get; private set; }
+
+    public uint Subscribe(Subject subject) => Subscribe(subject, string.Empty);
+
+    public uint Subscribe(Subject subject, string account)
+    {
+      LastSubject = subject;
+      LastAccount = account;
+      return 42u;
+    }
+
+    public uint CancelSubscribe(Subject subject) => 0u;
+    public uint SubscribeQuote(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeQuote(ISet<string> symbols) => 0u;
+    public uint SubscribeTradeTick(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeTradeTick(ISet<string> symbols) => 0u;
+    public uint SubscribeOption(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeOption(ISet<string> symbols) => 0u;
+    public uint SubscribeFuture(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeFuture(ISet<string> symbols) => 0u;
+    public uint SubscribeDepthQuote(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeDepthQuote(ISet<string> symbols) => 0u;
+    public uint SubscribeKline(ISet<string> symbols) => 0u;
+    public uint CancelSubscribeKline(ISet<string> symbols) => 0u;
+    public uint SubscribeMarketQuote(Market market, QuoteSubject subject) => 0u;
+    public uint CancelSubscribeMarketQuote(Market market, QuoteSubject subject) => 0u;
+    public uint SubscribeStockTop(Market market, ISet<Indicator>? indicators = null) => 0u;
+    public uint CancelSubscribeStockTop(Market market, ISet<Indicator>? indicators = null) => 0u;
+    public uint SubscribeOptionTop(Market market, ISet<Indicator>? indicators = null) => 0u;
+    public uint CancelSubscribeOptionTop(Market market, ISet<Indicator>? indicators = null) => 0u;
+    public uint GetSubscribedSymbols() => 0u;
   }
 }
