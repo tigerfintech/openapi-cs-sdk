@@ -339,17 +339,22 @@ namespace TigerOpenAPI.Push
 
     public uint Subscribe(Subject subject)
     {
-      return Subscribe(subject, null);
+      return Subscribe(subject, null, null);
     }
 
     public uint Subscribe(Subject subject, string? account)
+    {
+      return Subscribe(subject, account, null);
+    }
+
+    public uint Subscribe(Subject subject, string? account, AssetQuoteType? assetQuoteType)
     {
       if (channel is null || !IsConnected())
       {
         NotConnect();
         return 0;
       }
-      Request request = ProtoMessageUtil.BuildSubscribeMessage(account, subject);
+      Request request = ProtoMessageUtil.BuildSubscribeMessage(account, subject, assetQuoteType);
 
       channel.WriteAndFlushAsync(request).Wait();
       return request.Id;
