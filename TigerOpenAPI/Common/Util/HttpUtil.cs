@@ -49,8 +49,10 @@ namespace TigerOpenAPI.Common.Util
         if (!string.IsNullOrWhiteSpace(contentType))
           httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
         if (!string.IsNullOrWhiteSpace(token))
+        {
+          client.DefaultRequestHeaders.Remove(TigerApiConstants.AUTHORIZATION);
           client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
-          //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(TigerApiConstants.AUTHORIZATION, token);
+        }
 
         HttpResponseMessage response = client.PostAsync(url, httpContent).Result;
         response.EnsureSuccessStatusCode();
@@ -75,7 +77,10 @@ namespace TigerOpenAPI.Common.Util
         if (!string.IsNullOrWhiteSpace(contentType))
           httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
         if (!string.IsNullOrWhiteSpace(token))
+        {
+          client.DefaultRequestHeaders.Remove(TigerApiConstants.AUTHORIZATION);
           client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
+        }
 
         HttpResponseMessage response = await client.PostAsync(url, httpContent);
         response.EnsureSuccessStatusCode();
