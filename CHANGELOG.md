@@ -1,10 +1,13 @@
 ## Unreleased
+
+## 1.2.7 (2026-10-09)
 ### New
 - 资产与持仓查询新增 `AssetQuoteType` 字段（`ETH` / `RTH` / `OVERNIGHT`），支持按夜盘口径查询：`PrimeAssetsModel`、`GlobalAssetsModel`、`AggregateAssetModel`、`PositionsModel`。
 - `ISubscribeAsyncApi` 新增重载 `Subscribe(Subject, string?, AssetQuoteType?)`，推送订阅可指定资产行情口径，仅对 `Asset` / `Position` 主题生效；该重载带默认实现（转调 `Subscribe(Subject, string)` 并忽略口径），自行实现该接口（含测试 Mock）的调用方无需改动即可继续编译。
 
 ### Fixed
 - 显式设置 `AssetQuoteType.ETH` 现在会被正常发送。此前该字段为不可空枚举，`ETH` 的序数值为 0，会被序列化配置 `DefaultValueHandling.Ignore` 当作默认值丢弃，导致请求里没有 `asset_quote_type`。
+- 修复 `HttpUtil` 中 `Authorization` 请求头在多次调用时重复累积的问题。`HttpClient` 为静态共享实例，`TryAddWithoutValidation` 每次都追加而非替换，导致第二个及后续请求携带多个 token 值，服务端解析失败报 `user token error`。现已改为每次请求先 `Remove` 再添加。
 
 ### Breaking
 - `PositionsModel.AssetQuoteType` 由 `AssetQuoteType` 改为可空 `AssetQuoteType?`。读取侧的写法需要调整：`AssetQuoteType t = model.AssetQuoteType;` 不再能通过编译，请改用 `model.AssetQuoteType.Value`（确定非空时）或 `model.AssetQuoteType.GetValueOrDefault()` / `?? AssetQuoteType.RTH`（需要兜底时）。赋值侧写法不变。
