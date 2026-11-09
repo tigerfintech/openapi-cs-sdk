@@ -682,7 +682,7 @@ namespace TigerOpenAPI.Quote.Pb {
     public const int VolumeDecimalFieldNumber = 29;
     private double volumeDecimal_;
     /// <summary>
-    /// Decimal value encoded as a string to avoid precision loss
+    /// Trading volume encoded as a double; precision may be lost for large or fractional values.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
