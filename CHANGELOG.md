@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.2.9 (2026-11-09)
+### New
+- 新增资讯查询接口（`news_stock_list` / `news_highlight_list`）：`NewsClient` 支持个股新闻列表（`page_count`/`page_size` 分页，单标的）与市场要闻列表（`last_id` 游标翻页）；请求统一路由到主网关（不走行情域名分流）；`lang` 可选（`zh_CN` / `zh_TW` / `en_US`）
+
 ## 1.2.8 (2026-10-10)
 
 ### Fixed
