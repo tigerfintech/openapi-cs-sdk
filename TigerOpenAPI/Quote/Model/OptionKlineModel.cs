@@ -9,6 +9,10 @@ namespace TigerOpenAPI.Quote.Model
 {
   public class OptionKlineModel : OptionCommonModel
   {
+    /// <summary>Include GTH/CURB minute bars; null keeps the server default.</summary>
+    [JsonProperty("with_hour_trading", NullValueHandling = NullValueHandling.Ignore)]
+    public bool? WithHourTrading { get; set; }
+
     [JsonProperty(PropertyName = "period")]
     public string Period { get; set; } = OptionKType.day.Value;
 
