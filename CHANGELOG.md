@@ -1,10 +1,11 @@
-## 1.2.9 (2026-11-09)
+## Unreleased
+
+## 1.2.9 (2026-11-11)
 ### Added
 - US option quotes and option-chain legs expose cumulative volume/amount and extended-session quotes for GTH/CURB.
 - Protobuf option callbacks read GTH/CURB prices and session volume/amount from existing fields with PreMarket/AfterHours tags; cumulative totals remain independent. The unpublished nested push object is removed. HTTP snapshots and option-chain objects remain available.
 - Option minute-bar requests can include GTH/CURB through the optional with_hour_trading parameter; existing calls retain the server default.
-
-## Unreleased
+- News query client `NewsClient` with `GetStockNewsAsync` (per-symbol stock news, page-number pagination) and `GetMarketNewsAsync` (market highlights, `last_id` cursor pagination).
 
 ## 1.2.8 (2026-10-10)
 
