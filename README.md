@@ -17,6 +17,7 @@ Tiger Open Platform C# SDK — provides API services for individual developers a
 - **Trading**: Create, modify, and cancel orders; check order status
 - **Account**: Query balances, positions, assets, and transaction records
 - **Market Data**: Real-time and historical quotes for stocks, options, and futures
+- **News**: Stock news and market highlights (`NewsClient`)
 - **Push Service**: Real-time WebSocket notifications for orders, positions, and market changes
 
 #### Supported Instruments
@@ -110,12 +111,103 @@ pushClient.Connect();
 pushClient.SubscribeOrder();
 ```
 
+#### 5. Query News
+
+The SDK provides two news APIs, both HTTP requests routed to the main gateway:
+
+| API | method | Description |
+|-----|--------|-------------|
+| Stock news | `news_stock_list` | News list for a single symbol, paged by `page_count` / `page_size` |
+| Market highlights | `news_highlight_list` | Market highlight list, paged by the `last_id` cursor |
+
+##### Stock News
+
+```csharp
+using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.News;
+using TigerOpenAPI.News.Response;
+
+var newsClient = new NewsClient(config);
+
+// News for a single symbol (single symbol only — no batch support downstream)
+var response = await newsClient.GetStockNewsAsync("AAPL", Language.zh_CN, pageCount: 1, pageSize: 20);
+if (response.IsSuccess())
+{
+    foreach (NewsItem item in response.Data.Items)
+    {
+        Console.WriteLine($"{item.Title} — {item.Url}");
+    }
+}
+```
+
+Parameters:
+
+| Parameter | Required | Description |
+|-----------|:--------:|-------------|
+| `symbol` | Yes | Ticker, **single symbol only** (this API does not support batch queries) |
+| `lang` | No | `zh_CN` / `zh_TW` / `en_US` |
+| `pageCount` | No | Page number, default 1, must be >= 1 |
+| `pageSize` | No | Page size, default 20, range 1–50 |
+
+##### Market Highlights
+
+```csharp
+using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.News;
+using TigerOpenAPI.News.Response;
+
+var newsClient = new NewsClient(config);
+
+// First page starts from the newest item (lastId omitted)
+var response = await newsClient.GetMarketNewsAsync(Language.zh_CN);
+
+// Next page: pass the id of the LAST item of the current page
+string lastId = response.Data.Items.Count > 0
+    ? response.Data.Items[^1].Id
+    : null;
+var nextPage = await newsClient.GetMarketNewsAsync(Language.zh_CN, lastId);
+```
+
+Parameters:
+
+| Parameter | Required | Description |
+|-----------|:--------:|-------------|
+| `lang` | No | Same as above |
+| `lastId` | No | Cursor — pass `null` to start from the newest; for the next page pass the `Id` of the LAST item of the current page (the only pagination path; `PageCount` in the response is always 1) |
+
+##### Response Structure
+
+Both APIs share the same response model, retrieved through `response.Data` (`NewsPageItem`):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `Items` | `List<NewsItem>` | News items on the current page |
+| `PageCount` | `int` | Current page number (always 1 for market highlights) |
+| `PageSize` | `int` | Page size |
+| `TotalPage` | `int` | Total page count |
+| `TotalSize` | `int` | Total item count |
+
+`NewsItem`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `Id` | `string` | News ID (also the `lastId` cursor source for market highlights) |
+| `Title` | `string` | Title |
+| `Summary` | `string` | Summary |
+| `PubTimestamp` | `long` | Publish timestamp (seconds) |
+| `Url` | `string` | Detail page URL |
+
+Prefer a synchronous or lower-level call? Build the request yourself with
+`NewsApiService.NEWS_STOCK_LIST` / `NEWS_HIGHLIGHT_LIST`, the models in
+`TigerOpenAPI.News.Model` and `newsClient.Execute(request)`.
+
 ### API Reference
 
 | Class | Description |
 |-------|-------------|
 | `QuoteClient` | Market data — quotes, K-lines, order book, fundamentals |
 | `TradeClient` | Trading — orders, positions, assets, transfers |
+| `NewsClient`  | News — stock news list, market highlight list |
 | `PushClient`  | WebSocket push — orders, positions, market ticker |
 
 Full documentation: [https://docs-en.itigerup.com/docs/](https://docs-en.itigerup.com/docs/)
@@ -150,6 +242,7 @@ This project is licensed under the [MIT License](LICENSE).
 - **交易管理**：创建、修改、取消订单；查询订单状态
 - **账户查询**：查询余额、持仓、资产及资金流水
 - **行情服务**：实时行情与历史数据（股票、期权、期货）
+- **资讯服务**：个股新闻与市场要闻（`NewsClient`）
 - **推送服务**：WebSocket 实时推送订单变动、持仓变动、行情变动
 
 #### 支持品种
@@ -288,12 +381,102 @@ pushClient.Connect();
 pushClient.SubscribeOrder();
 ```
 
+#### 5. 查询资讯
+
+SDK 提供两个资讯查询接口，均为 HTTP 请求，统一路由到主网关：
+
+| 接口 | method | 说明 |
+|------|--------|------|
+| 个股新闻 | `news_stock_list` | 查询单只股票的资讯列表，按 `page_count` / `page_size` 翻页 |
+| 市场要闻 | `news_highlight_list` | 查询市场要闻列表，按 `last_id` 游标翻页 |
+
+##### 个股新闻
+
+```csharp
+using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.News;
+using TigerOpenAPI.News.Response;
+
+var newsClient = new NewsClient(config);
+
+// 查询单只股票的资讯（仅支持单标的，不支持批量查询）
+var response = await newsClient.GetStockNewsAsync("AAPL", Language.zh_CN, pageCount: 1, pageSize: 20);
+if (response.IsSuccess())
+{
+    foreach (NewsItem item in response.Data.Items)
+    {
+        Console.WriteLine($"{item.Title} — {item.Url}");
+    }
+}
+```
+
+参数说明：
+
+| 参数 | 必填 | 说明 |
+|------|:----:|------|
+| `symbol` | 是 | 股票代码，**仅支持单只**（该接口不支持批量查询） |
+| `lang` | 否 | 语言枚举：`zh_CN` / `zh_TW` / `en_US` |
+| `pageCount` | 否 | 页码，默认 1，取值 >= 1 |
+| `pageSize` | 否 | 每页条数，默认 20，取值 1–50 |
+
+##### 市场要闻
+
+```csharp
+using TigerOpenAPI.Common.Enum;
+using TigerOpenAPI.News;
+using TigerOpenAPI.News.Response;
+
+var newsClient = new NewsClient(config);
+
+// 首页从最新开始（不传 lastId）
+var response = await newsClient.GetMarketNewsAsync(Language.zh_CN);
+
+// 下一页：把本页最后一条的 Id 作为 lastId 传回
+string lastId = response.Data.Items.Count > 0
+    ? response.Data.Items[^1].Id
+    : null;
+var nextPage = await newsClient.GetMarketNewsAsync(Language.zh_CN, lastId);
+```
+
+参数说明：
+
+| 参数 | 必填 | 说明 |
+|------|:----:|------|
+| `lang` | 否 | 同上 |
+| `lastId` | 否 | 游标。传 `null` 从最新开始；下一页传本页 `Items` 最后一条的 `Id`（唯一翻页方式，响应中 `PageCount` 恒为 1） |
+
+##### 响应结构
+
+两个接口共用同一套响应模型，通过 `response.Data`（`NewsPageItem`）取回：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `Items` | `List<NewsItem>` | 当前页资讯列表 |
+| `PageCount` | `int` | 当前页码（市场要闻恒为 1） |
+| `PageSize` | `int` | 每页条数 |
+| `TotalPage` | `int` | 总页数 |
+| `TotalSize` | `int` | 总条数 |
+
+`NewsItem`：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `Id` | `string` | 资讯 ID（同时是市场要闻游标翻页的 `lastId` 取值来源） |
+| `Title` | `string` | 标题 |
+| `Summary` | `string` | 摘要 |
+| `PubTimestamp` | `long` | 发布时间戳（秒级） |
+| `Url` | `string` | 详情页链接 |
+
+如需同步或更底层的调用方式：使用 `NewsApiService.NEWS_STOCK_LIST` / `NEWS_HIGHLIGHT_LIST` 与
+`TigerOpenAPI.News.Model` 下的请求模型自行构造 `TigerRequest`，再调 `newsClient.Execute(request)`。
+
 ### API 参考
 
 | 类名 | 说明 |
 |------|------|
 | `QuoteClient` | 行情 — 实时报价、K 线、深度、基本面 |
 | `TradeClient` | 交易 — 下单、持仓、资产、资金划转 |
+| `NewsClient`  | 资讯 — 个股新闻列表、市场要闻列表 |
 | `PushClient`  | 推送 — 订单变动、持仓变动、行情推送 |
 
 完整文档：[https://docs.itigerup.com/docs/](https://docs.itigerup.com/docs/)
