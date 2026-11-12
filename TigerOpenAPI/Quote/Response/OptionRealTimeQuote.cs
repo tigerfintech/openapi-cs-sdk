@@ -4,6 +4,10 @@ namespace TigerOpenAPI.Quote.Response
 {
   public class OptionRealTimeQuote
   {
+    [JsonProperty("cumVolume")] public long? CumVolume { get; set; }
+    [JsonProperty("cumAmount")] public double? CumAmount { get; set; }
+    [JsonProperty("hourTrading")] public OptionHourTrading? HourTrading { get; set; }
+
     [JsonProperty(PropertyName = "identifier")]
     public string Identifier { get; set; }
     [JsonProperty(PropertyName = "strike")]

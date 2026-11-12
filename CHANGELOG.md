@@ -1,5 +1,18 @@
 ## Unreleased
 
+## 1.2.9 (2026-11-11)
+### Added
+- US option quotes and option-chain legs expose cumulative volume/amount and extended-session quotes for GTH/CURB.
+- Protobuf option callbacks read GTH/CURB prices and session volume/amount from existing fields with PreMarket/AfterHours tags; cumulative totals remain independent. The unpublished nested push object is removed. HTTP snapshots and option-chain objects remain available.
+- Option minute-bar requests can include GTH/CURB through the optional with_hour_trading parameter; existing calls retain the server default.
+- News query client `NewsClient` with `GetStockNewsAsync` (per-symbol stock news, page-number pagination) and `GetMarketNewsAsync` (market highlights, `last_id` cursor pagination).
+
+## 1.2.8 (2026-10-10)
+
+### Fixed
+- 修复并发调用 `HttpUtil.HttpPostAsync` 时 `Authorization` 头错乱的问题。`HttpRequestHeaders` 非线程安全，并发写共享默认请求头会导致部分请求携带他人的 token、携带多个 token，甚至完全丢失 `Authorization` 变成匿名请求。改为按请求携带后天然并发安全。
+- `token` 传空时不再残留上一次请求的 token；`HttpUtil.HttpGet`（`NetworkUtil` 用于域名发现）也不再被动携带上一次 POST 残留的凭据。
+
 ## 1.2.7 (2026-10-09)
 ### New
 - 资产与持仓查询新增 `AssetQuoteType` 字段（`ETH` / `RTH` / `OVERNIGHT`），支持按夜盘口径查询：`PrimeAssetsModel`、`GlobalAssetsModel`、`AggregateAssetModel`、`PositionsModel`。

@@ -26,7 +26,7 @@ namespace TigerOpenAPI.Quote.Pb {
           string.Concat(
             "Cg9RdW90ZURhdGEucHJvdG8SNGNvbS50aWdlcmJyb2tlcnMuc3RvY2sub3Bl",
             "bmFwaS5jbGllbnQuc29ja2V0LmRhdGEucGIaElNvY2tldENvbW1vbi5wcm90",
-            "byL8CQoJUXVvdGVEYXRhEg4KBnN5bWJvbBgBIAEoCRJaCgR0eXBlGAIgASgO",
+            "byKYCwoJUXVvdGVEYXRhEg4KBnN5bWJvbBgBIAEoCRJaCgR0eXBlGAIgASgO",
             "MkwuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVuYXBpLmNsaWVudC5zb2Nr",
             "ZXQuZGF0YS5wYi5Tb2NrZXRDb21tb24uUXVvdGVUeXBlEhEKCXRpbWVzdGFt",
             "cBgDIAEoBBIcCg9zZXJ2ZXJUaW1lc3RhbXAYBCABKARIAIgBARIVCghhdmdQ",
@@ -44,22 +44,25 @@ namespace TigerOpenAPI.Quote.Pb {
             "Cg1wcmVTZXR0bGVtZW50GBogASgBSBaIAQESFAoHbWluVGljaxgbIAEoAkgX",
             "iAEBElcKAm1pGBwgASgLMkYuY29tLnRpZ2VyYnJva2Vycy5zdG9jay5vcGVu",
             "YXBpLmNsaWVudC5zb2NrZXQuZGF0YS5wYi5RdW90ZURhdGEuTWludXRlSBiI",
-            "AQEadgoGTWludXRlEgkKAXAYASABKAESCQoBYRgCIAEoARIJCgF0GAMgASgE",
-            "EgkKAXYYBCABKBISDgoBbxgFIAEoAUgAiAEBEg4KAWgYBiABKAFIAYgBARIO",
-            "CgFsGAcgASgBSAKIAQFCBAoCX29CBAoCX2hCBAoCX2xCEgoQX3NlcnZlclRp",
-            "bWVzdGFtcEILCglfYXZnUHJpY2VCDgoMX2xhdGVzdFByaWNlQhcKFV9sYXRl",
-            "c3RQcmljZVRpbWVzdGFtcEINCgtfbGF0ZXN0VGltZUILCglfcHJlQ2xvc2VC",
-            "CQoHX3ZvbHVtZUIJCgdfYW1vdW50QgcKBV9vcGVuQgcKBV9oaWdoQgYKBF9s",
-            "b3dCEQoPX2hvdXJUcmFkaW5nVGFnQg8KDV9tYXJrZXRTdGF0dXNCCwoJX2Fz",
-            "a1ByaWNlQgoKCF9hc2tTaXplQg8KDV9hc2tUaW1lc3RhbXBCCwoJX2JpZFBy",
-            "aWNlQgoKCF9iaWRTaXplQg8KDV9iaWRUaW1lc3RhbXBCDQoLX2lkZW50aWZp",
-            "ZXJCCgoIX29wZW5JbnRCDAoKX3RyYWRlVGltZUIQCg5fcHJlU2V0dGxlbWVu",
-            "dEIKCghfbWluVGlja0IFCgNfbWlCGKoCFVRpZ2VyT3BlbkFQSS5RdW90ZS5Q",
-            "YlAAYgZwcm90bzM="));
+            "AQESGgoNdm9sdW1lRGVjaW1hbBgdIAEoAUgZiAEBEhYKCWN1bVZvbHVtZRge",
+            "IAEoEkgaiAEBEhYKCWN1bUFtb3VudBgfIAEoAUgbiAEBEhQKB3Nlc3Npb24Y",
+            "ICABKAlIHIgBARp2CgZNaW51dGUSCQoBcBgBIAEoARIJCgFhGAIgASgBEgkK",
+            "AXQYAyABKAQSCQoBdhgEIAEoEhIOCgFvGAUgASgBSACIAQESDgoBaBgGIAEo",
+            "AUgBiAEBEg4KAWwYByABKAFIAogBAUIECgJfb0IECgJfaEIECgJfbEISChBf",
+            "c2VydmVyVGltZXN0YW1wQgsKCV9hdmdQcmljZUIOCgxfbGF0ZXN0UHJpY2VC",
+            "FwoVX2xhdGVzdFByaWNlVGltZXN0YW1wQg0KC19sYXRlc3RUaW1lQgsKCV9w",
+            "cmVDbG9zZUIJCgdfdm9sdW1lQgkKB19hbW91bnRCBwoFX29wZW5CBwoFX2hp",
+            "Z2hCBgoEX2xvd0IRCg9faG91clRyYWRpbmdUYWdCDwoNX21hcmtldFN0YXR1",
+            "c0ILCglfYXNrUHJpY2VCCgoIX2Fza1NpemVCDwoNX2Fza1RpbWVzdGFtcEIL",
+            "CglfYmlkUHJpY2VCCgoIX2JpZFNpemVCDwoNX2JpZFRpbWVzdGFtcEINCgtf",
+            "aWRlbnRpZmllckIKCghfb3BlbkludEIMCgpfdHJhZGVUaW1lQhAKDl9wcmVT",
+            "ZXR0bGVtZW50QgoKCF9taW5UaWNrQgUKA19taUIQCg5fdm9sdW1lRGVjaW1h",
+            "bEIMCgpfY3VtVm9sdW1lQgwKCl9jdW1BbW91bnRCCgoIX3Nlc3Npb25CGKoC",
+            "FVRpZ2VyT3BlbkFQSS5RdW90ZS5QYlAAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::TigerOpenAPI.Quote.Pb.SocketCommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteData), global::TigerOpenAPI.Quote.Pb.QuoteData.Parser, new[]{ "Symbol", "Type", "Timestamp", "ServerTimestamp", "AvgPrice", "LatestPrice", "LatestPriceTimestamp", "LatestTime", "PreClose", "Volume", "Amount", "Open", "High", "Low", "HourTradingTag", "MarketStatus", "AskPrice", "AskSize", "AskTimestamp", "BidPrice", "BidSize", "BidTimestamp", "Identifier", "OpenInt", "TradeTime", "PreSettlement", "MinTick", "Mi" }, new[]{ "ServerTimestamp", "AvgPrice", "LatestPrice", "LatestPriceTimestamp", "LatestTime", "PreClose", "Volume", "Amount", "Open", "High", "Low", "HourTradingTag", "MarketStatus", "AskPrice", "AskSize", "AskTimestamp", "BidPrice", "BidSize", "BidTimestamp", "Identifier", "OpenInt", "TradeTime", "PreSettlement", "MinTick", "Mi" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute), global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute.Parser, new[]{ "P", "A", "T", "V", "O", "H", "L" }, new[]{ "O", "H", "L" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteData), global::TigerOpenAPI.Quote.Pb.QuoteData.Parser, new[]{ "Symbol", "Type", "Timestamp", "ServerTimestamp", "AvgPrice", "LatestPrice", "LatestPriceTimestamp", "LatestTime", "PreClose", "Volume", "Amount", "Open", "High", "Low", "HourTradingTag", "MarketStatus", "AskPrice", "AskSize", "AskTimestamp", "BidPrice", "BidSize", "BidTimestamp", "Identifier", "OpenInt", "TradeTime", "PreSettlement", "MinTick", "Mi", "VolumeDecimal", "CumVolume", "CumAmount", "Session" }, new[]{ "ServerTimestamp", "AvgPrice", "LatestPrice", "LatestPriceTimestamp", "LatestTime", "PreClose", "Volume", "Amount", "Open", "High", "Low", "HourTradingTag", "MarketStatus", "AskPrice", "AskSize", "AskTimestamp", "BidPrice", "BidSize", "BidTimestamp", "Identifier", "OpenInt", "TradeTime", "PreSettlement", "MinTick", "Mi", "VolumeDecimal", "CumVolume", "CumAmount", "Session" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute), global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute.Parser, new[]{ "P", "A", "T", "V", "O", "H", "L" }, new[]{ "O", "H", "L" }, null, null, null)})
           }));
     }
     #endregion
@@ -130,6 +133,10 @@ namespace TigerOpenAPI.Quote.Pb {
       preSettlement_ = other.preSettlement_;
       minTick_ = other.minTick_;
       mi_ = other.mi_ != null ? other.mi_.Clone() : null;
+      volumeDecimal_ = other.volumeDecimal_;
+      cumVolume_ = other.cumVolume_;
+      cumAmount_ = other.cumAmount_;
+      session_ = other.session_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -263,7 +270,7 @@ namespace TigerOpenAPI.Quote.Pb {
     public const int LatestPriceTimestampFieldNumber = 7;
     private ulong latestPriceTimestamp_;
     /// <summary>
-    /// required when type is 'BASIC', Pre/Post-Mkt data not support
+    /// Actual last-trade time (epoch ms) for the quoted session; 0 means no trade.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -346,7 +353,7 @@ namespace TigerOpenAPI.Quote.Pb {
     public const int VolumeFieldNumber = 10;
     private long volume_;
     /// <summary>
-    /// required when type is 'BASIC'
+    /// Volume of the quoted session; cumulative option volume is cumVolume.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -374,7 +381,7 @@ namespace TigerOpenAPI.Quote.Pb {
     public const int AmountFieldNumber = 11;
     private double amount_;
     /// <summary>
-    /// required when type is 'BASIC', Futures and Options data not support
+    /// Amount of the quoted session; cumulative option amount is cumAmount.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -486,7 +493,7 @@ namespace TigerOpenAPI.Quote.Pb {
     public const int HourTradingTagFieldNumber = 15;
     private string hourTradingTag_;
     /// <summary>
-    /// Pre/Post-Mkt
+    /// Extended-session marker: PreMarket / AfterHours; absent for RTH.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -855,6 +862,117 @@ namespace TigerOpenAPI.Quote.Pb {
       }
     }
 
+    /// <summary>Field number for the "volumeDecimal" field.</summary>
+    public const int VolumeDecimalFieldNumber = 29;
+    private double volumeDecimal_;
+    /// <summary>
+    /// Trading volume encoded as a double; precision may be lost for large or fractional values.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double VolumeDecimal {
+      get { if ((_hasBits0 & 1048576) != 0) { return volumeDecimal_; } else { return 0D; } }
+      set {
+        _hasBits0 |= 1048576;
+        volumeDecimal_ = value;
+      }
+    }
+    /// <summary>Gets whether the "volumeDecimal" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasVolumeDecimal {
+      get { return (_hasBits0 & 1048576) != 0; }
+    }
+    /// <summary>Clears the value of the "volumeDecimal" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearVolumeDecimal() {
+      _hasBits0 &= ~1048576;
+    }
+
+    /// <summary>Field number for the "cumVolume" field.</summary>
+    public const int CumVolumeFieldNumber = 30;
+    private long cumVolume_;
+    /// <summary>
+    /// cumulative volume of CURB + RTH + GTH, only Options support
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long CumVolume {
+      get { if ((_hasBits0 & 2097152) != 0) { return cumVolume_; } else { return 0L; } }
+      set {
+        _hasBits0 |= 2097152;
+        cumVolume_ = value;
+      }
+    }
+    /// <summary>Gets whether the "cumVolume" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasCumVolume {
+      get { return (_hasBits0 & 2097152) != 0; }
+    }
+    /// <summary>Clears the value of the "cumVolume" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearCumVolume() {
+      _hasBits0 &= ~2097152;
+    }
+
+    /// <summary>Field number for the "cumAmount" field.</summary>
+    public const int CumAmountFieldNumber = 31;
+    private double cumAmount_;
+    /// <summary>
+    /// cumulative amount of CURB + RTH + GTH, only Options support
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double CumAmount {
+      get { if ((_hasBits0 & 4194304) != 0) { return cumAmount_; } else { return 0D; } }
+      set {
+        _hasBits0 |= 4194304;
+        cumAmount_ = value;
+      }
+    }
+    /// <summary>Gets whether the "cumAmount" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasCumAmount {
+      get { return (_hasBits0 & 4194304) != 0; }
+    }
+    /// <summary>Clears the value of the "cumAmount" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearCumAmount() {
+      _hasBits0 &= ~4194304;
+    }
+
+    /// <summary>Field number for the "session" field.</summary>
+    public const int SessionFieldNumber = 32;
+    private string session_;
+    /// <summary>
+    /// Quoted option session (GTH / CURB); absent when not provided.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Session {
+      get { return session_ ?? ""; }
+      set {
+        session_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+    /// <summary>Gets whether the "session" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSession {
+      get { return session_ != null; }
+    }
+    /// <summary>Clears the value of the "session" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSession() {
+      session_ = null;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -898,6 +1016,10 @@ namespace TigerOpenAPI.Quote.Pb {
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(PreSettlement, other.PreSettlement)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinTick, other.MinTick)) return false;
       if (!object.Equals(Mi, other.Mi)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolumeDecimal, other.VolumeDecimal)) return false;
+      if (CumVolume != other.CumVolume) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(CumAmount, other.CumAmount)) return false;
+      if (Session != other.Session) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -933,6 +1055,10 @@ namespace TigerOpenAPI.Quote.Pb {
       if (HasPreSettlement) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(PreSettlement);
       if (HasMinTick) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinTick);
       if (mi_ != null) hash ^= Mi.GetHashCode();
+      if (HasVolumeDecimal) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolumeDecimal);
+      if (HasCumVolume) hash ^= CumVolume.GetHashCode();
+      if (HasCumAmount) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(CumAmount);
+      if (HasSession) hash ^= Session.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1063,6 +1189,22 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(226, 1);
         output.WriteMessage(Mi);
       }
+      if (HasVolumeDecimal) {
+        output.WriteRawTag(233, 1);
+        output.WriteDouble(VolumeDecimal);
+      }
+      if (HasCumVolume) {
+        output.WriteRawTag(240, 1);
+        output.WriteSInt64(CumVolume);
+      }
+      if (HasCumAmount) {
+        output.WriteRawTag(249, 1);
+        output.WriteDouble(CumAmount);
+      }
+      if (HasSession) {
+        output.WriteRawTag(130, 2);
+        output.WriteString(Session);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1185,6 +1327,22 @@ namespace TigerOpenAPI.Quote.Pb {
         output.WriteRawTag(226, 1);
         output.WriteMessage(Mi);
       }
+      if (HasVolumeDecimal) {
+        output.WriteRawTag(233, 1);
+        output.WriteDouble(VolumeDecimal);
+      }
+      if (HasCumVolume) {
+        output.WriteRawTag(240, 1);
+        output.WriteSInt64(CumVolume);
+      }
+      if (HasCumAmount) {
+        output.WriteRawTag(249, 1);
+        output.WriteDouble(CumAmount);
+      }
+      if (HasSession) {
+        output.WriteRawTag(130, 2);
+        output.WriteString(Session);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1278,6 +1436,18 @@ namespace TigerOpenAPI.Quote.Pb {
       }
       if (mi_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Mi);
+      }
+      if (HasVolumeDecimal) {
+        size += 2 + 8;
+      }
+      if (HasCumVolume) {
+        size += 2 + pb::CodedOutputStream.ComputeSInt64Size(CumVolume);
+      }
+      if (HasCumAmount) {
+        size += 2 + 8;
+      }
+      if (HasSession) {
+        size += 2 + pb::CodedOutputStream.ComputeStringSize(Session);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1377,6 +1547,18 @@ namespace TigerOpenAPI.Quote.Pb {
           Mi = new global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute();
         }
         Mi.MergeFrom(other.Mi);
+      }
+      if (other.HasVolumeDecimal) {
+        VolumeDecimal = other.VolumeDecimal;
+      }
+      if (other.HasCumVolume) {
+        CumVolume = other.CumVolume;
+      }
+      if (other.HasCumAmount) {
+        CumAmount = other.CumAmount;
+      }
+      if (other.HasSession) {
+        Session = other.Session;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1506,6 +1688,22 @@ namespace TigerOpenAPI.Quote.Pb {
               Mi = new global::TigerOpenAPI.Quote.Pb.QuoteData.Types.Minute();
             }
             input.ReadMessage(Mi);
+            break;
+          }
+          case 233: {
+            VolumeDecimal = input.ReadDouble();
+            break;
+          }
+          case 240: {
+            CumVolume = input.ReadSInt64();
+            break;
+          }
+          case 249: {
+            CumAmount = input.ReadDouble();
+            break;
+          }
+          case 258: {
+            Session = input.ReadString();
             break;
           }
         }
@@ -1638,6 +1836,22 @@ namespace TigerOpenAPI.Quote.Pb {
             input.ReadMessage(Mi);
             break;
           }
+          case 233: {
+            VolumeDecimal = input.ReadDouble();
+            break;
+          }
+          case 240: {
+            CumVolume = input.ReadSInt64();
+            break;
+          }
+          case 249: {
+            CumAmount = input.ReadDouble();
+            break;
+          }
+          case 258: {
+            Session = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -1764,7 +1978,7 @@ namespace TigerOpenAPI.Quote.Pb {
         public const int OFieldNumber = 5;
         private double o_;
         /// <summary>
-        /// open price of the minute bar (only futures support)
+        /// open price of the minute bar
         /// </summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1792,7 +2006,7 @@ namespace TigerOpenAPI.Quote.Pb {
         public const int HFieldNumber = 6;
         private double h_;
         /// <summary>
-        /// highest price of the minute bar (only futures support)
+        /// highest price of the minute bar
         /// </summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1820,7 +2034,7 @@ namespace TigerOpenAPI.Quote.Pb {
         public const int LFieldNumber = 7;
         private double l_;
         /// <summary>
-        /// lowest price of the minute bar (only futures support)
+        /// lowest price of the minute bar
         /// </summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

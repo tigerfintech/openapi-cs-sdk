@@ -44,17 +44,11 @@ namespace TigerOpenAPI.Common.Util
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
     {
       postData = postData ?? "{}";
-      using (HttpContent httpContent = new StringContent(postData, Encoding.UTF8))
+      // the token is set on the request instead of client.DefaultRequestHeaders: the client is a shared
+      // static instance, so writing the header there accumulates values across calls and is not thread safe
+      using (HttpRequestMessage request = BuildPostRequest(url, token, postData, contentType))
       {
-        if (!string.IsNullOrWhiteSpace(contentType))
-          httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-          client.DefaultRequestHeaders.Remove(TigerApiConstants.AUTHORIZATION);
-          client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
-        }
-
-        HttpResponseMessage response = client.PostAsync(url, httpContent).Result;
+        HttpResponseMessage response = client.SendAsync(request).Result;
         response.EnsureSuccessStatusCode();
         return response.Content.ReadAsStringAsync().Result;
       }
@@ -72,20 +66,28 @@ namespace TigerOpenAPI.Common.Util
       string contentType = TigerApiConstants.CONTENT_TYPE_JSON)
     {
       postData = postData ?? "{}";
-      using (HttpContent httpContent = new StringContent(postData, Encoding.UTF8))
+      using (HttpRequestMessage request = BuildPostRequest(url, token, postData, contentType))
       {
-        if (!string.IsNullOrWhiteSpace(contentType))
-          httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-          client.DefaultRequestHeaders.Remove(TigerApiConstants.AUTHORIZATION);
-          client.DefaultRequestHeaders.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
-        }
-
-        HttpResponseMessage response = await client.PostAsync(url, httpContent);
+        HttpResponseMessage response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
       }
+    }
+
+    /// <summary>
+    /// build a post request carrying its own headers, so that concurrent calls never share header state
+    /// </summary>
+    private static HttpRequestMessage BuildPostRequest(string url, string token, string postData,
+      string contentType)
+    {
+      HttpContent httpContent = new StringContent(postData, Encoding.UTF8);
+      if (!string.IsNullOrWhiteSpace(contentType))
+        httpContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+      HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url) { Content = httpContent };
+      if (!string.IsNullOrWhiteSpace(token))
+        request.Headers.TryAddWithoutValidation(TigerApiConstants.AUTHORIZATION, token);
+      return request;
     }
 
     /// <summary>

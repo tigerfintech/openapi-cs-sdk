@@ -67,14 +67,15 @@ namespace TigerOpenAPI.Common.Util
       {
         quoteBasicData.AvgPrice = quoteData.AvgPrice;
       }
-      quoteBasicData.LatestPrice = quoteData.LatestPrice;
+      if (quoteData.HasLatestPrice) quoteBasicData.LatestPrice = quoteData.LatestPrice;
       if (quoteData.HasLatestPriceTimestamp)
       {
         quoteBasicData.LatestPriceTimestamp = quoteData.LatestPriceTimestamp;
       }
-      quoteBasicData.LatestTime = quoteData.LatestTime;
-      quoteBasicData.PreClose = quoteData.PreClose;
-      quoteBasicData.Volume = quoteData.Volume;
+      if (quoteData.HasLatestTime) quoteBasicData.LatestTime = quoteData.LatestTime;
+      if (quoteData.HasPreClose) quoteBasicData.PreClose = quoteData.PreClose;
+      if (quoteData.HasVolume) quoteBasicData.Volume = quoteData.Volume;
+      if (quoteData.HasVolumeDecimal) quoteBasicData.VolumeDecimal = quoteData.VolumeDecimal;
       if (quoteData.HasAmount)
       {
         quoteBasicData.Amount = quoteData.Amount;
@@ -101,6 +102,10 @@ namespace TigerOpenAPI.Common.Util
       {
         quoteBasicData.MarketStatus = quoteData.MarketStatus;
       }
+
+      if (quoteData.HasCumVolume) quoteBasicData.CumVolume = quoteData.CumVolume;
+      if (quoteData.HasCumAmount) quoteBasicData.CumAmount = quoteData.CumAmount;
+      if (quoteData.HasSession) quoteBasicData.Session = quoteData.Session;
 
       // only Options support
       if (quoteData.HasIdentifier)
