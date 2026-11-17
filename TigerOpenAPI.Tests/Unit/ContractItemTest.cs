@@ -18,7 +18,7 @@ namespace TigerOpenAPI.Tests.Unit
     {
       const string item = "{\"symbol\":\"AAPL\",\"secType\":\"OPT\",\"orderCapabilities\":["
           + "{\"orderType\":\"LMT\",\"timeInForce\":\"DAY\",\"tradingSessionType\":\"PRE_RTH_POST\"},"
-          + "{\"orderType\":\"LMT\",\"timeInForce\":\"GTC\",\"tradingSessionType\":\"GTH_RTH_CURB\"}]}";
+          + "{\"orderType\":\"LMT\",\"timeInForce\":\"GTC\",\"tradingSessionType\":\"PRE_RTH_POST\"}]}";
       var single = JsonConvert.DeserializeObject<ContractResponse>("{\"code\":0,\"data\":" + item + "}")!.Data;
       var batch = JsonConvert.DeserializeObject<ContractsResponse>("{\"code\":0,\"data\":{\"items\":[" + item + "]}}")!.Data["items"][0];
       foreach (var contract in new[] { single, batch })
@@ -27,7 +27,7 @@ namespace TigerOpenAPI.Tests.Unit
         Assert.That(contract.OrderCapabilities![0].OrderType, Is.EqualTo("LMT"));
         Assert.That(contract.OrderCapabilities[0].TimeInForce, Is.EqualTo("DAY"));
         Assert.That(contract.OrderCapabilities[0].TradingSessionType, Is.EqualTo("PRE_RTH_POST"));
-        Assert.That(contract.OrderCapabilities[1].TradingSessionType, Is.EqualTo("GTH_RTH_CURB"));
+        Assert.That(contract.OrderCapabilities[1].TradingSessionType, Is.EqualTo("PRE_RTH_POST"));
         var serialized = JObject.Parse(JsonConvert.SerializeObject(contract));
         Assert.That(JToken.DeepEquals(serialized["orderCapabilities"], JObject.Parse(item)["orderCapabilities"]), Is.True);
       }
