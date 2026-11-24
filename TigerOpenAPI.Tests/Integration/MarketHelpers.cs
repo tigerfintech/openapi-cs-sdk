@@ -40,8 +40,6 @@ namespace TigerOpenAPI.Tests.Integration
     private static readonly Dictionary<Market, string> OptionIdentifierCache = new();
     private static readonly object StatusLock = new();
     private static readonly object OptionLock = new();
-    private static ContractItem? _futuresContractCache;
-    private static readonly object FuturesLock = new();
     private static (ContractLeg lower, ContractLeg upper)? _verticalSpreadLegsCache;
     private static readonly object VerticalSpreadLock = new();
 
@@ -216,79 +214,6 @@ namespace TigerOpenAPI.Tests.Integration
           }
         }
         return identifier;
-      }
-      catch
-      {
-        return null;
-      }
-    }
-
-    /// <summary>
-    /// Resolves a live US futures contract via <c>future_exchange</c> →
-    /// <c>future_current_contract</c> (the server's front-month contract for
-    /// a discovered exchange code), converted to a trade-side
-    /// <see cref="ContractItem"/> via <see cref="ContractItem.Convert(FutureContractItem)"/>.
-    /// Returns <c>null</c> if the API call chain failed or returned no data.
-    /// Cached per process.
-    /// </summary>
-    public static ContractItem? ResolveUsFuturesContract(QuoteClient qc)
-    {
-      lock (FuturesLock)
-      {
-        if (_futuresContractCache != null) return _futuresContractCache;
-      }
-
-      try
-      {
-        // 1. discover a live future exchange code
-        var exchModel = new FutureExchangeModel { SecType = SecType.FUT.ToString() };
-        var exchReq = new TigerRequest<FutureExchangeResponse>
-        {
-          ApiMethodName = QuoteApiService.FUTURE_EXCHANGE,
-          ModelValue = exchModel
-        };
-        var exchResp = qc.Execute(exchReq);
-        if (exchResp == null || !exchResp.IsSuccess()
-            || exchResp.Data == null || exchResp.Data.Count == 0)
-        {
-          return null;
-        }
-        string exchangeCode = exchResp.Data[0].Code;
-
-        // 2. front-month contract for that exchange
-        var byExchModel = new FutureContractByExchCodeModel { ExchangeCode = exchangeCode };
-        var byExchReq = new TigerRequest<FutureContractsResponse>
-        {
-          ApiMethodName = QuoteApiService.FUTURE_CONTRACT_BY_EXCHANGE_CODE,
-          ModelValue = byExchModel
-        };
-        var byExchResp = qc.Execute(byExchReq);
-        if (byExchResp == null || !byExchResp.IsSuccess()
-            || byExchResp.Data == null || byExchResp.Data.Count == 0)
-        {
-          return null;
-        }
-        string futureType = byExchResp.Data[0].Type;
-
-        var currentModel = new FutureContractByTypeModel { FutureType = futureType };
-        var currentReq = new TigerRequest<FutureContractsResponse>
-        {
-          ApiMethodName = QuoteApiService.FUTURE_CURRENT_CONTRACT,
-          ModelValue = currentModel
-        };
-        var currentResp = qc.Execute(currentReq);
-        if (currentResp == null || !currentResp.IsSuccess()
-            || currentResp.Data == null || currentResp.Data.Count == 0)
-        {
-          return null;
-        }
-
-        var contract = ContractItem.Convert(currentResp.Data[0]);
-        lock (FuturesLock)
-        {
-          _futuresContractCache = contract;
-        }
-        return contract;
       }
       catch
       {
