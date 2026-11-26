@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Security.Principal;
 using System.Xml.Linq;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using TigerOpenAPI.Common.Enum;
 using TigerOpenAPI.Common.Util;
 using TigerOpenAPI.Model;
 using TigerOpenAPI.Trade.Response;
+using OrderSessionType = TigerOpenAPI.Common.Enum.TradingSessionType;
 
 namespace TigerOpenAPI.Trade.Model
 {
@@ -103,11 +105,64 @@ namespace TigerOpenAPI.Trade.Model
     [JsonProperty(PropertyName = "outside_rth")]
     public Boolean OutsideRth { get; set; } = true;
 
-    /**
-     * set place overnight order in the US market. value: OverNight
-     */
-    [JsonProperty(PropertyName = "trading_session_type"), Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
-    public TradeSession TradingSessionType { get; set; }
+    private TradeSession legacyTradingSessionType;
+
+    /// <summary>Legacy session setting. Use OrderTradingSessionType for omnibus/paper order sessions.</summary>
+    [JsonIgnore]
+    public TradeSession TradingSessionType
+    {
+      get => legacyTradingSessionType;
+      set
+      {
+        legacyTradingSessionType = value;
+        OrderTradingSessionType = null;
+      }
+    }
+
+    /// <summary>Omnibus/paper trading session, including PRE_RTH and RTH_POST.</summary>
+    [JsonIgnore]
+    public OrderSessionType? OrderTradingSessionType { get; set; }
+
+    // Both APIs share one wire field. Preserve the legacy default omission and wire values.
+    [JsonProperty(PropertyName = "trading_session_type")]
+    [DefaultValue("Regular")]
+    private string SerializedTradingSessionType
+    {
+      get => OrderTradingSessionType?.ToString() ?? legacyTradingSessionType.ToString();
+      set
+      {
+        if (value == null)
+        {
+          OrderTradingSessionType = null;
+        }
+        else if (System.Enum.TryParse<OrderSessionType>(value, out var session)
+            && System.Enum.IsDefined(typeof(OrderSessionType), session)
+            && value == session.ToString())
+        {
+          OrderTradingSessionType = session;
+        }
+        else if (System.Enum.TryParse<TradeSession>(value, true, out var legacySession))
+        {
+          TradingSessionType = legacySession;
+        }
+        else if (System.Enum.TryParse<OrderSessionType>(value, true, out session)
+            && System.Enum.IsDefined(typeof(OrderSessionType), session))
+        {
+          OrderTradingSessionType = session;
+        }
+        else
+        {
+          throw new JsonSerializationException("Invalid trading session type: " + value);
+        }
+      }
+    }
+
+    /// <summary>Set the trading session for both order placement and preview.</summary>
+    public PlaceOrderModel SetTradingSessionType(OrderSessionType session)
+    {
+      OrderTradingSessionType = session;
+      return this;
+    }
 
     [JsonProperty(PropertyName = "exchange")]
     public string Exchange { get; set; }

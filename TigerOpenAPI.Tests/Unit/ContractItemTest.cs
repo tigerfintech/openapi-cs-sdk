@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using TigerOpenAPI.Trade.Response;
 using TigerOpenAPI.Common.Enum;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TigerOpenAPI.Tests.Unit
 {
@@ -11,6 +13,43 @@ namespace TigerOpenAPI.Tests.Unit
   [TestFixture]
   public class ContractItemTest
   {
+    [Test]
+    public void OrderCapabilities_ParseSingleAndBatchResponses()
+    {
+      const string item = "{\"symbol\":\"AAPL\",\"secType\":\"OPT\",\"orderCapabilities\":["
+          + "{\"orderType\":\"LMT\",\"timeInForce\":\"DAY\",\"tradingSessionType\":\"PRE_RTH_POST\"},"
+          + "{\"orderType\":\"LMT\",\"timeInForce\":\"GTC\",\"tradingSessionType\":\"PRE_RTH_POST\"}]}";
+      var single = JsonConvert.DeserializeObject<ContractResponse>("{\"code\":0,\"data\":" + item + "}")!.Data;
+      var batch = JsonConvert.DeserializeObject<ContractsResponse>("{\"code\":0,\"data\":{\"items\":[" + item + "]}}")!.Data["items"][0];
+      foreach (var contract in new[] { single, batch })
+      {
+        Assert.That(contract.OrderCapabilities, Has.Count.EqualTo(2));
+        Assert.That(contract.OrderCapabilities![0].OrderType, Is.EqualTo("LMT"));
+        Assert.That(contract.OrderCapabilities[0].TimeInForce, Is.EqualTo("DAY"));
+        Assert.That(contract.OrderCapabilities[0].TradingSessionType, Is.EqualTo("PRE_RTH_POST"));
+        Assert.That(contract.OrderCapabilities[1].TradingSessionType, Is.EqualTo("PRE_RTH_POST"));
+        var serialized = JObject.Parse(JsonConvert.SerializeObject(contract));
+        Assert.That(JToken.DeepEquals(serialized["orderCapabilities"], JObject.Parse(item)["orderCapabilities"]), Is.True);
+      }
+    }
+
+    [TestCase("{}")]
+    [TestCase("{\"orderCapabilities\":null}")]
+    public void OrderCapabilities_MissingOrNullRemainNull(string json)
+    {
+      var contract = JsonConvert.DeserializeObject<ContractItem>(json)!;
+      Assert.That(contract.OrderCapabilities, Is.Null);
+      Assert.That(JObject.Parse(JsonConvert.SerializeObject(contract)).ContainsKey("orderCapabilities"), Is.False);
+    }
+
+    [Test]
+    public void OrderCapabilities_EmptyListRemainsEmpty()
+    {
+      var contract = JsonConvert.DeserializeObject<ContractItem>("{\"orderCapabilities\":[]}")!;
+      Assert.That(contract.OrderCapabilities, Is.Empty);
+      Assert.That(JObject.Parse(JsonConvert.SerializeObject(contract))["orderCapabilities"], Is.TypeOf<JArray>());
+    }
+
     [Test]
     public void BuildStockContract_FieldsSetCorrectly()
     {

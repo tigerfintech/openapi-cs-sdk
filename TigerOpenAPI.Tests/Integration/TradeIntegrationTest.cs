@@ -91,6 +91,26 @@ namespace TigerOpenAPI.Tests.Integration
       "too_many_requests", "rate limit", "requestrateexceedlimit",
     };
 
+    // Rate-limit trio alone (a subset of PermissionErrorMarkers) so the
+    // cleanup-cancel tolerance can accept throttles without accepting every
+    // permission marker.
+    private static readonly string[] RateLimitMarkers =
+    {
+      "too_many_requests", "rate limit", "requestrateexceedlimit",
+    };
+
+    // Substring markers (lowercased match) for terminal order-state races:
+    // the just-placed order can reach a terminal state before the cleanup
+    // cancel arrives. Mirrors Python's _TERMINAL_ORDER_KEYWORDS / Java's
+    // TERMINAL_ORDER_PATTERNS.
+    private static readonly string[] TerminalOrderMarkers =
+    {
+      "cannot be modified", "cannot be cancelled", "cannot be canceled",
+      "already cancelled", "already canceled", "already filled",
+      "not in a modifiable state", "invalid order status",
+      "cancellation is not allowed", "cancel is not allowed",
+    };
+
     private static bool MatchesAny(string? message, string[] markers)
     {
       if (string.IsNullOrEmpty(message)) return false;
@@ -136,11 +156,12 @@ namespace TigerOpenAPI.Tests.Integration
     /// <summary>
     /// Previews an order (permission-tolerant skip on failure), then places
     /// it (permission-tolerant skip on failure). On success, asserts a
-    /// non-negative order id. Returns <c>true</c> if the order was placed,
-    /// <c>false</c> if the flow was skipped for a permission/capability
-    /// reason. Any other failure fails the test outright.
-    /// Mirrors Python's <c>_preview_and_place</c> / Rust's
-    /// <c>preview_and_place</c>.
+    /// non-negative order id and cancels the placed order (mirroring the
+    /// Python/Java/Rust cleanup). Returns <c>true</c> if the order was
+    /// placed, <c>false</c> if the flow was skipped for a
+    /// permission/capability reason. Any other failure fails the test
+    /// outright. Mirrors Python's <c>_preview_and_place_hours_aware</c> /
+    /// Rust's <c>preview_and_place</c>.
     /// </summary>
     private bool PreviewAndPlace(PlaceOrderModel order, string context)
     {
@@ -190,7 +211,38 @@ namespace TigerOpenAPI.Tests.Integration
 
       Assert.That(placeResp.Data, Is.Not.Null, $"{context} — place_order data must not be null");
       Assert.That(placeResp.Data!.Id, Is.GreaterThanOrEqualTo(0), $"{context} — place_order id must be non-negative");
+      CancelPlacedOrder(placeResp.Data!.Id, context);
       return true;
+    }
+
+    /// <summary>
+    /// Best-effort cancel of a just-placed order, mirroring Python's
+    /// <c>_cancel_tolerating_terminal</c> / Java's <c>cancelTolerant</c>:
+    /// terminal-state races and rate limits are tolerated (the order
+    /// assertions have already passed, and a cleanup cancel is the call most
+    /// likely to be throttled), any other failure fails the test — the order
+    /// is on a shared real account, so a silently-live order id must not
+    /// pass unnoticed.
+    /// </summary>
+    private void CancelPlacedOrder(long orderId, string context)
+    {
+      var req = new TigerRequest<PlaceOrderResponse>
+      {
+        ApiMethodName = TradeApiService.CANCEL_ORDER,
+        ModelValue = new CancelOrderModel { Account = _account, Id = orderId }
+      };
+      var resp = _client!.Execute(req);
+      if (resp != null && resp.IsSuccess())
+      {
+        return;
+      }
+      string msg = resp?.Message ?? string.Empty;
+      if (MatchesAny(msg, TerminalOrderMarkers) || MatchesAny(msg, RateLimitMarkers))
+      {
+        TestContext.Progress.WriteLine($"{context} — cancel tolerated: {msg}");
+        return;
+      }
+      Assert.Fail($"{context} — cancel_order failed for order id={orderId}; {msg}");
     }
 
     /// <summary>
@@ -1224,21 +1276,28 @@ namespace TigerOpenAPI.Tests.Integration
     }
 
     // =====================================================================
-    // US FUT limit — resolved via MarketHelpers.ResolveUsFuturesContract
-    // (server-resolved front-month contract, no client-side date math)
+    // US FUT limit — hardcoded far-month contract, mirroring Python's
+    // test_place_us_fut_limit / Rust's test_matrix_us_fut_limit / Java's
+    // placeUsFutLimit. A standard account sends no expiry for FUT orders,
+    // so the month must live in the symbol: the bare product root "CL" is
+    // rejected (合约不正确), the continuous "CLmain" is quote-only (symbol
+    // error), and a quote-resolved "current" contract rolls into near-expiry
+    // high-margin months (e.g. ETH2611) whose place_order rejection matches
+    // no skip marker. CL2712 is the Dec-2027 NYMEX contract.
     // =====================================================================
     [Test]
     public void PlaceOrder_UsFutLimit_AcceptsOrSkips()
     {
-      var contract = MarketHelpers.ResolveUsFuturesContract(IntegTestConfig.QuoteClient);
-      if (contract == null)
+      var contract = new ContractItem
       {
-        Assert.Ignore("could not resolve a live US futures contract");
-        return;
-      }
+        SecType = SecType.FUT.ToString(),
+        Symbol = "CL2712",
+        Currency = Currency.USD.ToString(),
+        Exchange = "NYMEX"
+      };
       var model = PlaceOrderModel.BuildLimitOrder(
           _account, contract, ActionType.BUY, quantity: 1, limitPrice: SafeBuyPrice);
-      PreviewAndPlace(model, $"UsFutLimit {contract.Symbol}");
+      PreviewAndPlace(model, "UsFutLimit CL2712");
     }
 
     // =====================================================================

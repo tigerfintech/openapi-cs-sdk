@@ -85,6 +85,10 @@ namespace TigerOpenAPI.Trade.Response
     [JsonProperty(PropertyName = "tickSizes")]
     public List<TickSizeItem> TickSizes { get; set; }
 
+    /// <summary>Supported order combinations, or null when none are provided.</summary>
+    [JsonProperty(PropertyName = "orderCapabilities", NullValueHandling = NullValueHandling.Ignore)]
+    public List<OrderCapabilityItem>? OrderCapabilities { get; set; }
+
     /** Intraday initial margin discount */
     [JsonProperty(PropertyName = "discountedDayInitialMargin")]
     public Double DiscountedDayInitialMargin { get; set; } = double.NaN;
