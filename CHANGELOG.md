@@ -1,14 +1,9 @@
-## Unreleased
-
-### New
-
-- `TradingSessionType` 新增 `PRE_RTH`、`RTH_POST`；综合/模拟账号下单及 preview 可使用 `PlaceOrderModel.OrderTradingSessionType` 或 `SetTradingSessionType(...)`，保留旧 `TradeSession` 属性用法与序列化行为。
-
-## 1.2.10 (2026-11-18)
+## 1.2.10 (Unreleased)
 
 ### New
 
 - 合约查询新增订单能力信息，可查看支持的订单类型、订单有效期和交易时段组合。
+- `TradingSessionType` 新增 `PRE_RTH`、`RTH_POST`；综合/模拟账号下单及 preview 可使用 `PlaceOrderModel.OrderTradingSessionType` 或 `SetTradingSessionType(...)`，保留旧 `TradeSession` 属性用法与序列化行为。
 
 ## 1.2.9 (2026-11-11)
 ### New
